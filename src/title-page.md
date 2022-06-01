@@ -1,20 +1,16 @@
-# The Rust Programming Language
+# Rust Programlama Dili
 
-*by Steve Klabnik and Carol Nichols, with contributions from the Rust Community*
+*Steve Klabnik ve Carol Nichols tarafından, Rust Topluluğunun katkılarıyla*
 
-This version of the text assumes you’re using Rust 1.59 (released 2022-02-24)
-or later. See the [“Installation” section of Chapter 1][install]<!-- ignore -->
-to install or update Rust.
+Yazının bu versiyonu, Rust 1.59 ya da daha yenisini kullandığınızı varsayar (2022-02-24 tarihinde yayınlandı). 
+Rust'ı güncellemek ya da yüklemek için [Bölüm 1'in “Yükleme” kısmına bakınız][install]<!-- ignore -->
 
-The HTML format is available online at
-[https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/)
-and offline with installations of Rust made with `rustup`; run `rustup docs
---book` to open.
+HTML formatı [https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/) sayfasından erişilebilir
+ve `rustup`; run `rustup docs --book` ile açılabilir.
 
-Several community [translations] are also available.
+Sayılı çeviriler [translations] kısmında mevcuttur.
 
-This text is available in [paperback and ebook format from No Starch
-Press][nsprust].
+Bu yazı [No Starch Press'den baskılı ve e-kitap formatı şeklinde temin edilebilir][nsprust].
 
 [install]: ch01-01-installation.html
 [editions]: appendix-05-editions.html
