@@ -1,57 +1,46 @@
-## Reading a File
+## Dosya Okumak
 
-Now we’ll add functionality to read the file specified in the `filename`
-argument. First, we need a sample file to test it with: we’ll use a file with a
-small amount of text over multiple lines with some repeated words. Listing 12-3
-has an Emily Dickinson poem that will work well! Create a file called
-*poem.txt* at the root level of your project, and enter the poem “I’m Nobody!
-Who are you?”
+Şimdi, `filename` argümanında belirtilen dosyayı okumak için işlevsellik ekleyeceğiz. 
+İlk olarak, bunu test etmek için örnek bir dosyaya ihtiyacımız var: 
+Birkaç satırda metin içeren ve bazı tekrarlanan kelimeler içeren bir dosya kullanacağız. 
+Liste 12-3'te işe yarayacak bir Emily Dickinson şiiri var! Projenizin kök dizininde *poem.txt* adlı bir dosya oluşturun 
+ve “Ben Hiçkimse'yim! Sen kimsin?"
 
-<span class="filename">Filename: poem.txt</span>
+<span class="filename">Dosya adı: poem.txt</span>
 
 ```text
 {{#include ../listings/ch12-an-io-project/listing-12-03/poem.txt}}
 ```
 
-<span class="caption">Listing 12-3: A poem by Emily Dickinson makes a good test
-case</span>
+<span class="caption">Liste 12-3: Emily Dickinson'ın bir şiiri iyi bir test örneği yapıyor</span>
 
-With the text in place, edit *src/main.rs* and add code to read the file, as
-shown in Listing 12-4.
+Metin yerindeyken, *src/main.rs* dosyasını düzenleyin ve okunacak dosya için kod ekleyin.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,should_panic,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-4: Reading the contents of the file specified
-by the second argument</span>
+<span class="caption">Liste 12-4: İkinci argüman tarafından belirtilen dosyanın içeriğini okuma</span>
 
-First, we bring in a relevant part of the standard library with a `use`
-statement: we need `std::fs` to handle files.
+İlk olarak, standart kitaplığın ilgili bir bölümünü bir `use` ifadesi ile getiriyoruz: dosyaları işlemek için `std::fs`'ye ihtiyacımız var.
 
-In `main`, the new statement `fs::read_to_string` takes the `filename`, opens
-that file, and returns a `Result<String>` of the file’s contents.
+`main`'de, `fs::read_to_string` ifadesi `filename` argümanını alır, dosyayı açar, ve dosyanın içeriğini tutan
+`Result<String>`'i döndürür.
 
-After that, we again add a temporary `println!` statement that prints the value
-of `contents` after the file is read, so we can check that the program is
-working so far.
+Bundan sonra, geçici olarak bir `println!` ifadesi koyacağız ki dosya okunduktan sonra içindekileri okuyabilelim.
 
-Let’s run this code with any string as the first command line argument (because
-we haven’t implemented the searching part yet) and the *poem.txt* file as the
-second argument:
+Hadi şimdi bu kodu herhangi bir ilk komut satırı argümanıyla  (çünkü henüz
+dosya arama kısmını süreklemedik) ve *poem.txt* dosyasını ikinci bir argüman olarak
+kullanarak çalıştıralım. 
 
 ```console
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/output.txt}}
 ```
 
-Great! The code read and then printed the contents of the file. But the code
-has a few flaws. At the moment, the `main` function has multiple
-responsibilities: generally, functions are clearer and easier to maintain if
-each function is responsible for only one idea. The other problem is that we’re
-not handling errors as well as we could. The program is still small, so these
-flaws aren’t a big problem, but as the program grows, it will be harder to fix
-them cleanly. It’s good practice to begin refactoring early on when developing
-a program, because it’s much easier to refactor smaller amounts of code. We’ll
-do that next.
+Güzel! Bu kod dosyanın içeriğini okur ve sonra içeriğini yazar. Ama kod bazı sorunlara sahip.
+`main` fonksiyonunun birden fazla işlevi var. Genel olarak tek bir fikre dayalı fonksiyonlar daha kolay
+karşılanır ve sürdürülür. Bir diğer problem olaraktan, biz henüz herhangi bir hatayı işlemiyoruz.
+Program küçük yani bu sıkıntılar büyük bir program değil ama program büyüdükçe bu tarz sıkıntıları temizce
+çözmek zorlaşacaktır. Bu tarz sıkıntıları kodunuz büyümeden çözmek iyi bir pratik olacaktır. Bunu sonra yapacağız.
