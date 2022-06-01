@@ -1,67 +1,64 @@
-## Appendix A: Keywords
+## Ekleme A: Anahtar Sözcükler
 
-The following list contains keywords that are reserved for current or future
-use by the Rust language. As such, they cannot be used as identifiers (except
-as raw identifiers as we’ll discuss in the “[Raw
-Identifiers][raw-identifiers]<!-- ignore -->” section), including names of
-functions, variables, parameters, struct fields, modules, crates, constants,
-macros, static values, attributes, types, traits, or lifetimes.
+Aşağıdaki listede bulunan anahtar sözcükler Rust dilinde şu anda ya da gelecekte kullanılacağı 
+için rezerve edilmiştir. Bu nedenle tanımlayıcı olarak kullanılamazlar. (“[Ham Tanımlayıcılar][raw-identifiers]<!-- ignore -->” kısmında tartışacağımız tanımlayıcılar hariç), isimleri dahil olmak üzere
+fonksiyonlar, değişkenler, parametreler, yapı girdileri, modüller, kasalar, değişmezler, makrolar,
+statik değerler, öznitelikler, türler, tanımlar ya da ömürlükleri kapsar.
 
 [raw-identifiers]: #raw-identifiers
 
-### Keywords Currently in Use
+### Şu anda Kullanılan Anahtar Sözcükler
 
-The following keywords currently have the functionality described.
+Aşağıdaki anahtar sözcükler açıklanan işlevselliklere sahiptir. 
 
-* `as` - perform primitive casting, disambiguate the specific trait containing
-  an item, or rename items in `use` and `extern crate` statements
-* `async` -  return a `Future` instead of blocking the current thread
-* `await` - suspend execution until the result of a `Future` is ready
-* `break` - exit a loop immediately
-* `const` - define constant items or constant raw pointers
-* `continue` - continue to the next loop iteration
-* `crate` - link an external crate or a macro variable representing the crate in
-  which the macro is defined
-* `dyn` - dynamic dispatch to a trait object
-* `else` - fallback for `if` and `if let` control flow constructs
-* `enum` - define an enumeration
-* `extern` - link an external crate, function, or variable
-* `false` - Boolean false literal
-* `fn` - define a function or the function pointer type
-* `for` - loop over items from an iterator, implement a trait, or specify a
-  higher-ranked lifetime
-* `if` - branch based on the result of a conditional expression
-* `impl` - implement inherent or trait functionality
-* `in` - part of `for` loop syntax
-* `let` - bind a variable
-* `loop` - loop unconditionally
-* `match` - match a value to patterns
-* `mod` - define a module
-* `move` - make a closure take ownership of all its captures
-* `mut` - denote mutability in references, raw pointers, or pattern bindings
-* `pub` - denote public visibility in struct fields, `impl` blocks, or modules
-* `ref` - bind by reference
-* `return` - return from function
-* `Self` - a type alias for the type we are defining or implementing
-* `self` - method subject or current module
-* `static` - global variable or lifetime lasting the entire program execution
-* `struct` - define a structure
-* `super` - parent module of the current module
-* `trait` - define a trait
-* `true` - Boolean true literal
-* `type` - define a type alias or associated type
-* `union` - define a [union] and is only a keyword when used in a union declaration
-* `unsafe` - denote unsafe code, functions, traits, or implementations
-* `use` - bring symbols into scope
-* `where` - denote clauses that constrain a type
-* `while` - loop conditionally based on the result of an expression
+* `as` - ilkel dönüşüm yapmak, belirli özelliğin türünün belirsizliğini gidermek, 
+   ya da kullanımdaki `use` ve `extern crate` ifadelerini yeniden adlandırmak için kullanılır
+* `async` - şu andaki ipliği bloklamak yerine `Future` döndürür
+* `await` - `Future`'ın sonucu hazır olana kadar çağrıları susturur
+* `break` - döngüden çıkar
+* `const` - değişmez öğeleri veya sabit işaretçileri tanımlar
+* `continue` - sonraki döngü yineleyiciyle devam ettirir
+* `crate` - makroda tanımlanan bir kasa değişkenini ya da harici kasayı bağlar
+* `dyn` - bir tanım nesnesine dinamik olarak gönderir
+* `else` - `if` ya da `if let` kontrol akış yapılarının B planını uygular
+* `enum` - numaralandırılmış yapı tanımlar
+* `extern` - harici bir kasayı, fonksiyonu ya da değişkeni bağlar
+* `false` - Boole yanlış değişmezi
+* `fn` - fonksiyon ya da fonksiyon işaretçi türünü tanımlar
+* `for` - bir yineleyici üzerinde öğeler kadar döngü yapar, tanım uygular ya da yüksek dereceli
+   ömürlüğü belirtir
+* `if` - koşullu bir ifadenin sonucuna dayalı dal oluşturur
+* `impl` - var olan veya tanımsal işlevselliğini sürekler
+* `in` - `for` döngüsünün söz diziminin bir parçası
+* `let` - değişken atar
+* `loop` - koşulsuz döngüye girer
+* `match` - modelleri kullanarak değer eşleştirir
+* `mod` - modül tanımlar
+* `move` - bir kapanış yaparak tüm yakalamalarının sahipliğini alır
+* `mut` - referanslarda, işaretçilerde ya da model atamalarında değişmemezliği belirtir
+* `pub` - yapı alanlarında, `impl` bloklarında ya da modüllerde genel görünümlüğü belirtir
+* `ref` - referansla atar
+* `return` - fonksiyondan döndürür
+* `Self` - tanımladığımız ya da süreklediğimiz bir tür için takma ad
+* `self` - halihazırdaki modül belirteci
+* `static` - program çalıştığından beri tutulan genel değişken ya da ömürlük
+* `struct` - yapı tanımlar
+* `super` - halihazırdaki modülün bulunduğu ana modül belirteci
+* `trait` - tanım tanımlar
+* `true` - Boole doğru değişmezi
+* `type` - bir tür takma adı veya ilişkili tür tanımlar
+* `union` - [birlik] tanımlar ve sadece birlik tanımlarken bir anahtar sözcük görevi görür
+* `unsafe` - güvensiz kodlar, fonksiyonlar, tanımlar ya da süreklemeleri belirtir
+* `use` - sembolleri kapsama alır
+* `where` - bir türü sınırlayan tümceleri belirtir
+* `while` - bir ifadenin sonucuna göre çalışan koşullu döngü tanımlar
 
-[union]: ../reference/items/unions.html
+[birlik]: ../reference/items/unions.html
 
-### Keywords Reserved for Future Use
+### Gelecekte Kullanım için Ayrılmış Anahtar Kelimeler
 
-The following keywords do not have any functionality but are reserved by Rust
-for potential future use.
+Aşağıdaki anahtar kelimelerin herhangi bir işlevi yoktur, 
+ancak gelecekteki potansiyel kullanımdan dolayı Rust tarafından ayrılmıştır.
 
 * `abstract`
 * `become`
@@ -77,13 +74,12 @@ for potential future use.
 * `virtual`
 * `yield`
 
-### Raw Identifiers
+### Ham Tanımlayıcılar
 
-*Raw identifiers* are the syntax that lets you use keywords where they wouldn’t
-normally be allowed. You use a raw identifier by prefixing a keyword with `r#`.
+*Ham tanımlayıcılar* normalde kullanılmayacakları yerlerde kullanmanıza izin veren söz dizimidir özelliğidir. 
+Anahtar sözcüğünüzün başına `r#` koyarak ham işaretçileri kullanabilirsiniz.
 
-For example, `match` is a keyword. If you try to compile the following function
-that uses `match` as its name:
+Örneğin, `match` bir anahtar sözcüktür. Eğer fonksiyonunuz ad olarak `match` kullandığında onu derlemeye çalışırsanız:
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -93,7 +89,7 @@ fn match(needle: &str, haystack: &str) -> bool {
 }
 ```
 
-you’ll get this error:
+şu hatayı alırsınız:
 
 ```text
 error: expected identifier, found keyword `match`
@@ -102,10 +98,8 @@ error: expected identifier, found keyword `match`
 4 | fn match(needle: &str, haystack: &str) -> bool {
   |    ^^^^^ expected identifier, found keyword
 ```
-
-The error shows that you can’t use the keyword `match` as the function
-identifier. To use `match` as a function name, you need to use the raw
-identifier syntax, like this:
+Bu hata size `match`'i fonksiyon adı olarak kullanamayacağınızı gösterir.
+`match`'i fonksiyon adı kullanmak için ham tanımlayıcı söz dizimini kullanmanız gerekir, aynı bunun gibi:
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -119,16 +113,15 @@ fn main() {
 }
 ```
 
-This code will compile without any errors. Note the `r#` prefix on the function
-name in its definition as well as where the function is called in `main`.
+Bu kod hatasız derlenir. Not olaraktan, `r#` öneki `main` adıyla anılan 
+özel fonksiyon için de kullanılabilir.
 
-Raw identifiers allow you to use any word you choose as an identifier, even if
-that word happens to be a reserved keyword. In addition, raw identifiers allow
-you to use libraries written in a different Rust edition than your crate uses.
-For example, `try` isn’t a keyword in the 2015 edition but is in the 2018
-edition. If you depend on a library that’s written using the 2015 edition and
-has a `try` function, you’ll need to use the raw identifier syntax, `r#try` in
-this case, to call that function from your 2018 edition code. See [Appendix
-E][appendix-e]<!-- ignore --> for more information on editions.
+Ham tanımlayıcılar sizi hangi sözcüğü kullanacağınız konusunda özgür tutar. Ekleme olaraktan,
+ham işaretçiler kasanızın kullandığından farklı Rust sürümünü kullanan kütüphaneleri kullanmanıza izin verir.
+Örnek olarak, `try` 2015 sürümünde bir anahtar sözcük değildi, 2018 sürümünde geldi.
+Eğer 2015 sürümünü kullanan bir kütüphaneniz varsa ve bu kütüphane `try` diye bir fonksiyona sahipse, 2018
+sürümünde bu fonksiyonu çağırabilmeniz için ham tanımlayıcılar kullanmanız gerekir.
+Sürümler hakkında daha fazla bilgiye erişmek için [Ekleme
+E][ekleme-e]<!-- ignore --> bölümüne göz atabilirsiniz.
 
-[appendix-e]: appendix-05-editions.html
+[ekleme-e]: appendix-05-editions.html
