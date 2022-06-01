@@ -1,23 +1,14 @@
-# Common Programming Concepts
+# Yaygın Programlama Kavramları
 
-This chapter covers concepts that appear in almost every programming language
-and how they work in Rust. Many programming languages have much in common at
-their core. None of the concepts presented in this chapter are unique to Rust,
-but we’ll discuss them in the context of Rust and explain the conventions
-around using these concepts.
+Bu bölüm, hemen hemen her programlama dilinde görünen kavramları ve bunların Rust'ta nasıl çalıştığını kapsar. 
+Birçok programlama dilinin özünde çokça ortak nokta vardır. Bu bölümde sunulan kavramların hiçbiri Rust'a özgü değildir, ancak bunları Rust bağlamında tartışacağız ve bu kavramların kullanımına ilişkin kuralları açıklayacağız. 
+Özellikle değişkenler, temel türler, fonksiyonlar, yorum satırları ve kontrol akışı hakkında bilgi edineceksiniz. 
+Bu temeller her Rust programında yer alacaktır ve bunları erkenden öğrenmek size başlangıç için güçlü bir temel sağlayacaktır. 
 
-Specifically, you’ll learn about variables, basic types, functions, comments,
-and control flow. These foundations will be in every Rust program, and learning
-them early will give you a strong core to start from.
-
-> #### Keywords
->
-> The Rust language has a set of *keywords* that are reserved for use by
-> the language only, much as in other languages. Keep in mind that you cannot
-> use these words as names of variables or functions. Most of the keywords have
-> special meanings, and you’ll be using them to do various tasks in your Rust
-> programs; a few have no current functionality associated with them but have
-> been reserved for functionality that might be added to Rust in the future. You
-> can find a list of the keywords in [Appendix A][appendix_a]<!-- ignore -->.
+> #### Anahtar Sözcükler 
+> Rust dilinde, diğer dillerde olduğu gibi, yalnızca dil tarafından kullanılmak üzere ayrılmış bir dizi anahtar sözcük vardır.
+> Bu kelimeleri değişken veya fonksiyon adı olarak kullanamayacağınızı unutmayın. Anahtar kelimelerin çoğunun özel anlamları vardır ve 
+> bunları Rust programlarınızda çeşitli görevleri yapmak için kullanacaksınız; birkaçının kendileriyle ilişkili mevcut bir işlevi yoktur, 
+> ancak gelecekte Rust'a eklenebilecek işlevsellik için ayrılmıştır. Anahtar kelimelerin bir listesini [Ekleme A][appendix_a]<!-- ignore -->'da bulabilirsiniz.
 
 [appendix_a]: appendix-01-keywords.md
