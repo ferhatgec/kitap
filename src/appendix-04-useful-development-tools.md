@@ -1,41 +1,41 @@
-## Appendix D - Useful Development Tools
+## Ekleme D - Kullanışlı Geliştirme Araçları
 
-In this appendix, we talk about some useful development tools that the Rust
-project provides. We’ll look at automatic formatting, quick ways to apply
-warning fixes, a linter, and integrating with IDEs.
+Bu eklemede, Rust projesinin bize sağladığı bazı kullanışlı geliştirme araçlarından
+bahsedeceğiz. Otomatik düzenleyici, hata ve uyarı çözücü, kod düzenleyici ve nasıl 
+TGO'lar (IDE) ile kullanabileceğinizi göstereceğiz.
 
-### Automatic Formatting with `rustfmt`
+### `rustfmt` ile Otomatik Düzenleme
 
-The `rustfmt` tool reformats your code according to the community code style.
-Many collaborative projects use `rustfmt` to prevent arguments about which
-style to use when writing Rust: everyone formats their code using the tool.
 
-To install `rustfmt`, enter the following:
+`rustfmt` aracı kodunuzu topluluk kodu stili şeklinde düzenler. Çoğu proje `rustfmt`'yi hangi Rust stilini 
+kullanmakta kararsız kalındığı vakit kullanır: herkes bu aracı kullanarak kodunu düzenler.
+
+`rustfmt`'i yüklemek için şu komutu girin:
 
 ```console
 $ rustup component add rustfmt
 ```
 
-This command gives you `rustfmt` and `cargo-fmt`, similar to how Rust gives you
-both `rustc` and `cargo`. To format any Cargo project, enter the following:
+Bu komut size `rustfmt` ve `cargo-fmt` araçlarını verir, nasıl Rust'ın `rustc` ve `cargo`'yu birlikte
+dağıttığı gibi. Herhangi bir Cargo projesini düzenlemek için, şunu girin:
 
 ```console
 $ cargo fmt
 ```
 
-Running this command reformats all the Rust code in the current crate. This
-should only change the code style, not the code semantics. For more information
-on `rustfmt`, see [its documentation][rustfmt].
+Bu komudu çalıştırmak halihazırdaki kasada bulunan tüm Rust kodlarınızı düzenler. 
+Kodunuzun çalışma şeklini ve mantığını değiştirmez sadece kod stilini değiştirir. 
+`rustfmt` hakkında daha fazla bilgi almak için [dokümantasyonunu][rustfmt] kullanabilirsiniz.
 
 [rustfmt]: https://github.com/rust-lang/rustfmt
 
-### Fix Your Code with `rustfix`
+### `rustfix` ile Kodunuzu Çözümleme
 
-The rustfix tool is included with Rust installations and can automatically fix
-some compiler warnings. If you’ve written code in Rust, you’ve probably seen
-compiler warnings. For example, consider this code:
+rustfix aracı Rust'ın yüklemelerine dahil edilmiş, bazı derleyici hatalarını otomatik olarak
+çözümleyen bir araçtır. Eğer Rust'ta kod yazmışsanız, büyük ihtimalle derleyici hatalarını ve 
+uyarılarını da görmüşsünüzdür. Örnek olaraktan, şu koda odaklanın:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya: src/main.rs</span>
 
 ```rust
 fn do_something() {}
@@ -47,8 +47,8 @@ fn main() {
 }
 ```
 
-Here, we’re calling the `do_something` function 100 times, but we never use the
-variable `i` in the body of the `for` loop. Rust warns us about that:
+Burada, `do_something` adlı fonksiyonu 100 kez çağırıyoruz ama hiçbir zaman `i` değerini döngü içinde kullanmıyoruz.
+İşte bu yüzden Rust bizi bunun hakkında uyaracaktır:
 
 ```console
 $ cargo build
@@ -64,10 +64,9 @@ warning: unused variable: `i`
     Finished dev [unoptimized + debuginfo] target(s) in 0.50s
 ```
 
-The warning suggests that we use `_i` as a name instead: the underscore
-indicates that we intend for this variable to be unused. We can automatically
-apply that suggestion using the `rustfix` tool by running the command `cargo
-fix`:
+Bu uyarı bize `i` yerine `_i` kullanmamız gerektiğini sunar: bu alt çizgi ile
+bu değerin kullanılmayacağını söylemiş oluyoruz. Bu öneriyi otomatik olarak eklemek istiyorsanız
+`cargo fix` komutu vasıtasıyla `rustfix` aracını kullanın:
 
 ```console
 $ cargo fix
@@ -76,10 +75,9 @@ $ cargo fix
     Finished dev [unoptimized + debuginfo] target(s) in 0.59s
 ```
 
-When we look at *src/main.rs* again, we’ll see that `cargo fix` has changed the
-code:
+*src/main.rs* koduna tekrar baktığımızda, `cargo fix`'in bazı yerleri değiştirdiğini görüyoruz:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 fn do_something() {}
@@ -91,32 +89,32 @@ fn main() {
 }
 ```
 
-The `for` loop variable is now named `_i`, and the warning no longer appears.
+`for` döngüsü değeri artık `_i` şekliyle adlandırıldı, artık uyarı çıkmayacak.
 
-You can also use the `cargo fix` command to transition your code between
-different Rust editions. Editions are covered in Appendix E.
+`cargo fix` komutunu ayrıca farklı Rust sürümleri arasında kodunuzu güncelleştirmek
+için kullanabilirsiniz. Sürümler Ekleme E'de açıklanacak.
 
-### More Lints with Clippy
+### Clippy ile Daha Fazla Düzenleme
 
-The Clippy tool is a collection of lints to analyze your code so you can catch
-common mistakes and improve your Rust code.
+Clippy aracı düzenleme tavsiyelerinin bir koleksiyonunu tutan ve bunlar vasıtasıyla
+kodunuzu analiz eden ve size kodunuz hakkında bilgiler ve öneriler veren bir araçtır.
 
-To install Clippy, enter the following:
+Clippy'i indirmek için, şu komutu girin:
 
 ```console
 $ rustup component add clippy
 ```
 
-To run Clippy’s lints on any Cargo project, enter the following:
+Herhangi bir Cargo projesinde Clippy’nin düzenlemelerini kullanmak için, şunu girin:
 
 ```console
 $ cargo clippy
 ```
 
-For example, say you write a program that uses an approximation of a
-mathematical constant, such as pi, as this program does:
+Örnek olaraktan, diyelim ki bir matematik sabitini yakınsayarak hesaplamak istiyorsunuz,
+mesela pi olsun, bu program onu yapar:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 fn main() {
@@ -126,7 +124,7 @@ fn main() {
 }
 ```
 
-Running `cargo clippy` on this project results in this error:
+`cargo clippy`'i bu projede çalıştırmak bize şu hatayı verir:
 
 ```text
 error: approximate value of `f{32, 64}::consts::PI` found. Consider using it directly
@@ -139,12 +137,12 @@ error: approximate value of `f{32, 64}::consts::PI` found. Consider using it dir
   = help: for further information visit https://rust-lang-nursery.github.io/rust-clippy/master/index.html#approx_constant
 ```
 
-This error lets you know that Rust has this constant defined more precisely and
-that your program would be more correct if you used the constant instead. You
-would then change your code to use the `PI` constant. The following code
-doesn’t result in any errors or warnings from Clippy:
+Bu hata, Rust'ın bu sabiti daha kesin olarak tanımladığını 
+ve bunun yerine sabiti kullanırsanız programınızın daha doğru olacağını belirtir. 
+Rust'ın sunduğu PI sabitini kullandığınızda, aşağıdaki kod herhangi bir hata ya da uyarı
+vermeden düzenlenir:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 fn main() {
@@ -154,25 +152,23 @@ fn main() {
 }
 ```
 
-For more information on Clippy, see [its documentation][clippy].
+Clippy hakkında daha fazla bilgi almak için [dokümantasyonunu][clippy] kullanabilirsiniz.
 
 [clippy]: https://github.com/rust-lang/rust-clippy
 
-### IDE Integration Using `rust-analyzer`
+### `rust-analyzer` Kullanarak TGO (IDE) Entegrasyonu
 
-To help IDE integration, the Rust community recommends using
-[`rust-analyzer`][rust-analyzer]<!-- ignore -->. This tool is a set of
-compiler-centric utilities that speaks the [Language Server Protocol][lsp]<!--
-ignore -->, which is a specification for IDEs and programming languages to
-communicate with each other. Different clients can use `rust-analyzer`, such as
-[the Rust analyzer plug-in for Visual Studio Code][vscode].
+TGO entegrasyonu için Rust topluluğu
+[`rust-analyzer`][rust-analyzer]<!-- ignore --> kullanmanızı öneriyor.
+Bu araç bazı TGO'lar ve dillerin birbirleri arasındaki iletişimi sağlayan [Dil Sunucu Protokolü][lsp]<!-- ignore -->, 
+vasıtasıyla derleyici tabanlı bir iletişim ağı oluşturur. Farklı editörler `rust-analyzer`'i kullanabilir, mesela
+[Visual Studio Code için Rust analyzer eklentisi][vscode] kullanılabilir.
 
 [lsp]: http://langserver.org/
 [vscode]: https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer
 
-Visit the `rust-analyzer` project’s [home page][rust-analyzer] for installation
-instructions, then install the language server support in your particular IDE.
-Your IDE will gain abilities such as autocompletion, jump to definition, and
-inline errors.
+Kurulum yönergeleri için `rust-analyzer` projesinin [ana sayfasına][rust-analyzer] gidebilir, daha sonra
+TGO'nuz için desteklenen dil sunucusunu kurabilirsiniz. TGO'nuz bazı yenilikler edinecektir, mesela
+otomatik tamamlama, tanıma yönlendirme, satır içi hata ve uyarılar vs.
 
 [rust-analyzer]: https://rust-analyzer.github.io
