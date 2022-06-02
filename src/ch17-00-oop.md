@@ -1,13 +1,12 @@
-# Object Oriented Programming Features of Rust
+# Rust'ta Nesne Yönelimli Programlama Özellikleri
 
-Object-oriented programming (OOP) is a way of modeling programs. Objects as a
-programmatic concept were introduced in the programming language Simula in the
-1960s. Those objects influenced Alan Kay’s programming architecture in which
-objects pass messages to each other. To describe this architecture, he coined
-the term *object-oriented programming* in 1967. Many competing definitions
-describe what OOP is, and by some of these definitions Rust is object oriented,
-but by others it is not. In this chapter, we’ll explore certain characteristics
-that are commonly considered object oriented and how those characteristics
-translate to idiomatic Rust. We’ll then show you how to implement an
-object-oriented design pattern in Rust and discuss the trade-offs of doing so
-versus implementing a solution using some of Rust’s strengths instead.
+Nesne Yönelimli Programlama (NYP, OOP) programları modellemenin bir yoludur.
+
+Programlanabilir bir kavram olarak nesneler, 1960'larda Simula dilinde tanıtıldı. 
+Bu yaklaşım, Alan Kay'in nesnelerin birbirine mesaj ilettiği programlama mimarisini etkiledi. 
+Bu mimariyi tanımlamak için 1967'de nesne yönelimli programlama terimini türetti. 
+Birçok rakip dil NYP'nin ne olduğunu tanımlar ve bu tanımların bazılarını baz aldığımız taktirde Rust nesne yönelimlidir, 
+ancak diğerleri için değildir. Bu bölümde, yaygın olarak nesne yönelimli dillerin desteklediği kabul edilen belirli özellikleri 
+ve bu özelliklerin Rust'a nasıl çevrildiğini keşfedeceğiz. Daha sonra size Rust'ta nesne yönelimli 
+bir tasarım deseninin nasıl uygulanacağını göstereceğiz ve bunun yerine Rust'ın bazı güçlü yanlarını kullanarak 
+bir çözüm uygulamakla bunun arasındaki farkları tartışacağız.
