@@ -1,10 +1,10 @@
-# The Rust Programming Language
+# Rust Programlama Dili
 
-![Build Status](https://github.com/rust-lang/book/workflows/CI/badge.svg)
+![Derleme Durumu](https://github.com/ferhatgec/kitap/workflows/CI/badge.svg)
 
-This repository contains the source of "The Rust Programming Language" book.
+Bu depo "The Rust Programming Language" kitabının Türkçe çevirisini içermektedir.
 
-[The book is available in dead-tree form from No Starch Press][nostarch].
+[Kitaba ayrıca İngilizce olarak No Starch Press sitesi vasıtasıyla erişilebilir][nostarch].
 
 [nostarch]: https://nostarch.com/rust
 
@@ -21,10 +21,9 @@ See the [releases] to download just the code of all the code listings that appea
 
 [releases]: https://github.com/rust-lang/book/releases
 
-## Requirements
+## Gereksinimler
 
-Building the book requires [mdBook], ideally the same version that
-rust-lang/rust uses in [this file][rust-mdbook]. To get it:
+Kitabı derlemek için [mdBook]'a ihtiyacınız var, rust-lang/rust'ın [this file][rust-mdbook] kullandığının neredeyse aynısı. Erişmek için:
 
 [mdBook]: https://github.com/rust-lang-nursery/mdBook
 [rust-mdbook]: https://github.com/rust-lang/rust/blob/master/src/tools/rustbook/Cargo.toml
@@ -33,16 +32,16 @@ rust-lang/rust uses in [this file][rust-mdbook]. To get it:
 $ cargo install mdbook --vers [version-num]
 ```
 
-## Building
+## İnşa etmek
 
-To build the book, type:
+Kitabı inşa etmek için şu komutu girin:
 
 ```bash
 $ mdbook build
 ```
 
-The output will be in the `book` subdirectory. To check it out, open it in
-your web browser.
+
+Çıktı `book` alt dizinde bulunmalıdır. Kontrol etmek için tarayıcınızda açabilirsiniz.
 
 _Firefox:_
 ```bash
@@ -60,7 +59,7 @@ $ Start-Process "chrome.exe" .\book\index.html  # Windows (PowerShell)
 $ start chrome.exe .\book\index.html            # Windows (Cmd)
 ```
 
-To run the tests:
+Testleri çalıştırmak için:
 
 ```bash
 $ mdbook test
