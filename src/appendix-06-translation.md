@@ -1,7 +1,8 @@
-## Appendix F: Translations of the Book
+## Ekleme F: Kitabın Çevirileri
 
-For resources in languages other than English. Most are still in progress; see
-[the Translations label][label] to help or let us know about a new translation!
+Şu anda da bulunduğunuz bu çeviri gibi, İngilizceden farklı diller için çevrilmiş halleri de bulunmaktadır.
+Bunların çoğu halen çevrilme aşamasındadır; [Çeviri kısmına][label] giderek bizi
+yeni bir çeviri hakkında bilgilendirebilirsiniz!
 
 [label]: https://github.com/rust-lang/book/issues?q=is%3Aopen+is%3Aissue+label%3ATranslations
 
@@ -10,7 +11,7 @@ For resources in languages other than English. Most are still in progress; see
 - [简体中文](https://github.com/KaiserY/trpl-zh-cn)
 - [正體中文](https://github.com/rust-tw/book-tw)
 - [Українська](https://github.com/pavloslav/rust-book-uk-ua)
-- [Español](https://github.com/thecodix/book), [alternate](https://github.com/ManRR/rust-book-es)
+- [Español](https://github.com/thecodix/book), [alternatif](https://github.com/ManRR/rust-book-es)
 - [Italiano](https://github.com/Ciro-Fusco/book_it)
 - [Русский](https://github.com/rust-lang-ru/book)
 - [한국어](https://github.com/rinthel/rust-lang-book-ko)
@@ -24,7 +25,7 @@ For resources in languages other than English. Most are still in progress; see
 - [Svenska](https://github.com/sebras/book)
 - [Farsi](https://github.com/pomokhtari/rust-book-fa)
 - [Deutsch](https://github.com/rust-lang-de/rustbook-de)
-- [Turkish](https://github.com/RustDili/dokuman/tree/master/ceviriler), [online](https://rustdili.github.io/)
+- [Türkçe](https://github.com/RustDili/dokuman/tree/master/ceviriler), [sitesi](https://rustdili.github.io/)
 - [हिंदी](https://github.com/venkatarun95/rust-book-hindi)
 - [ไทย](https://github.com/rust-lang-th/book-th)
 - [Danske](https://github.com/DanKHansen/book-dk)
