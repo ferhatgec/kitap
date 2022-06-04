@@ -1,150 +1,102 @@
-## Characteristics of Object-Oriented Languages
+## Nesne Yönelimli Dillerin Karakteristik Özellikleri
 
-There is no consensus in the programming community about what features a
-language must have to be considered object oriented. Rust is influenced by many
-programming paradigms, including OOP; for example, we explored the features
-that came from functional programming in Chapter 13. Arguably, OOP languages
-share certain common characteristics, namely objects, encapsulation, and
-inheritance. Let’s look at what each of those characteristics means and whether
-Rust supports it.
+Programlama topluluğunda, bir dilin nesne yönelimli olarak kabul 
+edilmesi için hangi özelliklerin olması gerektiği konusunda bir fikir birliği yoktur. Rust, NYP (OOP) dahil olmak üzere birçok programlama paradigmasından etkilenir; 
+örneğin, Bölüm 13'te işlevsel programlamadan gelen özellikleri araştırdık. 
+Muhtemelen, NYP dilleri nesneler, kapsülleme ve kalıtım gibi belirli ortak özellikleri paylaşır. 
+Bu özelliklerin her birinin ne anlama geldiğine ve Rust'ın bunu destekleyip desteklemediğine bakalım.
 
-### Objects Contain Data and Behavior
+### Nesneler Veri ve Davranış İçeriyor
 
-The book *Design Patterns: Elements of Reusable Object-Oriented Software* by
-Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides (Addison-Wesley
-Professional, 1994), colloquially referred to as *The Gang of Four* book, is a
-catalog of object-oriented design patterns. It defines OOP this way:
+Erich Gamma, Richard Helm, Ralph Johnson ve John Vlissides (Addison-Wesley Professional, 1994) 
+tarafından yazılan *Design Patterns: Elements of Reusable Object-Oriented Software* kitabı (Addison-Wesley Professional, 1994), 
+halk arasında *The Gang of Four* kitabı olarak anılır, bir nesne kataloğudur. Bu kitap, NYP'ı şu şekilde tanımlar: 
 
-> Object-oriented programs are made up of objects. An *object* packages both
-> data and the procedures that operate on that data. The procedures are
-> typically called *methods* or *operations*.
+> Nesne yönelimli programlar nesnelerden oluşur.
+> Bir nesne hem verileri hem de bu veriler üzerinde çalışan prosedürleri paketler.
+> Prosedürlere tipik olarak *yöntemler* veya *işlemler* denir. 
 
-Using this definition, Rust is object oriented: structs and enums have data,
-and `impl` blocks provide methods on structs and enums. Even though structs and
-enums with methods aren’t *called* objects, they provide the same
-functionality, according to the Gang of Four’s definition of objects.
+Bu tanımı kullanırsak, Rust nesne yönelimlidir: yapılar ve numaralandırılmışlar verilere sahiptir ve `impl` blokları, 
+yapılar ve numaralandırılmışlar üzerinde metodlar sağlar. Metodları olan yapılar ve numaralandırılmışlar nesne olarak adlandırılmasa da, 
+The Gang of Four'un nesne tanımına göre aynı işlevselliği sağlarlar.
 
-### Encapsulation that Hides Implementation Details
+### Sürekleme Ayrıntılarını Gizleyen Kapsülleme
 
-Another aspect commonly associated with OOP is the idea of *encapsulation*,
-which means that the implementation details of an object aren’t accessible to
-code using that object. Therefore, the only way to interact with an object is
-through its public API; code using the object shouldn’t be able to reach into
-the object’s internals and change data or behavior directly. This enables the
-programmer to change and refactor an object’s internals without needing to
-change the code that uses the object.
+NYP ile yaygın olarak ilişkilendirilen başka bir yön, *kapsülleme* fikridir; 
+bu, bir nesnenin uygulama ayrıntılarına o nesneyi kullanarak erişemeyeceği anlamına gelir. 
+Bu nedenle, bir nesneyle etkileşim kurmanın tek yolu, onun genel API'sidir; nesneyi kullanan kod, nesnenin iç kısımlarına erişememeli ve verileri veya davranışı doğrudan değiştirememelidir. Bu, programcının, nesneyi kullanan kodu değiştirmeye gerek kalmadan 
+bir nesnenin içindekileri değiştirmesini ve yeniden düzenlemesini sağlar.
 
-We discussed how to control encapsulation in Chapter 7: we can use the `pub`
-keyword to decide which modules, types, functions, and methods in our code
-should be public, and by default everything else is private. For example, we
-can define a struct `AveragedCollection` that has a field containing a vector
-of `i32` values. The struct can also have a field that contains the average of
-the values in the vector, meaning the average doesn’t have to be computed
-on demand whenever anyone needs it. In other words, `AveragedCollection` will
-cache the calculated average for us. Listing 17-1 has the definition of the
-`AveragedCollection` struct:
+Kapsüllemenin nasıl kontrol edileceğini Bölüm 7'de tartıştık: 
+kodumuzdaki hangi modüllerin, türlerin, fonksiyonların ve yöntemlerin genel olacağına karar vermek için `pub` anahtar sözcüğünü kullanabiliriz ve varsayılan olarak diğer her şey `private` olur. Örneğin, bir `i32` vektörü bir `AveragedCollection` yapısı tanımlayabiliriz. 
+Yapı, vektördeki değerlerin ortalamasını içeren bir alana da sahip olabilir; bu da, herhangi birinin ihtiyaç duyduğunda ortalamanın talep üzerine hesaplanması gerekmediği anlamına gelir. Başka bir deyişle, `AveragedCollection` hesaplanan ortalamayı bizim için önbelleğe alacaktır. Liste 17-1, `AveragedCollection` yapısını tanımlar:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-01/src/lib.rs}}
 ```
 
-<span class="caption">Listing 17-1: An `AveragedCollection` struct that
-maintains a list of integers and the average of the items in the
-collection</span>
+<span class="caption">Liste 17-1: `AveragedCollection` yapısı koleksiyondaki öğelerin tamsayılarının ve ortalamalarının bir listesini tutar</span>
 
-The struct is marked `pub` so that other code can use it, but the fields within
-the struct remain private. This is important in this case because we want to
-ensure that whenever a value is added or removed from the list, the average is
-also updated. We do this by implementing `add`, `remove`, and `average` methods
-on the struct, as shown in Listing 17-2:
+Yapı, diğer kodların kullanabilmesi için `pub` olarak işaretlenir, ancak yapı içindeki alanlar özel kalır. 
+Bu, bu durumda önemlidir, çünkü listeye bir değer eklendiğinde veya listeden çıkarıldığında, ortalamanın da güncellenmesini sağlamak istiyoruz. 
+Bunu, Liste 17-2'de gösterildiği gibi, yapıya ekleme, kaldırma ve ortalama fonksiyonlarını uygulayarak yapıyoruz:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch17-oop/listing-17-02/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 17-2: Implementations of the public methods
-`add`, `remove`, and `average` on `AveragedCollection`</span>
+<span class="caption">Liste 17-2: Ortalama toplama, kaldırma ve ortalamaya ilişkin genel fonksiyonların süreklenmesi</span>
 
-The public methods `add`, `remove`, and `average` are the only ways to access
-or modify data in an instance of `AveragedCollection`. When an item is added
-to `list` using the `add` method or removed using the `remove` method, the
-implementations of each call the private `update_average` method that handles
-updating the `average` field as well.
+Genel fonksiyonlar olan ekleme (`add`), kaldırma (`remove`) ve ortalama (`average`), 
+bir `AveragedCollection` örneğindeki verilere erişmenin veya verileri değiştirmenin tek yoludur. 
+Bir öğe, ekleme yöntemi kullanılarak listeye eklendiğinde veya kaldır yöntemi kullanılarak kaldırıldığında, 
+her birinin süreklemeleri, ortalama alanı güncellemeyi de işleyen özel `update_average` metodunu çağırır. 
 
-We leave the `list` and `average` fields private so there is no way for
-external code to add or remove items to or from the `list` field directly;
-otherwise, the `average` field might become out of sync when the `list`
-changes. The `average` method returns the value in the `average` field,
-allowing external code to read the `average` but not modify it.
+`list`'i ve `average` alanlarını özel olarak tutuyoruz, bu nedenle harici kodun liste alanına doğrudan öğe eklemesi veya liste alanından öğe kaldırması mümkün değildir; aksi takdirde, liste değiştiğinde `average` alanı senkronize olmayabilir. `average` metodu, `avetage` alanındaki değeri döndürür ve harici kodun ortalamayı okumasına ancak değiştirmemesine izin verir. `AveragedCollection` yapısının sürekleme detaylarını kapsüllediğimiz için, 
+gelecekte veri yapısı gibi yönlerini kolayca değiştirebiliriz. 
 
-Because we’ve encapsulated the implementation details of the struct
-`AveragedCollection`, we can easily change aspects, such as the data structure,
-in the future. For instance, we could use a `HashSet<i32>` instead of a
-`Vec<i32>` for the `list` field. As long as the signatures of the `add`,
-`remove`, and `average` public methods stay the same, code using
-`AveragedCollection` wouldn’t need to change. If we made `list` public instead,
-this wouldn’t necessarily be the case: `HashSet<i32>` and `Vec<i32>` have
-different methods for adding and removing items, so the external code would
-likely have to change if it were modifying `list` directly.
+Örneğin, `list` alanı için `Vec<i32>` yerine `HashSet<i32>` kullanabiliriz. 
+Ekleme, kaldırma ve ortalama genel metodlarının imzaları aynı kaldığı sürece, `AveragedCollection` kullanan kodun değişmesi gerekmez. 
+Bunun yerine `list`'i `public` olarak işleseydik, durum böyle olmazdı: `HashSet<i32>` ve `Vec<i32>` öğeleri eklemek ve kaldırmak için farklı yöntemlere sahipti, bu nedenle, listeyi doğrudan değiştiriyorsa harici kodun büyük olasılıkla değişmesi gerekirdi. 
+Bir dilin nesne yönelimli olarak kabul edilmesi için kapsülleme gerekli bir özellikse, Rust bu gereksinimi karşılar. 
+Kodun farklı bölümleri için `pub` kullanma veya kullanmama seçeneği, uygulama ayrıntılarının kapsüllenmesini sağlar.
 
-If encapsulation is a required aspect for a language to be considered object
-oriented, then Rust meets that requirement. The option to use `pub` or not for
-different parts of code enables encapsulation of implementation details.
+### Tür Sistemi ve Kod Paylaşımı Olarak Kalıtım
 
-### Inheritance as a Type System and as Code Sharing
+*Kalıtım*, bir nesnenin başka bir nesnenin tanımından öğeleri devralabileceği, böylece onları yeniden tanımlamanıza gerek kalmadan üst nesnenin verilerini ve davranışını kazanabileceği bir mekanizmadır.
 
-*Inheritance* is a mechanism whereby an object can inherit elements from
-another object’s definition, thus gaining the parent object’s data and behavior
-without you having to define them again.
+Bir dilin nesne yönelimli bir dil olması için kalıtıma sahip olması gerekiyorsa, 
+Rust bunlardan birisi değildir. Üst yapının alanlarını ve fonksiyon süreklemelerini devralan bir yapı tanımlamanın bir yolu yoktur. 
+Bununla birlikte, programlama araç kutunuzdan kalıtım almaya alıştıysanız, ilk etapta kalıtım için ulaşma nedeninize bağlı olarak Rust'taki diğer çözümleri kullanabilirsiniz.
 
-If a language must have inheritance to be an object-oriented language, then
-Rust is not one. There is no way to define a struct that inherits the parent
-struct’s fields and method implementations. However, if you’re used to having
-inheritance in your programming toolbox, you can use other solutions in Rust,
-depending on your reason for reaching for inheritance in the first place.
+İki ana nedenden dolayı kalıtımı seçersiniz. Biri kodun yeniden kullanımı içindir: bir tür için belirli davranışı uygulayabilirsiniz ve kalıtım, bu uygulamayı farklı bir tür için yeniden kullanmanızı sağlar. Rust kodunu, `Summary` tanımındaki `summarize` metodunun varsayılan bir uygulamasını eklediğimizde Liste 10-14'te gördüğünüz gibi, varsayılan tanım fonksiyon süreklemelerini kullanarak paylaşabilirsiniz. 
 
-You would choose inheritance for two main reasons. One is for reuse of code:
-you can implement particular behavior for one type, and inheritance enables you
-to reuse that implementation for a different type. You can share Rust code
-using default trait method implementations instead, which you saw in Listing
-10-14 when we added a default implementation of the `summarize` method on the
-`Summary` trait. Any type implementing the `Summary` trait would have the
-`summarize` method available on it without any further code. This is similar to
-a parent class having an implementation of a method and an inheriting child
-class also having the implementation of the method. We can also override the
-default implementation of the `summarize` method when we implement the
-`Summary` trait, which is similar to a child class overriding the
-implementation of a method inherited from a parent class.
+`Summary` tanımını sürekleyen herhangi bir tür, üzerinde başka bir kod olmadan `summarize` metoduna da sahip olacaktır. 
+Bu, bir metodun süreklemesine sahip bir üst sınıfa ve aynı zamanda yöntemin uygulanmasına sahip olan miras alan bir alt sınıfa benzer. 
+Ayrıca, bir üst sınıftan miras alınan bir metodun uygulanmasını geçersiz kılan bir alt sınıfa benzer olan `Summary` tanımını 
+süreklediğimizde, `summarize` metodunun varsayılan uygulamasını da geçersiz kılabiliriz.
 
-The other reason to use inheritance relates to the type system: to enable a
-child type to be used in the same places as the parent type. This is also
-called *polymorphism*, which means that you can substitute multiple objects for
-each other at runtime if they share certain characteristics.
+Kalıtımı kullanmanın diğer nedeni, tür sistemiyle ilgilidir: bir alt türün üst türle aynı yerlerde kullanılmasını sağlamaktır. 
+Buna *polimorfizm*, çok biçimlilik de denir; bu, belirli karakteristik özellikleri paylaşıyorlarsa çalışma zamanında birden 
+çok nesneyi birbirinin yerine koyabileceğiniz anlamına gelir.
 
-> ### Polymorphism
->
-> To many people, polymorphism is synonymous with inheritance. But it’s
-> actually a more general concept that refers to code that can work with data
-> of multiple types. For inheritance, those types are generally subclasses.
->
-> Rust instead uses generics to abstract over different possible types and
-> trait bounds to impose constraints on what those types must provide. This is
-> sometimes called *bounded parametric polymorphism*.
+> ### Çok Biçimlilik
+> Birçok insan için çok biçimlilik kalıtımla eş anlamlıdır. 
+> Aslında, birden çok türdeki verilerle çalışabilen kodu ifade eden daha genel bir kavramdır. 
+> Kalıtım için bu türler genellikle alt sınıflardır.
+> Bunun yerine Rust, farklı olası türler üzerinde soyutlamak için yaygın türleri ve bu türlerin sağlaması gerekenlere 
+> kısıtlamalar getirmek için özellik sınırlarını kullanır. Buna bazen sınırlı *parametrik çok biçimlilik* de denir.
 
-Inheritance has recently fallen out of favor as a programming design solution
-in many programming languages because it’s often at risk of sharing more code
-than necessary. Subclasses shouldn’t always share all characteristics of their
-parent class but will do so with inheritance. This can make a program’s design
-less flexible. It also introduces the possibility of calling methods on
-subclasses that don’t make sense or that cause errors because the methods don’t
-apply to the subclass. In addition, some languages will only allow a subclass
-to inherit from one class, further restricting the flexibility of a program’s
-design.
 
-For these reasons, Rust takes the different approach of using trait objects
-instead of inheritance. Let’s look at how trait objects enable polymorphism in
-Rust.
+Kalıtım, son zamanlarda birçok programlama dilinde bir programlama tasarım çözümü olarak gözden düştü çünkü genellikle gereğinden 
+fazla kod paylaşma riskini taşıyor. Alt sınıflar her zaman üst sınıflarının tüm özelliklerini paylaşmamalıdır, ancak bunu 
+kalıtımı kullanırsalar yapacaklardır. Bu, bir programın tasarımını daha az esnek hale getirebilir. Ayrıca, mantıklı olmayan 
+veya metodların alt sınıfa süreklenmediği durumlar için hatalara neden olan alt sınıflardaki metodları çağırma olasılığını da sunar. 
+Ek olarak, bazı diller bir alt sınıfın yalnızca bir sınıftan miras almasına izin vererek program tasarımının esnekliğini daha da kısıtlar.
+
+Bu nedenlerle Rust, kalıtım yerine tanım nesnelerini kullanma konusunda farklı bir yaklaşım benimser. 
+Tanım nesnelerinin Rust'ta çok biçimliliği nasıl sağladığına bakalım.
