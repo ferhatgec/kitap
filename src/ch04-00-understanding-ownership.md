@@ -1,7 +1,6 @@
-# Understanding Ownership
+# Sahipliği Anlamak
 
-Ownership is Rust’s most unique feature and has deep implications for the rest
-of the language. It enables Rust to make memory safety guarantees without
-needing a garbage collector, so it’s important to understand how ownership
-works. In this chapter, we’ll talk about ownership as well as several related
-features: borrowing, slices, and how Rust lays data out in memory.
+Sahiplik, Rust'ın en benzersiz özelliğidir ve dilin geri kalanı için derin etkileri vardır. 
+Bu benzersiz özellik, Rust'ın bir çöp toplayıcıya ihtiyaç duymadan bellek güvenliği garantisi vermesini sağlar, 
+bu nedenle sahipliğin nasıl çalıştığını anlamak önemlidir. Bu bölümde, sahiplik ve ilgili birkaç özellik hakkında konuşacağız: 
+ödünç alma, dilimler ve Rust'ın verileri belleğe nasıl yerleştirdiği.
