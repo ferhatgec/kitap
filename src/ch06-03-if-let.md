@@ -53,7 +53,7 @@ Programınızın bir `match` kullanarak ifade edemeyecek kadar ayrıntılı bir 
 ## Özet
 
 Şimdi, bir dizi numaralandırılmış değerden biri olabilecek özel türler oluşturmak için 
-numaralandırmaların nasıl kullanılacağını ele aldık. Standart kütüphanenin sunmuş olduğu `Option<T` türünün, 
+numaralandırmaların nasıl kullanılacağını ele aldık. Standart kütüphanenin sunmuş olduğu `Option<T>` türünün, 
 hataları önlemek için tür sistemini kullanmanıza nasıl yardımcı olduğunu gösterdik. 
 Numaralandırılmış yapı değerlerinin içinde veriler olduğunda, 
 kaç modeli ele almanız gerektiğine bağlı olarak bu değerleri çıkarmak ve kullanmak için `match` veya `if let` kullanabilirsiniz.
