@@ -1,81 +1,64 @@
-## Concise Control Flow with `if let`
+## `if let` ile Kontrol Akışı
 
-The `if let` syntax lets you combine `if` and `let` into a less verbose way to
-handle values that match one pattern while ignoring the rest. Consider the
-program in Listing 6-6 that matches on an `Option<u8>` value in the `config_max`
-variable but only wants to execute code if the value is the `Some` variant.
+`if let` söz dizimi, `if` ve `let` sözcüklerini bir modelle eşleşen değerleri işlemek ve gerisini 
+yok saymak için daha az ayrıntılı bir şekilde birleştirmenize olanak tanır. Liste 6-6'daki, `config_max` değişkenindeki bir `Option<u8>` değeriyle eşleşen, ancak yalnızca değer `Some` değişkeniyse kodu yürütmek isteyen programı düşünün.
+ode if the value is the `Some` variant.
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/listing-06-06/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 6-6: A `match` that only cares about executing
-code when the value is `Some`</span>
+<span class="caption">Liste 6-6: Değer yalnızca `Some` olduğunda kodu çalıştırmayı önemseyen bir `eşleşme`</span>
 
-If the value is `Some`, we print out the value in the `Some` variant by binding
-the value to the variable `max` in the pattern. We don’t want to do anything
-with the `None` value. To satisfy the `match` expression, we have to add `_ =>
-()` after processing just one variant, which is annoying boilerplate code to
-add.
+Eğer değer `Some` ise, değeri modeldeki `max` değişkenine atayarak `Some` varyantındaki değeri yazdırırız. 
+`None` değeriyle hiçbir şey yapmak istemiyoruz. `match` ifadesi için, yalnızca bir değişkeni işledikten sonra `_ => ()` eklemeliyiz, 
+bu da eklemesi can sıkıcı bir koddur.
 
-Instead, we could write this in a shorter way using `if let`. The following
-code behaves the same as the `match` in Listing 6-6:
+Bunun yerine, `if let` yapısını kullanarak bunu daha kısa bir şekilde yazabiliriz. 
+Aşağıdaki kod, Liste 6-6'daki `match` yapısıyla aynı şekilde davranır:
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-12-if-let/src/main.rs:here}}
 ```
 
-The syntax `if let` takes a pattern and an expression separated by an equal
-sign. It works the same way as a `match`, where the expression is given to the
-`match` and the pattern is its first arm. In this case, the pattern is
-`Some(max)`, and the `max` binds to the value inside the `Some`. We can then
-use `max` in the body of the `if let` block in the same way as we used `max` in
-the corresponding `match` arm. The code in the `if let` block isn’t run if the
-value doesn’t match the pattern.
+`if let` söz dizimi, eşittir işaretiyle ayrılmış bir model ve ifade alır. 
+İfadenin `match`'e verildiği ve modelin ilk kolu olduğu bir `match` ile aynı şekilde çalışır. 
+Bu durumda, model `Some(max)` şeklindedir ve `max`, `Some` içindeki değere atanır. Daha sonra, `match` yapısında `max`'ı kullandığımız gibi, 
+`if let` bloğunun gövdesinde de `max`ı kullanabiliriz. Değer modelle eşleşmezse `if let` bloğundaki kod çalışmaz.
 
-Using `if let` means less typing, less indentation, and less boilerplate code.
-However, you lose the exhaustive checking that `match` enforces. Choosing
-between `match` and `if let` depends on what you’re doing in your particular
-situation and whether gaining conciseness is an appropriate trade-off for
-losing exhaustive checking.
+`if let` kullanmak, daha az yazma, daha az girinti ve daha az ilintili kod anlamına gelir.
+Ancak, `match`'in zorunlu kıldığı kapsamlı denetimi kaybedersiniz. `match` ve `if let` arasında seçim yapmak, 
+kendi özel durumunuzda ne yaptığınıza ve kısalık kazanmanın kapsamlı kontrolü kaybetmek için uygun bir değiş tokuş olup olmadığına bağlıdır.
 
-In other words, you can think of `if let` as syntax sugar for a `match` that
-runs code when the value matches one pattern and then ignores all other values.
+Başka bir deyişle, `if let` ifadesini, değer bir model eşleştiğinde kodu çalıştıran ve ardından diğer tüm değerleri yok sayan bir `match` için 'sözdizimsel tatlılık' olarak düşünebilirsiniz.
 
-We can include an `else` with an `if let`. The block of code that goes with the
-`else` is the same as the block of code that would go with the `_` case in the
-`match` expression that is equivalent to the `if let` and `else`. Recall the
-`Coin` enum definition in Listing 6-4, where the `Quarter` variant also held a
-`UsState` value. If we wanted to count all non-quarter coins we see while also
-announcing the state of the quarters, we could do that with a `match`
-expression like this:
+Bir `if let`'e `else` ekleyebiliriz. `else` ile gelen kod bloğu, `if let` ve `else`'e eş değer olan `match` ifadesindeki `_` 
+durumu ile kullanılacak kod bloğu ile aynıdır. `Quarter` varyantının da bir `UsState` değerine sahip olduğu Liste 6-4'teki 
+`Coin` numralandırılmış yapı tanımını hatırlayın. Çeyreklerin durumunu açıklarken gördüğümüz tüm çeyrek olmayan paraları saymak istersek, 
+bunu şöyle bir eşleşme ifadesi ile yapabilirdik:
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-13-count-and-announce-match/src/main.rs:here}}
 ```
 
-Or we could use an `if let` and `else` expression like this:
+Veya şu şekildeki bir `if let` ve `else` ifadesini kullanabiliriz:
 
 ```rust
 {{#rustdoc_include ../listings/ch06-enums-and-pattern-matching/no-listing-14-count-and-announce-if-let-else/src/main.rs:here}}
 ```
 
-If you have a situation in which your program has logic that is too verbose to
-express using a `match`, remember that `if let` is in your Rust toolbox as well.
+Programınızın bir `match` kullanarak ifade edemeyecek kadar ayrıntılı bir mantığının olduğu bir durumunuz varsa, 
+`if let`'in de Rust araç kutunuzda olduğunu unutmayın.
 
-## Summary
+## Özet
 
-We’ve now covered how to use enums to create custom types that can be one of a
-set of enumerated values. We’ve shown how the standard library’s `Option<T>`
-type helps you use the type system to prevent errors. When enum values have
-data inside them, you can use `match` or `if let` to extract and use those
-values, depending on how many cases you need to handle.
+Şimdi, bir dizi numaralandırılmış değerden biri olabilecek özel türler oluşturmak için 
+numaralandırmaların nasıl kullanılacağını ele aldık. Standart kütüphanenin sunmuş olduğu `Option<T` türünün, 
+hataları önlemek için tür sistemini kullanmanıza nasıl yardımcı olduğunu gösterdik. 
+Numaralandırılmış yapı değerlerinin içinde veriler olduğunda, 
+kaç modeli ele almanız gerektiğine bağlı olarak bu değerleri çıkarmak ve kullanmak için `match` veya `if let` kullanabilirsiniz.
 
-Your Rust programs can now express concepts in your domain using structs and
-enums. Creating custom types to use in your API ensures type safety: the
-compiler will make certain your functions get only values of the type each
-function expects.
+Rust programlarınız artık yapıları ve numaralandırmaları kullanarak etki alanınızdaki kavramları ifade edebilir. 
+API'nizde kullanılacak özel türler oluşturmak, tür güvenliğini sağlar: derleyici, fonksiyonlarınızın yalnızca her işlevin beklediği türden değerleri almasını sağlar.
 
-In order to provide a well-organized API to your users that is straightforward
-to use and only exposes exactly what your users will need, let’s now turn to
-Rust’s modules.
+Kullanıcılarınıza iyi organize edilmiş, kullanımı kolay ve yalnızca kullanıcılarınızın ihtiyaç duyacaklarını tam olarak ortaya koyan bir API sağlamak için şimdi Rust'ın modüllerine dönelim.
