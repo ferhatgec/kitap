@@ -1,25 +1,19 @@
-# Common Collections
+# Yaygın Koleksiyonlar
 
-Rust’s standard library includes a number of very useful data structures called
-*collections*. Most other data types represent one specific value, but
-collections can contain multiple values. Unlike the built-in array and tuple
-types, the data these collections point to is stored on the heap, which means
-the amount of data does not need to be known at compile time and can grow or
-shrink as the program runs. Each kind of collection has different capabilities
-and costs, and choosing an appropriate one for your current situation is a
-skill you’ll develop over time. In this chapter, we’ll discuss three
-collections that are used very often in Rust programs:
+Rust'ın standart kütüphanesi, *koleksiyon* adı verilen bir dizi çok kullanışlı veri yapısını içerir. 
+Diğer veri türlerinin çoğu belirli bir değeri temsil eder, ancak koleksiyonlar birden çok değer içerebilir. 
+Yerleşik dizi ve tanımlama grubu türlerinin aksine, bu koleksiyonların işaret ettiği veriler öbek üzerinde depolanır; bu, veri miktarının derleme zamanında bilinmesine gerek olmadığı ve program çalışırken büyüyüp küçülebileceği anlamına gelir. 
+Her toplama türünün farklı yetenekleri ve maliyetleri vardır ve mevcut durumunuza uygun olanı seçmek zamanla geliştireceğiniz bir beceridir. Bu bölümde, Rust programlarında çok sık kullanılan üç koleksiyonu tartışacağız:
 
-* A *vector* allows you to store a variable number of values next to each other.
-* A *string* is a collection of characters. We’ve mentioned the `String` type
-  previously, but in this chapter we’ll talk about it in depth.
-* A *hash map* allows you to associate a value with a particular key. It’s a
-  particular implementation of the more general data structure called a *map*.
+* Bir *vektör* değişken sayıda aynı tür değerleri yan yana saklamanıza izin verir.
+* Bir *dizgi* karakter *koleksiyonudur*. `String` türünden önceden de bahsetmiştik ama artık daha derine ineceğiz.
+* Bir *kilit koleksiyonu* bir değeri belirli bir anahtarla ilişkilendirmenizi sağlar. *map* diye tanımlanan veri yapısının
+  daha özel bir süreklemesidir (uygulamasıdır).
 
-To learn about the other kinds of collections provided by the standard library,
-see [the documentation][collections].
+Standart kütüphane tarafından sunulan diğer tür koleksiyonlar hakkında bilgi almak için [dokümantasyona][collections]
+göz atabilirsiniz.
 
-We’ll discuss how to create and update vectors, strings, and hash maps, as well
-as what makes each special.
+Vektörlerin, dizgilerin ve kilit koleksiyonlarının nasıl oluşturulacağını ve 
+güncelleneceğini ve ayrıca her birini neyin özel kıldığını tartışacağız.
 
 [collections]: ../std/collections/index.html
