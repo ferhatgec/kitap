@@ -1,45 +1,32 @@
-# An I/O Project: Building a Command Line Program
+# Bir G/Ç Projesi: Bir Komut Satırı Programı Yazmak
 
-This chapter is a recap of the many skills you’ve learned so far and an
-exploration of a few more standard library features. We’ll build a command line
-tool that interacts with file and command line input/output to practice some of
-the Rust concepts you now have under your belt.
+Bu bölüm, şimdiye kadar öğrendiğiniz birçok becerinin bir özeti ve birkaç standart 
+kütüphane özelliğinin daha keşfidir. Şu anda sahip olduğunuz bazı Rust 
+konseptlerini süreklemek için dosya ve komut satırı giriş/çıkış ile etkileşime giren 
+bir komut satırı aracı oluşturacağız.
 
-Rust’s speed, safety, single binary output, and cross-platform support make it
-an ideal language for creating command line tools, so for our project, we’ll
-make our own version of the classic command line search tool `grep`
-(**g**lobally search a **r**egular **e**xpression and **p**rint). In the
-simplest use case, `grep` searches a specified file for a specified string. To
-do so, `grep` takes as its arguments a filename and a string. Then it reads the
-file, finds lines in that file that contain the string argument, and prints
-those lines.
+Rust'ın hızı, güvenliği, tek ikili yürütülebilir çıktısı ve platformlar arası desteği, 
+onu komut satırı araçları oluşturmak için ideal bir dil haline getiriyor, bu nedenle projemiz için 
+klasik komut satırı arama aracı `grep`'in (**g**lobally search a **r**egular **e**xpression and **p**rint) kendi sürümümüzü yapacağız. En basit kullanım durumunda, `grep`, belirtilen bir dize için belirtilen bir dosyayı arar. 
+Bunu yapmak için `grep`, argümanları olarak bir dosya adı ve bir dizgi alır. Sonra dosyayı okur, 
+o dosyada dizgi argümanını içeren satırları bulur ve bu satırları yazdırır.
 
-Along the way, we’ll show how to make our command line tool use the terminal
-features that many other command line tools use. We’ll read the value of an
-environment variable to allow the user to configure the behavior of our tool.
-We’ll also print error messages to the standard error console stream (`stderr`)
-instead of standard output (`stdout`), so, for example, the user can redirect
-successful output to a file while still seeing error messages onscreen.
+Bu arada, komut satırı aracımızın diğer birçok komut satırı aracının kullandığı üçbirim özelliklerini kullanmasını nasıl sağlayacağımızı göstereceğiz. Kullanıcının aracımızın davranışını yapılandırmasına izin vermek için bir ortam 
+değişkeninin değerini okuyacağız. Ayrıca hata mesajlarını standart çıktı (`stdout`) yerine standart hata konsolu 
+akışına (`stderr`) yazdıracağız, böylece kullanıcı ekranda hata mesajlarını görmeye devam ederken başarılı çıktıyı bir dosyaya yönlendirebilir.
 
-One Rust community member, Andrew Gallant, has already created a fully
-featured, very fast version of `grep`, called `ripgrep`. By comparison, our
-version will be fairly simple, but this chapter will give you some of the
-background knowledge you need to understand a real-world project such as
-`ripgrep`.
+Bir Rust topluluğu üyesi olan Andrew Gallant, `ripgrep` adlı tam özellikli, çok hızlı bir `grep` sürümü oluşturmuştur. Karşılaştırıldığında, bizim versiyonumuz oldukça basit olacak, ancak bu bölüm size `ripgrep` gibi gerçek dünyadaki bir projeyi anlamak için ihtiyaç duyduğunuz bazı arka plan bilgilerini verecektir.
 
-Our `grep` project will combine a number of concepts you’ve learned so far:
-
-* Organizing code (using what you learned about modules in [Chapter 7][ch7]<!--
-  ignore -->)
-* Using vectors and strings (collections, [Chapter 8][ch8]<!-- ignore -->)
-* Handling errors ([Chapter 9][ch9]<!-- ignore -->)
-* Using traits and lifetimes where appropriate ([Chapter 10][ch10]<!-- ignore
+* Kodu organize etmek ([Bölüm 7][ch7]<!--
+  ignore -->'de modüllerle ilgili öğrendiklerinizi kullanarak)
+* Vektörleri ve dizgileri kullanmak ([Bölüm 8][ch8]<!-- ignore -->'deki koleksiyonlar)
+* Hataları işlemek ([Bölüm 9][ch9]<!-- ignore -->)
+* Uygun yerlerde tanımları ve ömürlükleri kullanmak ([Bölüm 10][ch10]<!-- ignore
   -->)
-* Writing tests ([Chapter 11][ch11]<!-- ignore -->)
+* Testler yazmak ([Bölüm 11][ch11]<!-- ignore -->)
 
-We’ll also briefly introduce closures, iterators, and trait objects, which
-Chapters [13][ch13]<!-- ignore --> and [17][ch17]<!-- ignore --> will cover in
-detail.
+Ayrıca Bölüm [13][ch13]<!-- ignore --> ve [17][ch17]<!-- ignore -->'de ayrıntılı olarak ele alınacak olan kapanışları, 
+yineleyicileri ve tanım nesnelerini kısaca tanıtacağız.
 
 [ch7]: ch07-00-managing-growing-projects-with-packages-crates-and-modules.html
 [ch8]: ch08-00-common-collections.html
