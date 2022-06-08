@@ -1,124 +1,107 @@
-# Generic Types, Traits, and Lifetimes
+# Yaygın Türler, Tanımlar ve Ömürler
 
-Every programming language has tools for effectively handling the duplication
-of concepts. In Rust, one such tool is *generics*: abstract stand-ins for
-concrete types or other properties. We can express the behavior of generics or
-how they relate to other generics without knowing what will be in their place
-when compiling and running the code.
+Her programlama dili, kavramların tekrarını etkin bir şekilde ele almak için araçlara sahiptir. 
+Rust'ta bu araç *yaygınlardır*. 
+Kodu derlerken ve çalıştırırken yerlerinde ne olacağını bilmeden yaygınların davranışını veya diğer yaygınlarla 
+nasıl ilişkili olduklarını ifade edebiliriz.
 
-Functions can take parameters of some generic type, instead of a concrete type
-like `i32` or `String`, in the same way a function takes parameters with
-unknown values to run the same code on multiple concrete values. In fact, we’ve
-already used generics in Chapter 6 with `Option<T>`, Chapter 8 with `Vec<T>`
-and `HashMap<K, V>`, and Chapter 9 with `Result<T, E>`. In this chapter, you’ll
-explore how to define your own types, functions, and methods with generics!
+Fonksiyonlar, `i32` veya `String` gibi somut bir tür yerine bazı yaygın türdeki parametreleri alabilir; 
+aynı şekilde, bir işlevin aynı kodu birden çok somut değerde çalıştırmak için bilinmeyen değerlere sahip 
+parametreleri alması gibi. Aslında, Bölüm 6'da `Option<T>`, Bölüm 8'de `Vec<T>` ve `HashMap<K, V>` ve 
+Bölüm 9'da `Result<T, E>` ile yaygınları zaten kullandık. 
+Bu bölümde, yaygınları kullanarak kendi türlerinizi, 
+fonksiyonlarınızı ve metodlarınızı nasıl tanımlayacabileceğinizi keşfedeceksiniz!
 
-First, we’ll review how to extract a function to reduce code duplication. We’ll
-then use the same technique to make a generic function from two functions that
-differ only in the types of their parameters. We’ll also explain how to use
-generic types in struct and enum definitions.
+İlk olarak, kod tekrarını azaltmak için bir fonksiyonun nasıl çıkarılacağını inceleyeceğiz. 
+Daha sonra, yalnızca parametrelerinin türlerinde farklılık gösteren iki fonksiyondan yaygın bir 
+fonksiyon yapmak için aynı tekniği kullanacağız. 
+Ayrıca `struct` ve `enum` tanımlarında yaygın türlerin nasıl kullanılacağını açıklayacağız.
 
-Then you’ll learn how to use *traits* to define behavior in a generic way. You
-can combine traits with generic types to constrain a generic type to accept
-only those types that have a particular behavior, as opposed to just any type.
+Ardından, davranışı yaygın bir şekilde tanımlamak için *tanımları* nasıl kullanacağınızı öğreneceksiniz. 
+Yaygın bir türü, herhangi bir türün aksine, yalnızca belirli bir davranışı olan türleri kabul edecek şekilde sınırlamak için tanımları genel türlerle birleştirebilirsiniz.
 
-Finally, we’ll discuss *lifetimes*: a variety of generics that give the
-compiler information about how references relate to each other. Lifetimes allow
-us to give the compiler enough information about borrowed values so that it can
-ensure references will be valid in more situations than it could without our
-help.
+Son olarak, derleyiciye referansların birbirleriyle nasıl ilişkili olduğu hakkında bilgi veren çeşitli yaygın türleri olan *yaşam sürelerini* tartışacağız. Ömürler, derleyiciye ödünç alınan değerler hakkında yeterli bilgi vermemize izin verir, 
+böylece referansların bizim yardımımız olmadan yapabileceğinden daha fazla durumda geçerli olmasını sağlayabilir.
 
-## Removing Duplication by Extracting a Function
+## Bir Fonksiyonu Ayıklayarak Fazlalığı Atmak
 
-Generics allow us to replace specific types with a placeholder that represents
-multiple types to remove code duplication. Before diving into generics syntax,
-then, let’s first look at how to remove duplication in a way that doesn’t
-involve generic types by extracting a function that replaces specific values
-with a placeholder that represents multiple values. Then we’ll apply the same
-technique to extract a generic function! By looking at how to recognize
-duplicated code you can extract into a function, you’ll start to recognize
-duplicated code that can use generics.
+Yaygınlar, kod çoğaltmasını kaldırmak için belirli türleri birden çok türü temsil eden bir yer tutucuyla 
+değiştirmemize olanak tanır. Yaygınların söz dizimine dalmadan önce, 
+belirli değerleri birden çok değeri temsil eden bir yer tutucuyla değiştiren bir fonksiyonu çıkararak, 
+yaygın türleri içermeyen bir şekilde çoğaltmanın nasıl ayıklanabileceğine bakalım. 
+Ardından, yaygın bir fonksiyonu ayıklamak için aynı tekniği uygulayacağız! 
+Bir fonksiyondan çıkarabileceğiniz fazlalık kodu nasıl tanıyacağınıza bakarak, 
+yaygınları kullanabilen fazlalık kodu tanımaya başlayacaksınız.
 
-We begin with the short program in Listing 10-1 that finds the largest number
-in a list.
+Liste 10-1'deki listedeki en büyük sayıyı bulan kısa programla başlıyoruz.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-01/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 10-1: Finding the largest number in a list of
-numbers</span>
+<span class="caption">Liste 10-1: Sayı listesindeki en büyük sayıyı bulma</span>
 
-We store a list of integers in the variable `number_list` and place the first
-number in the list in a variable named `largest`. We then iterate through all
-the numbers in the list, and if the current number is greater than the number
-stored in `largest`, replace the number in that variable. However, if the
-current number is less than or equal to the largest number seen so far, the
-variable doesn’t change, and the code moves on to the next number in the list.
-After considering all the numbers in the list, `largest` should hold the
-largest number, which in this case is 100.
+`number_list` değişkeninde bir tam sayı listesi saklarız ve listedeki ilk sayıyı 
+`largest` adlı bir değişkene atarız. Daha sonra listedeki tüm sayılar arasında yineleniriz ve 
+mevcut sayı `largest`'ta saklanan sayıdan büyükse, o değişkendeki sayıyı değiştiririz. 
+Ancak, mevcut sayı o ana kadar görülen en büyük sayıdan küçük veya ona eşitse, 
+değişken değişmez ve kod listedeki bir sonraki sayıya geçer. 
+Listedeki tüm sayıları göz önünde bulundurduktan sonra, `largest`, bu durumda 100 olan en büyük sayıyı tutmalıdır.
 
-We've now been tasked with finding the largest number in two different lists of
-numbers. To do so, we can choose to duplicate the code in Listing 10-1 and use
-the same logic at two different places in the program, as shown in Listing 10-2.
+Şimdi iki farklı sayı listesindeki en büyük sayıyı bulmakla görevlendirildiğimize göre, 
+bunu yapmak için Liste 10-1'deki kodu çoğaltmayı seçebilir ve Liste 10-2'de gösterildiği gibi programdaki
+iki farklı yerde aynı mantığı kullanabiliriz.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-02/src/main.rs}}
 ```
 
-<span class="caption">Listing 10-2: Code to find the largest number in *two*
-lists of numbers</span>
+<span class="caption">Liste 10-2: *İki* sayı listesindeki en büyük sayıyı bulmak için kullanılabilecek kod</span>
 
-Although this code works, duplicating code is tedious and error prone. We also
-have to remember to update the code in multiple places when we want to change
-it.
+Bu kod çalışsa da, kodu kopyalamak sıkıcı ve hataya açık. 
+Ayrıca kodu değiştirmek istediğimizde birden çok yeri de güncellemeyi unutmamalıyız.
 
-To eliminate this duplication, we’ll create an abstraction by defining a
-function that operates on any list of integers passed in a parameter. This
-solution makes our code clearer and lets us express the concept of finding the
-largest number in a list abstractly.
+Bu tekrarı ortadan kaldırmak için, bir parametrede geçirilen herhangi bir tam sayı listesinde çalışan bir fonksiyon tanımlayarak bir soyutlama oluşturacağız. Bu çözüm, kodumuzu daha net hale getirir ve bir listedeki en büyük sayıyı bulma kavramını soyut olarak ifade etmemizi sağlar.
 
-In Listing 10-3, we extract the code that finds the largest number into a
-function named `largest`. Then we call the function to find the largest number
-in the two lists from Listing 10-2. We could also use the function on any other
-list of `i32` values we might have in the future.
+Liste 10-3'te, en büyük sayıyı bulan kodu `largest` adlı bir fonksiyona çıkarıyoruz. 
+Ardından, Liste 10-2'deki iki listedeki en büyük sayıyı bulmak için bu fonksiyonu çağırırız. 
+Bu fonksiyonu, gelecekte diğer `i32` değerleri listesinde de kullanabiliriz.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-03/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 10-3: Abstracted code to find the largest number
-in two lists</span>
+<span class="caption">Liste 10-3: İki listedeki en büyük sayıyı bulmak için kullanılabilecek soyut kod</span>
 
-The `largest` function has a parameter called `list`, which represents any
-concrete slice of `i32` values we might pass into the function. As a result,
-when we call the function, the code runs on the specific values that we pass
-in. Don’t worry about the syntax of the `for` loop for now. We aren’t
-referencing a reference to an `i32` here; we’re pattern matching and
-destructuring each `&i32` that the `for` loop gets so that `item` will be an
-`i32` inside the loop body. We’ll cover pattern matching in detail in [Chapter
-18][ch18]<!-- ignore -->.
+`largest` fonksiyonunun, fonksiyona aktarabileceğimiz herhangi bir somut `i32` değer
+dilimini temsil eden `list` adında bir parametresi vardır. Sonuç olarak, fonksiyonu çağırdığımızda kod, 
+ilettiğimiz belirli değerler üzerinde çalışır. Şimdilik `for` döngüsünün söz dizimini dert etmeyin. 
+Burada bir `i32` referansına herhangi bir atıfta bulunmuyoruz; `for` döngüsünün aldığı her `&i32`'yi 
+modelle eşleştiriyor ve yok ediyoruz, böylece `item` döngü gövdesi içinde olduğu sürece türü `i32` olacaktır. 
+Model eşleştirmeyi [Bölüm 18][ch18]<!-- ignore -->'de daha ayrıntılı olarak ele alacağız.
 
-In sum, here are the steps we took to change the code from Listing 10-2 to
-Listing 10-3:
+Özetle, kodu Liste 10-2'den Liste 10-3'e değiştirmek için attığımız adımlar şunlardır:
 
-1. Identify duplicate code.
-2. Extract the duplicate code into the body of the function and specify the
-   inputs and return values of that code in the function signature.
-3. Update the two instances of duplicated code to call the function instead.
+1. Yinelenen kodu tanımlamak.
+2. Yinelenen kodu fonksiyonun gövdesine çıkarmak 
+   ve bu kodun girdilerini ve dönüş değerlerini fonksiyon tanımında belirtmek.
+3. Fonksiyonu çağırmak için yinelenen kodun iki örneğini de güncellemek.
 
-Next, we’ll use these same steps with generics to reduce code duplication. In
-the same way that the function body can operate on an abstract `list` instead
-of specific values, generics allow code to operate on abstract types.
+Daha sonra, kod tekrarını azaltmak için aynı adımları yaygınlarla birlikte kullanacağız. 
 
-For example, say we had two functions: one that finds the largest item in a
-slice of `i32` values and one that finds the largest item in a slice of `char`
-values. How would we eliminate that duplication? Let’s find out!
+Fonksiyon gövdesinin belirli değerler yerine soyut bir liste üzerinde çalışabilmesi gibi, 
+yaygınlar da kodun soyut türler üzerinde çalışmasına izin verir.
+
+Örneğin, iki fonksiyonumuz olduğunu varsayalım: 
+biri `i32` değerleri dilimindeki en büyük öğeyi bulan ve diğeri bir `char` değerleri dilimindeki en büyük öğeyi bulan. 
+Bu tekrarı nasıl ortadan kaldıracağız? 
+
+Hadi bulalım!
 
 [ch18]: ch18-00-patterns.html
