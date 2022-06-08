@@ -1,15 +1,15 @@
-# More About Cargo and Crates.io
+# Cargo ve Crates.io Hakkında Daha Fazla Bilgi
 
-So far we’ve used only the most basic features of Cargo to build, run, and test
-our code, but it can do a lot more. In this chapter, we’ll discuss some of its
-other, more advanced features to show you how to do the following:
+Şimdiye kadar; kodumuzu oluşturmak, çalıştırmak ve test etmek için Cargo'nun yalnızca en temel özelliklerini kullandık, 
+ancak Cargo çok daha fazlasına sahiptir. 
+Bu bölümde, aşağıdakileri nasıl yapacağınızı göstermek için diğer gelişmiş özelliklerinden bazılarını tartışacağız:
 
-* Customize your build through release profiles
-* Publish libraries on [crates.io](https://crates.io/)<!-- ignore -->
-* Organize large projects with workspaces
-* Install binaries from [crates.io](https://crates.io/)<!-- ignore -->
-* Extend Cargo using custom commands
+* Yayın profilleri aracılığıyla yapınızı özelleştirmek
+* [crates.io](https://crates.io/)<!-- ignore -->'da kütüphaneler yayınlamak
+* Çalışma alanlarıyla büyük projeleri organize edin
+* [crates.io](https://crates.io/)<!-- ignore -->'dan yürütülebilirleri ve kütüphaneleri
+  yüklemek.
+* Özel komutları kullanarak Cargo'yu genişletmek.
 
-Cargo can do even more than the functionality we cover in this chapter, so for
-a full explanation of all its features, see [its
-documentation](https://doc.rust-lang.org/cargo/).
+Cargo, bu bölümde ele aldığımız işlevlerden daha fazlasını yapabilir, 
+bu nedenle tüm özelliklerinin tam açıklaması için [dokümantasyonuna](https://doc.rust-lang.org/cargo/) bakın.
