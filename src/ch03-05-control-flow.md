@@ -1,199 +1,174 @@
-## Control Flow
+## Kontrol Akışı
 
-The ability to run some code depending on if a condition is true, or run some
-code repeatedly while a condition is true, are basic building blocks in most
-programming languages. The most common constructs that let you control the flow
-of execution of Rust code are `if` expressions and loops.
+Bir koşulun doğru olup olmadığına bağlı olarak bazı kodları çalıştırma veya bir
+koşul doğruyken bazı kodları tekrar tekrar çalıştırma yeteneği, 
+çoğu programlama dili için temel yapı taşıdır. Rust kodunun yürütme akışını kontrol etmenizi 
+sağlayan en yaygın yapılar `if` ifadeleri ve döngülerdir.
 
-### `if` Expressions
+### `if` İfadeleri
 
-An `if` expression allows you to branch your code depending on conditions. You
-provide a condition and then state, “If this condition is met, run this block
-of code. If the condition is not met, do not run this block of code.”
+Bir `if` ifadesi, koşullara bağlı olarak kodunuzu dallandırmanıza olanak tanır. 
+Bir koşul sağlarsınız ve ardından “Eğer bu koşul karşılanırsa, bu kod bloğunu çalıştırın. Koşul karşılanmazsa, bu kod bloğunu çalıştırmayın” emrini verirsiniz.
 
-Create a new project called *branches* in your *projects* directory to explore
-the `if` expression. In the *src/main.rs* file, input the following:
+`if` ifadesini keşfetmek için proje dizininizde *branches* adında yeni bir proje oluşturun. 
+*src/main.rs* dosyasına aşağıdakini girin:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-26-if-true/src/main.rs}}
 ```
 
-All `if` expressions start with the keyword `if`, followed by a condition. In
-this case, the condition checks whether or not the variable `number` has a
-value less than 5. We place the block of code to execute if the condition is true
-immediately after the condition inside curly brackets. Blocks of code
-associated with the conditions in `if` expressions are sometimes called *arms*,
-just like the arms in `match` expressions that we discussed in the [“Comparing
-the Guess to the Secret Number”][comparing-the-guess-to-the-secret-number]<!--
-ignore --> section of Chapter 2.
+Tüm `if` ifadeleri, `if` anahtar sözcüğüyle başlar ve ardından bir koşul gelir. 
+Bu durumda koşul, `number`'ın 5'ten küçük bir değere sahip olup olmadığını kontrol eder. 
+Koşul doğruysa yürütülecek kod bloğunu, koşulun hemen ardından süslü parantezler içine yerleştiririz. 
+`if` ifadelerindeki koşullarla ilişkili kod blokları, tıpkı Bölüm 2'deki [“Tahmin ile Gizli Numarayı Karşılaştırma”][comparing-the-guess-to-the-secret-number]<!--
+ignore --> bölümünde tartıştığımız `match` ifadelerindeki *kollar* gibi bazen *kol* olarak adlandırılır.
 
-Optionally, we can also include an `else` expression, which we chose
-to do here, to give the program an alternative block of code to execute should
-the condition evaluate to false. If you don’t provide an `else` expression and
-the condition is false, the program will just skip the `if` block and move on
-to the next bit of code.
+İsteğe bağlı olarak, koşulun yanlış olarak değerlendirilmesi durumunda programa yürütülecek alternatif bir kod bloğu
+vermek için burada yapmayı seçtiğimiz başka bir ifade de ekleyebiliriz. Başka bir ifade sağlamazsanız ve koşul yanlışsa, 
+program `if` bloğunu atlar ve bir sonraki kod parçasına geçer.
 
-Try running this code; you should see the following output:
+Bu kodu çalıştırmayı deneyin, aşağıdaki çıktıyı görmelisiniz:
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-26-if-true/output.txt}}
 ```
 
-Let’s try changing the value of `number` to a value that makes the condition
-`false` to see what happens:
-
+Ne olduğunu görmek için `number`ın değerini koşulu `false` yapan bir değerle değiştirmeyi deneyelim:
+ 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/src/main.rs:here}}
 ```
 
-Run the program again, and look at the output:
+Programı tekrar çalıştırın ve çıktıya bakın:
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-27-if-false/output.txt}}
 ```
 
-It’s also worth noting that the condition in this code *must* be a `bool`. If
-the condition isn’t a `bool`, we’ll get an error. For example, try running the
-following code:
+Bu koddaki koşulun `bool` türünden *olması gerektiğini* de belirtmekte fayda var. 
+Koşul `bool` değilse, bir hata alırız. Örneğin, aşağıdaki kodu çalıştırmayı deneyin:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-28-if-condition-must-be-bool/src/main.rs}}
 ```
 
-The `if` condition evaluates to a value of `3` this time, and Rust throws an
-error:
+`if` koşulu bu sefer `3` değerini değerlendiriyor ve Rust buna karşılık bir hata veriyor:
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-28-if-condition-must-be-bool/output.txt}}
 ```
 
-The error indicates that Rust expected a `bool` but got an integer. Unlike
-languages such as Ruby and JavaScript, Rust will not automatically try to
-convert non-Boolean types to a Boolean. You must be explicit and always provide
-`if` with a Boolean as its condition. If we want the `if` code block to run
-only when a number is not equal to `0`, for example, we can change the `if`
-expression to the following:
+Hata, Rust'ın bir `bool` beklediğini ancak bir tam sayı aldığını gösteriyor. 
+Ruby ve JavaScript gibi dillerin aksine Rust, Boole olmayan türleri otomatik olarak 
+Boole'a dönüştürmeye çalışmaz. Açık olmalısınız ve her zaman koşulun Boole olup olmadığını sağlamalısınız. 
+Örneğin `if` kod bloğunun yalnızca bir sayı `0`'a eşit olmadığında çalışmasını istiyorsak, `if` ifadesini aşağıdaki gibi değiştirebiliriz:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-29-if-not-equal-0/src/main.rs}}
 ```
 
-Running this code will print `number was something other than zero`.
+Bu kodu çalıştırmak bize şu çıktıyı verecektir: `number was something other than zero`.
 
-#### Handling Multiple Conditions with `else if`
+#### `else if` ile Birden Çok Koşulun İşlenmesi
 
-You can use multiple conditions by combining `if` and `else` in an `else if`
-expression. For example:
+Bir `else if` ifadesini `if` ve `else` ile birleştirerek birden çok koşul durumunda kullanabilirsiniz. 
+Örneğin:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-30-else-if/src/main.rs}}
 ```
 
-This program has four possible paths it can take. After running it, you should
-see the following output:
+Bu programın alabileceği dört olası durum vardır. Çalıştırdıktan sonra aşağıdaki çıktıyı görmelisiniz
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-30-else-if/output.txt}}
 ```
 
-When this program executes, it checks each `if` expression in turn and executes
-the first body for which the condition holds true. Note that even though 6 is
-divisible by 2, we don’t see the output `number is divisible by 2`, nor do we
-see the `number is not divisible by 4, 3, or 2` text from the `else` block.
-That’s because Rust only executes the block for the first true condition, and
-once it finds one, it doesn’t even check the rest.
+Bu program yürütüldüğünde, sırayla her bir `if` ifadesini kontrol eder ve koşulun doğru 
+olduğu ilk gövdeyi yürütür. `6`'nın 2`'`ye bölünebilmesine rağmen, çıktıda `number is divisible by 2`'yu görmüyor 
+ve `else`'e rağmen çıktıda `number is not divisible by 4, 3, or 2`'yu görmüyoruz. 
+Bunun nedeni, Rust'ın bloğu yalnızca ilk gerçek koşul için çalıştırmasıdır ve 
+bir kez doğru koşulu bulduğunda gerisini kontrol bile etmez.
 
-Using too many `else if` expressions can clutter your code, so if you have more
-than one, you might want to refactor your code. Chapter 6 describes a powerful
-Rust branching construct called `match` for these cases.
+Çok fazla `else if` ifadesi kullanmak kodunuzu karıştırabilir, bu nedenle birden fazla varsa, 
+kodunuzu yeniden düzenlemek isteyebilirsiniz. Bölüm 6, bu durumlar için `match` adı verilen güçlü bir 
+Rust dallanma yapısını açıklar.
 
-#### Using `if` in a `let` Statement
+#### `if`'i `let`'te İfade Yapısı Olarak Kullanmak
 
-Because `if` is an expression, we can use it on the right side of a `let`
-statement to assign the outcome to a variable, as in Listing 3-2.
+`if` bir ifade olduğu için, Liste 3-2'de olduğu gibi sonucu bir değişkene atamak için `let` ifadesinin sağ tarafında kullanabiliriz.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/listing-03-02/src/main.rs}}
 ```
 
-<span class="caption">Listing 3-2: Assigning the result of an `if` expression
-to a variable</span>
+<span class="caption">Liste 3-2: Bir `if` ifadesinin sonucunu bir değişkene atama</span>
 
-The `number` variable will be bound to a value based on the outcome of the `if`
-expression. Run this code to see what happens:
+`number` değişkenine, `if` ifadesinin sonucuna göre bir değer atanacaktır. 
+Ne olduğunu görmek için bu kodu çalıştırın:
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/listing-03-02/output.txt}}
 ```
 
-Remember that blocks of code evaluate to the last expression in them, and
-numbers by themselves are also expressions. In this case, the value of the
-whole `if` expression depends on which block of code executes. This means the
-values that have the potential to be results from each arm of the `if` must be
-the same type; in Listing 3-2, the results of both the `if` arm and the `else`
-arm were `i32` integers. If the types are mismatched, as in the following
-example, we’ll get an error:
+Kod bloklarının içlerindeki son ifadeyi değerlendirdiğini ve sayıların 
+kendi başlarına da ifadeler olduğunu unutmayın. Bu durumda, `if` ifadesinin tamamının değeri, 
+hangi kod bloğunun yürütüldüğüne bağlıdır. Bu, `if`'in her bir kolundan sonuç alma potansiyeline sahip 
+değerlerin aynı tür olması gerektiği anlamına gelir; Liste 3-2'de, hem `if` kolunun hem de `else` kolunun sonuçları 
+`i32` tam sayı türündendi. Aşağıdaki örnekte olduğu gibi, türler uyumsuzsa bir hata alırız:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-31-arms-must-return-same-type/src/main.rs}}
 ```
 
-When we try to compile this code, we’ll get an error. The `if` and `else` arms
-have value types that are incompatible, and Rust indicates exactly where to
-find the problem in the program:
+Bu kodu derlemeye çalıştığımızda bir hata alacağız. `if` ve `else` kollarının uyumsuz değer türleri vardır 
+ve Rust, sorunun programda tam olarak nerede bulunacağını bir hata mesajıyla belirtir:
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/no-listing-31-arms-must-return-same-type/output.txt}}
 ```
 
-The expression in the `if` block evaluates to an integer, and the expression in
-the `else` block evaluates to a string. This won’t work because variables must
-have a single type, and Rust needs to know at compile time what type the
-`number` variable is, definitively. Knowing the type of `number` lets the
-compiler verify the type is valid everywhere we use `number`. Rust wouldn’t be
-able to do that if the type of `number` was only determined at runtime; the
-compiler would be more complex and would make fewer guarantees about the code
-if it had to keep track of multiple hypothetical types for any variable.
+`if` bloğundaki ifade bir tam sayı olarak değerlendirilir ve `else` bloğundaki ifade bir 
+dizgi olarak değerlendirilir. Bu işe yaramaz çünkü değişkenlerin tek bir türü olması gerekir ve 
+Rust'ın derleme zamanında sayı değişkeninin ne tür olduğunu kesin olarak bilmesi gerekir. 
+Sayının türünü bilmek, derleyicinin sayıyı kullandığımız her yerde türün geçerli olduğunu doğrulamasını sağlar. 
+Sayının türü yalnızca çalışma zamanında belirlenmiş olsaydı Rust bunu yapamazdı; derleyici daha karmaşık olurdu ve herhangi bir değişken için birden çok varsayımsal türü takip etmesi gerekiyorsa kod hakkında daha az garanti verirdi.
 
-### Repetition with Loops
+### Döngülerle Yinelemek
 
-It’s often useful to execute a block of code more than once. For this task,
-Rust provides several *loops*, which will run through the code inside the loop
-body to the end and then start immediately back at the beginning. To
-experiment with loops, let’s make a new project called *loops*.
+Bir kod bloğunu bir kereden fazla yürütmek genellikle yararlıdır. 
+Bu görev için Rust, döngü gövdesi içindeki kodu sonuna kadar çalıştıracak ve ardından hemen 
+baştan başlayacak birkaç *döngü* sağlar. Döngüleri denemek için *loops* adında yeni bir proje yapalım.
 
-Rust has three kinds of loops: `loop`, `while`, and `for`. Let’s try each one.
+Rust'un üç tür döngüsü vardır: `loop`, `while` ve `for`. Her birini deneyelim.
 
-#### Repeating Code with `loop`
+#### `loop` ile Kod Yinelemek
 
-The `loop` keyword tells Rust to execute a block of code over and over again
-forever or until you explicitly tell it to stop.
+`loop` anahtar sözcüğü, Rust'a bir kod bloğunu sonsuza kadar veya siz açıkça durmasını söyleyene kadar tekrar tekrar yürütmesini söyler.
 
-As an example, change the *src/main.rs* file in your *loops* directory to look
-like this:
+Örnek olarak, *loops* dizininizdeki *src/main.rs* dosyasını şöyle görünecek şekilde değiştirin:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-32-loop/src/main.rs}}
 ```
 
-When we run this program, we’ll see `again!` printed over and over continuously
-until we stop the program manually. Most terminals support the keyboard shortcut
-<span class="keystroke">ctrl-c</span> to interrupt a program that is stuck in
-a continual loop. Give it a try:
+Bu programı çalıştırdığımızda, programı manuel olarak durdurana kadar sürekli olarak `again!` 
+yazdırıldığını göreceğiz. Çoğu uçbirim <span class="keystroke">ctrl-c</span> kısayolunu döngüden çıkabilmek
+için sunar. Bir şans verin:
 
 <!-- manual-regeneration
 cd listings/ch03-common-programming-concepts/no-listing-32-loop
@@ -213,177 +188,145 @@ again!
 ^Cagain!
 ```
 
-The symbol `^C` represents where you pressed <span class="keystroke">ctrl-c
-</span>. You may or may not see the word `again!` printed after the `^C`,
-depending on where the code was in the loop when it received the interrupt
-signal.
+`^C` sembolü, <span class="keystroke">ctrl-c</span> tuşlarına bastığınız yeri gösterir.
+Kesme sinyalini aldığınızda kodun döngüde nerede olduğuna bağlı olarak `^C`'den sonra döngü durur.
 
-Fortunately, Rust also provides a way to break out of a loop using code. You
-can place the `break` keyword within the loop to tell the program when to stop
-executing the loop. Recall that we did this in the guessing game in the
-[“Quitting After a Correct Guess”][quitting-after-a-correct-guess]<!-- ignore
---> section of Chapter 2 to exit the program when the user won the game by
-guessing the correct number.
+Neyse ki, Rust ayrıca kod kullanarak bir döngüden çıkmanın bir yolunu da sağlar. 
+Programa döngüyü yürütmeyi ne zaman durduracağını söylemek için `break` anahtar sözcüğünü döngünün içine yerleştirebilirsiniz. 
+Bunu Bölüm 2'deki [“Doğru Tahminden Sonra Çıkma”][quitting-after-a-correct-guess]<!-- ignore
+-->  bölümündeki tahmin oyununda, kullanıcı doğru sayıyı tahmin ederek oyunu kazandığında programdan çıkmak için yaptığımızı hatırlayın.
 
-We also used `continue` in the guessing game, which in a loop tells the program
-to skip over any remaining code in this iteration of the loop and go to the
-next iteration.
+Ayrıca, bir döngüde programa döngünün bu yinelemesinde kalan herhangi bir kodu atlamasını ve bir sonraki yinelemeye geçmesini söyleyen tahmin oyununda `continue`'ı kullandık.
 
-#### Returning Values from Loops
+#### Döngülerden Değer Döndürmek
 
-One of the uses of a `loop` is to retry an operation you know might fail, such
-as checking whether a thread has completed its job. You might also need to pass
-the result of that operation out of the loop to the rest of your code. To do
-this, you can add the value you want returned after the `break` expression you
-use to stop the loop; that value will be returned out of the loop so you can
-use it, as shown here:
+`loop`'un kullanımlarından biri, bir iş parçacığının işini tamamlayıp tamamlamadığını kontrol etmek 
+gibi başarısız olabileceğini bildiğiniz bir işlemi yeniden denemektir. Ayrıca, bu işlemin sonucunu döngüden kodunuzun geri kalanına aktarmanız gerekebilir. Bunu yapmak için, döngüyü durdurmak için kullandığınız `break` ifadesinden sonra döndürülmesini istediğiniz değeri ekleyebilirsiniz; bu değer, burada gösterildiği gibi kullanabilmeniz için döngüden döndürülecektir:
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-33-return-value-from-loop/src/main.rs}}
 ```
 
-Before the loop, we declare a variable named `counter` and initialize it to
-`0`. Then we declare a variable named `result` to hold the value returned from
-the loop. On every iteration of the loop, we add `1` to the `counter` variable,
-and then check whether the counter is equal to `10`. When it is, we use the
-`break` keyword with the value `counter * 2`. After the loop, we use a
-semicolon to end the statement that assigns the value to `result`. Finally, we
-print the value in `result`, which in this case is 20.
+Döngüden önce `counter` adında bir değişken tanımlıyoruz ve onu `0` olarak başlatıyoruz. 
+Ardından döngüden dönen değeri tutacak `result` adında bir değişken tanımlıyoruz. 
+Döngünün her yinelemesinde `counter` değişkenine `1` ekliyoruz ve ardından `counter`'ın `10`'a eşit olup olmadığını kontrol ediyoruz. Eşitse `counter * 2` değerini `break` anahtar sözcüğüyle kullanıyoruz. Döngüden sonra noktalı virgül kullanıyoruz. 
+`result`'a değer atayan ifadeyi bitirmek için; son olarak, `20` olan `result` değerini yazdırıyoruz.
 
-#### Loop Labels to Disambiguate Between Multiple Loops
+#### Birden Çok Döngü Arasındaki Belirsizliği Gidermek için Döngü Etiketleri
 
-If you have loops within loops, `break` and `continue` apply to the innermost
-loop at that point. You can optionally specify a *loop label* on a loop that we
-can then use with `break` or `continue` to specify that those keywords apply to
-the labeled loop instead of the innermost loop. Loop labels must begin with a
-single quote. Here’s an example with two nested loops:
+Döngüler içinde döngüleriniz varsa, o noktada en içteki döngü için `break` ve `continue` ifadeleri uygulanır. 
+İsteğe bağlı olarak bir döngü üzerinde bir *döngü etiketi* belirleyebilirsiniz ve daha sonra bu anahtar sözcüklerin en içteki döngü yerine etiketli döngüye uygulanacağını belirtmek için `break` veya `continue` ile kullanabiliriz.
+İşte iki iç içe döngü içeren bir örnek:
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-32-5-loop-labels/src/main.rs}}
 ```
 
-The outer loop has the label `'counting_up`, and it will count up from 0 to 2.
-The inner loop without a label counts down from 10 to 9. The first `break` that
-doesn’t specify a label will exit the inner loop only. The `break
-'counting_up;` statement will exit the outer loop. This code prints:
+Dış döngü `'counting_up` etiketine sahiptir ve 0'dan 2'ye kadar sayar. 
+Etiketsiz iç döngü 10'dan 9'a geri sayım yapar. Bir etiket belirtmeyen ilk `break` yalnızca iç döngüden çıkar. 
+`break 'counting_up`; ifadesi dış döngüden çıkar:
 
 ```console
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-32-5-loop-labels/output.txt}}
 ```
 
-#### Conditional Loops with `while`
+#### `while` ile Koşullu Döngüler
 
-A program will often need to evaluate a condition within a loop. While the
-condition is true, the loop runs. When the condition ceases to be true, the
-program calls `break`, stopping the loop. It’s possible to implement behavior
-like this using a combination of `loop`, `if`, `else`, and `break`; you could
-try that now in a program, if you’d like. However, this pattern is so common
-that Rust has a built-in language construct for it, called a `while` loop. In
-Listing 3-3, we use `while` to loop the program three times, counting down each
-time, and then, after the loop, print a message and exit.
+Bir programın genellikle bir döngü içindeki bir koşulu değerlendirmesi gerekir. 
+Koşul doğru olduğunda döngü çalışır. Koşul doğru olmadığında, program `break`'i çağırarak döngüyü durdurur. 
+Böyle bir davranışı `loop`, `if`, `else` ve `break` kombinasyonunu kullanarak uygulamak mümkündür; 
+İsterseniz bunu şimdi bir programda deneyebilirsiniz. Ancak, bu model o kadar yaygındır ki, 
+Rust'ın bunun için `while` döngüsü adı verilen yerleşik bir dil yapısı vardır. 
+Liste 3-3'te, programı üç kez döngüye almak, her seferinde geri saymak ve ardından döngüden sonra bir mesaj yazdırıp çıkmak 
+için `while` kullanıyoruz.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/listing-03-03/src/main.rs}}
 ```
 
-<span class="caption">Listing 3-3: Using a `while` loop to run code while a
-condition holds true</span>
+<span class="caption">Liste 3-3: Bir koşul doğruyken kodu çalıştırmak için `while` döngüsü kullanma</span>
 
-This construct eliminates a lot of nesting that would be necessary if you used
-`loop`, `if`, `else`, and `break`, and it’s clearer. While a condition holds
-true, the code runs; otherwise, it exits the loop.
+Bu yapı, `loop`, `if`, `else` ve `break` kullandıysanız gerekli olacak birçok iç içe yerleştirmeyi ortadan kaldırır ve daha
+nettir. Bir koşul doğru olduğunda kod çalışır; aksi takdirde döngüden çıkar.
 
-#### Looping Through a Collection with `for`
+#### `for` ile Bir Koleksiyonda Yineleme Yapmak
 
-You can choose to use the `while` construct to loop over the elements of a
-collection, such as an array. For example, the loop in Listing 3-4 prints each
-element in the array `a`.
+Dizi gibi bir koleksiyonun öğeleri üzerinde döngü oluşturmak için `while` yapısını kullanmayı seçebilirsiniz. 
+Örneğin, Liste 3-4'teki döngü `a` dizisindeki her öğeyi yazdırır.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/listing-03-04/src/main.rs}}
 ```
 
-<span class="caption">Listing 3-4: Looping through each element of a collection
-using a `while` loop</span>
+<span class="caption">Liste 3-4: Bir `while` döngüsü kullanarak bir koleksiyonun her bir öğesi arasında döngü yapmak</span>
 
-Here, the code counts up through the elements in the array. It starts at index
-`0`, and then loops until it reaches the final index in the array (that is,
-when `index < 5` is no longer true). Running this code will print every element
-in the array:
+Burada kod, dizideki öğeleri sayar. `0` dizininde başlar ve ardından dizideki son dizine ulaşana kadar döner 
+(yani `index < 5` doğru olmayana kadar). Bu kodu çalıştırmak dizideki her öğeyi yazdıracaktır.
 
 ```console
 {{#include ../listings/ch03-common-programming-concepts/listing-03-04/output.txt}}
 ```
 
-All five array values appear in the terminal, as expected. Even though `index`
-will reach a value of `5` at some point, the loop stops executing before trying
-to fetch a sixth value from the array.
+Beş dizi değerinin tümü beklendiği gibi terminalde görünür. 
+Dizin bir noktada `5` değerine ulaşacak olsa da, diziden altıncı bir değer getirmeye çalışmadan önce 
+döngü kendini yürütmeyi durdurur.
 
-However, this approach is error prone; we could cause the program to panic if
-the index value or test condition are incorrect. For example, if you changed
-the definition of the `a` array to have four elements but forgot to update the
-condition to `while index < 4`, the code would panic. It’s also slow, because
-the compiler adds runtime code to perform the conditional check of whether the
-index is within the bounds of the array on every iteration through the loop.
+Ancak bu yaklaşım hataya açıktır; `index` değeri veya test koşulu yanlışsa programın paniğe 
+kapılmasına neden olabiliriz. Örneğin, `a` dizisinin tanımını dört öğeye sahip olacak şekilde değiştirdiyseniz 
+ancak `index < 4` iken koşulu güncellemeyi unuttuysanız, kod panikleyecektir. 
+Ayrıca bu yavaştır, çünkü derleyici döngü boyunca her yinelemede dizinin dizinin sınırları içinde olup 
+olmadığının koşullu kontrolünü gerçekleştirmek için çalışma zamanı kodu ekler.
 
-As a more concise alternative, you can use a `for` loop and execute some code
-for each item in a collection. A `for` loop looks like the code in Listing 3-5.
+Daha özlü bir alternatif olarak, bir `for` döngüsü kullanabilir ve bir koleksiyondaki her öğe için bir miktar kod çalıştırabilirsiniz. `for` döngüsü, Liste 3-5'teki koda benzer.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/listing-03-05/src/main.rs}}
 ```
 
-<span class="caption">Listing 3-5: Looping through each element of a collection
-using a `for` loop</span>
+<span class="caption">Liste 3-5: Bir `for` döngüsü kullanarak bir koleksiyonun her bir öğesi arasında yinelemek</span>
 
-When we run this code, we’ll see the same output as in Listing 3-4. More
-importantly, we’ve now increased the safety of the code and eliminated the
-chance of bugs that might result from going beyond the end of the array or not
-going far enough and missing some items.
+Bu kodu çalıştırdığımızda, Liste 3-4'teki çıktının aynısını göreceğiz. 
+Daha da önemlisi, artık kodun güvenliğini artırdık ve dizinin sonunun ötesine geçmek veya 
+yeterince uzağa gitmemek ve bazı öğeleri kaçırmaktan kaynaklanabilecek hata olasılığını ortadan kaldırdık.
 
-Using the `for` loop, you wouldn’t need to remember to change any other code if
-you changed the number of values in the array, as you would with the method
-used in Listing 3-4.
+`for` döngüsünü kullanarak, Liste 3-4'te kullanılan yöntemde olduğu gibi dizideki değerlerin 
+sayısını değiştirdiyseniz, başka herhangi bir kodu değiştirmeniz gerekmez.
 
-The safety and conciseness of `for` loops make them the most commonly used loop
-construct in Rust. Even in situations in which you want to run some code a
-certain number of times, as in the countdown example that used a `while` loop
-in Listing 3-3, most Rustaceans would use a `for` loop. The way to do that
-would be to use a `Range`, provided by the standard library, which generates
-all numbers in sequence starting from one number and ending before another
-number.
+`for` döngülerinin güvenliği ve kısa olması, onları Rust'ta en yaygın kullanılan 
+döngü yapısı haline getirir. Liste 3-3'te `while` döngüsü kullanan geri sayım örneğinde olduğu gibi, bazı kodları belirli sayıda çalıştırmak istediğiniz durumlarda bile, çoğu `Rustacean` bir `for` döngüsü kullanır. 
+Bunu yapmanın yolu, bir sayıdan başlayıp diğer bir sayıdan önce biten tüm sayıları sırayla üreten 
+standart kütüphane tarafından sağlanan `Range` tanımını kullanmaktır.
 
-Here’s what the countdown would look like using a `for` loop and another method
-we’ve not yet talked about, `rev`, to reverse the range:
+Aralığı tersine çevirmek için bir `for` döngüsü ve henüz bahsetmediğimiz başka bir yöntem olan `rev` kullanarak geri 
+sayım işleminin nasıl görüneceği aşağıda açıklanmıştır:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch03-common-programming-concepts/no-listing-34-for-range/src/main.rs}}
 ```
 
-This code is a bit nicer, isn’t it?
+Bu kod sizce de daha hoş durmuyor mu?
 
-## Summary
+## Özet
 
-You made it! That was a sizable chapter: you learned about variables, scalar
-and compound data types, functions, comments, `if` expressions, and loops!
-To practice with the concepts discussed in this chapter, try building
-programs to do the following:
+Başardın! Bu oldukça büyük bir bölümdü: değişkenler, skaler ve bileşik veri türleri, fonksiyonlar, yorumlar, 
+`if` ifadeleri ve döngüler hakkında çokça bilgi edindiniz! 
+Bu bölümde tartışılan kavramlarla pratik yapmak için aşağıdaki programları oluşturmaya
+çalışın:
 
-* Convert temperatures between Fahrenheit and Celsius.
-* Generate the nth Fibonacci number.
-* Print the lyrics to the Christmas carol “The Twelve Days of Christmas,”
-  taking advantage of the repetition in the song.
+* Fahrenheit ve Santigrat türleri arasında dönüşüm yapan programı yazın.
+* n'inci Fibonaccı sayısını oluşturan programı yazın.
+* Şarkıdaki tekrarlardan yararlanarak Noel şarkısı “The Twelve Days of Christmas”'ın sözlerini yazdırın.
 
-When you’re ready to move on, we’ll talk about a concept in Rust that *doesn’t*
-commonly exist in other programming languages: ownership.
+Devam etmeye hazır olduğunuzda, Rust'ta diğer programlama dillerinde *olmayan* bir kavram olan *sahiplikten*
+bahsedeceğiz.
 
 [comparing-the-guess-to-the-secret-number]:
 ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number
