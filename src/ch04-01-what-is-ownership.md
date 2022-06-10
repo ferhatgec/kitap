@@ -100,7 +100,7 @@ Başka bir deyişle, burada iki önemli nokta vardır:
 Bu noktada, kapsamlar ve değişkenlerin ne zaman geçerli olduğu arasındaki ilişki diğer programlama dillerindekine benzer.
 Şimdi `String` türünü tanıtarak bu anlayışın üzerine inşa edeceğiz.
 
-### The `String` Type
+### `String` Türü
 
 Sahiplik kurallarını göstermek için, Bölüm 3'ün [“Veri Türleri”][data-types]<!-- ignore --> bölümünde ele aldıklarımızdan daha 
 karmaşık bir veri tipine ihtiyacımız var. Yığıt, kapsamı sona erdiğinde ve kodun başka bir bölümünün aynı değeri farklı bir kapsamda kullanması gerekiyorsa, yeni, bağımsız bir örnek oluşturmak için hızlı ve önemsiz bir şekilde kopyalanabilir. 
