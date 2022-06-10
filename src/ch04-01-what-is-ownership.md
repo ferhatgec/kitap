@@ -1,469 +1,383 @@
-## What Is Ownership?
+## Sahiplik Nedir?
 
-*Ownership* is a set of rules that governs how a Rust program manages memory.
-All programs have to manage the way they use a computer’s memory while running.
-Some languages have garbage collection that regularly looks for no-longer used
-memory as the program runs; in other languages, the programmer must explicitly
-allocate and free the memory. Rust uses a third approach: memory is managed
-through a system of ownership with a set of rules that the compiler checks. If
-any of the rules are violated, the program won’t compile. None of the features
-of ownership will slow down your program while it’s running.
+*Sahiplik*, bir Rust programının belleği nasıl yönettiğini yöneten bir dizi kuraldır. 
+Tüm programlar, çalışırken bilgisayarın belleğini kullanma şeklini yönetmek zorundadır. 
+Bazı dillerde, program çalışırken düzenli olarak artık kullanılmayan belleği arayan çöp toplama vardır; diğer dillerde, 
+programcı belleği açıkça tahsis etmeli ve serbest bırakmalıdır. Rust üçüncü bir yaklaşım kullanır: 
+bellek, derleyicinin kontrol ettiği bir dizi kurala sahip bir sahiplik sistemi aracılığıyla yönetilir. 
+Kurallardan herhangi biri ihlal edilirse program derlenmeyecektir. Sahiplik özelliklerinin hiçbiri, 
+çalışırken programınızı yavaşlatmaz.
 
-Because ownership is a new concept for many programmers, it does take some time
-to get used to. The good news is that the more experienced you become with Rust
-and the rules of the ownership system, the easier you’ll find it to naturally
-develop code that is safe and efficient. Keep at it!
+Sahiplik birçok programcı için yeni bir kavram olduğu için alışması biraz zaman alıyor. 
+İyi haber şu ki, Rust ve sahiplik sisteminin kuralları konusunda ne kadar deneyimli olursanız, 
+doğal olarak güvenli ve verimli kod geliştirmeyi o kadar kolay bulacaksınız. Öğrenmeye devam edin!
 
-When you understand ownership, you’ll have a solid foundation for understanding
-the features that make Rust unique. In this chapter, you’ll learn ownership by
-working through some examples that focus on a very common data structure:
-strings.
+Sahipliği anladığınızda, Rust'ı benzersiz kılan özellikleri anlamak için sağlam bir temele sahip olacaksınız. 
+Bu bölümde, çok yaygın bir veri yapısına odaklanan bazı örnekler üzerinde çalışarak sahipliği öğreneceksiniz (bkz. *dizgiler*).
 
-> ### The Stack and the Heap
->
-> Many programming languages don’t require you to think about the stack and the
-> heap very often. But in a systems programming language like Rust, whether a
-> value is on the stack or the heap affects how the language behaves and why
-> you have to make certain decisions. Parts of ownership will be described in
-> relation to the stack and the heap later in this chapter, so here is a brief
-> explanation in preparation.
->
-> Both the stack and the heap are parts of memory available to your code to use
-> at runtime, but they are structured in different ways. The stack stores
-> values in the order it gets them and removes the values in the opposite
-> order. This is referred to as *last in, first out*. Think of a stack of
-> plates: when you add more plates, you put them on top of the pile, and when
-> you need a plate, you take one off the top. Adding or removing plates from
-> the middle or bottom wouldn’t work as well! Adding data is called *pushing
-> onto the stack*, and removing data is called *popping off the stack*. All
-> data stored on the stack must have a known, fixed size. Data with an unknown
-> size at compile time or a size that might change must be stored on the heap
-> instead.
->
-> The heap is less organized: when you put data on the heap, you request a
-> certain amount of space. The memory allocator finds an empty spot in the heap
-> that is big enough, marks it as being in use, and returns a *pointer*, which
-> is the address of that location. This process is called *allocating on the
-> heap* and is sometimes abbreviated as just *allocating* (pushing values onto
-> the stack is not considered allocating). Because the pointer to the heap is a
-> known, fixed size, you can store the pointer on the stack, but when you want
-> the actual data, you must follow the pointer. Think of being seated at a
-> restaurant. When you enter, you state the number of people in your group, and
-> the staff finds an empty table that fits everyone and leads you there. If
-> someone in your group comes late, they can ask where you’ve been seated to
-> find you.
->
-> Pushing to the stack is faster than allocating on the heap because the
-> allocator never has to search for a place to store new data; that location is
-> always at the top of the stack. Comparatively, allocating space on the heap
-> requires more work, because the allocator must first find a big enough space
-> to hold the data and then perform bookkeeping to prepare for the next
-> allocation.
->
-> Accessing data in the heap is slower than accessing data on the stack because
-> you have to follow a pointer to get there. Contemporary processors are faster
-> if they jump around less in memory. Continuing the analogy, consider a server
-> at a restaurant taking orders from many tables. It’s most efficient to get
-> all the orders at one table before moving on to the next table. Taking an
-> order from table A, then an order from table B, then one from A again, and
-> then one from B again would be a much slower process. By the same token, a
-> processor can do its job better if it works on data that’s close to other
-> data (as it is on the stack) rather than farther away (as it can be on the
-> heap).
->
-> When your code calls a function, the values passed into the function
-> (including, potentially, pointers to data on the heap) and the function’s
-> local variables get pushed onto the stack. When the function is over, those
-> values get popped off the stack.
->
-> Keeping track of what parts of code are using what data on the heap,
-> minimizing the amount of duplicate data on the heap, and cleaning up unused
-> data on the heap so you don’t run out of space are all problems that ownership
-> addresses. Once you understand ownership, you won’t need to think about the
-> stack and the heap very often, but knowing that the main purpose of ownership
-> is to manage heap data can help explain why it works the way it does.
+> ### Yığıt ve Yığın
+> Çoğu programlama dili, yığıt ve yığın hakkında çok sık düşünmenizi gerektirecek  özelliklere sahip değildir. 
+> Ancak Rust gibi bir sistem programlama dilinde, bir değerin yığıtta mı yoksa yığında mı olması dilin nasıl davrandığını 
+> ve neden belirli kararlar vermeniz gerektiğini etkiler. Sahiplik, bu bölümün ilerleyen kısımlarında yığıt ve yığınla ilgili olarak 
+> açıklanacaktır, bu nedenle burada hazırlık aşamasında olan kısa bir açıklama bulunmaktadır.
+> Hem yığıt hem de yığın, çalışma zamanında kodunuzun kullanabileceği bellek parçalarıdır, 
+> ancak bunlar farklı şekillerde yapılandırılmıştır. Yığıt, değerleri aldığı sırayla saklar ve değerleri ters sırada tutar. 
+> Buna *son giren ilk çıkar* (LIFO) denir. 
+> Bir tabak yığıtını düşünün: daha fazla tabak eklediğinizde, 
+> onları yığıtın üstüne koyarsınız ve bir tabağa ihtiyacınız olduğunda üstten bir tane alırsınız. 
+> Ortadan veya alttan tabak eklemek veya çıkarmak da işe yaramaz! 
+> Veri eklemeye yığıta itme denir ve veri kaldırmaya yığıttan çıkarma denir. 
+> Yığıtta depolanan tüm verilerin bilinen, sabit bir boyutu olmalıdır. Derleme zamanında bilinmeyen bir boyuta veya değişebilecek bir
+> boyuta sahip veriler, yığın (heap) üzerinde depolanmalıdır.
+> 
+> Yığın daha az organizedir: yığına veri koyduğunuzda, belirli bir miktar alan talep edersiniz. 
+> Bellek ayırıcı, yığında yeterince büyük boş bir nokta bulur, onu kullanımda olarak işaretler ve o konumun adresi olan bir işaretçi
+> döndürür. Bu işleme yığın üzerinde ayırma denir ve bazen sadece ayırma olarak kısaltılır (değerleri yığına itmek ayırma olarak kabul edilmez). 
+> Yığın işaretçisi bilinen, sabit bir boyut olduğundan, işaretçiyi yığında saklayabilirsiniz, ancak gerçek verileri istediğinizde 
+> işaretçiyi izlemelisiniz. Bir restoranda oturduğunuzu düşünün. Girdiğinizde grubunuzdaki kişi sayısını 
+> belirtiyorsunuz ve görevliler herkese uygun boş bir masa bulup sizi oraya yönlendiriyor. 
+> Grubunuzdan biri geç gelirse, sizi bulmak için nerede oturduğunuzu sorabilir.
+> Yığıta itme, yığında tahsis etmekten daha hızlıdır, çünkü ayırıcı hiçbir zaman yeni verileri depolamak için 
+> bir yer aramak zorunda kalmaz; bu konum her zaman yığıtın en üstündedir. Nispeten, yığın üzerinde alan tahsis 
+> etmek daha fazla iş gerektirir, çünkü tahsis edenin önce verileri tutacak kadar büyük bir alan bulması ve 
+> ardından bir sonraki tahsise hazırlanmak için defter tutma yapması gerekir.
+> Yığındaki verilere erişmek, oraya ulaşmak için bir işaretçiyi izlemeniz gerektiğinden yığıttaki 
+> verilere erişmekten daha yavaştır. Çağdaş işlemciler, bellekte daha az zıplarlarsa daha hızlı 
+> olarak kabul edilir. Analojiye devam edersek, bir restoranda birçok masadan sipariş alan bir sunucu düşünün. 
+> Bir sonraki masaya geçmeden önce tüm siparişleri bir masada toplamak en verimli yöntemdir. 
+> A masasından bir sipariş, sonra B masasından, sonra tekrar A'dan ve sonra tekrar B'den bir sipariş almak çok 
+> daha yavaş bir süreç olacaktır. Aynı şekilde, bir işlemci daha uzakta (yığın üzerinde olabileceği gibi) yerine diğer 
+> verilere yakın olan (yığıt üzerinde olduğu gibi) veriler üzerinde çalışıyorsa işini daha iyi yapabilir.
+> 
+> Kodunuz bir fonksiyonu çağırdığında, fonksiyona iletilen değerler (potansiyel olarak yığın üzerindeki verilere işaretçiler de dahil) 
+> ve işlevin yerel değişkenleri yığıta aktarılır. Fonksiyon bittiğinde, bu değerler yığıttan atılır.
+> Kodun hangi bölümlerinin yığındaki hangi verileri kullandığını takip etmek, yığındaki yinelenen veri miktarını 
+> en aza indirmek ve alanınız bitmemek için yığındaki kullanılmayan verileri temizlemek, 
+> sahipliğin ele aldığı sorunlardır. Sahipliği anladıktan sonra, yığıt ve yığın hakkında çok sık düşünmenize gerek kalmayacak, 
+> ancak sahipliğin asıl amacının yığın verilerini yönetmek olduğunu bilmek, neden böyle çalıştığını açıklamaya yardımcı olabilir.
 
-### Ownership Rules
+### Sahiplik Kuralları
 
-First, let’s take a look at the ownership rules. Keep these rules in mind as we
-work through the examples that illustrate them:
+İlk olarak, sahiplik kurallarına bir göz atalım. 
+Bunları gösteren örnekler üzerinde çalışırken bu kuralları aklınızda bulundurun:
 
-* Each value in Rust has an *owner*.
-* There can only be one owner at a time.
-* When the owner goes out of scope, the value will be dropped.
+* Rust'ta her değerin bir *sahibi* vardır.
+* Aynı zamanda sadece bir sahip olabilir.
+* Sahip kapsam dışına çıktığında değer düşürülür.
 
-### Variable Scope
+### Değişken Kapsamı
 
-Now that we’re past basic Rust syntax, we won’t include all the `fn main() {`
-code in examples, so if you’re following along, make sure to put the following
-examples inside a `main` function manually. As a result, our examples will be a
-bit more concise, letting us focus on the actual details rather than
-boilerplate code.
+Artık temel Rust söz dizimini geride bıraktığımıza göre, 
+örneklere `fn main() {` kodunu dahil etmeyeceğiz, bu nedenle takip ediyorsanız, aşağıdaki örnekleri
+`main` fonksiyonunun içine koyduğunuzdan emin olun. Sonuç olarak, örneklerimiz biraz daha kısa olacak ve 
+ortak kod yerine gerçek ayrıntılara odaklanmamıza izin verecek.
 
-As a first example of ownership, we’ll look at the *scope* of some variables. A
-scope is the range within a program for which an item is valid. Take the
-following variable:
+İlk sahiplik örneği olarak, bazı değişkenlerin kapsamına bakacağız. 
+Kapsam, bir öğenin geçerli olduğu bir program içindeki aralıktır. Aşağıdaki değişkeni bakın:
+
 
 ```rust
 let s = "hello";
 ```
 
-The variable `s` refers to a string literal, where the value of the string is
-hardcoded into the text of our program. The variable is valid from the point at
-which it’s declared until the end of the current *scope*. Listing 4-1 shows a
-program with comments annotating where the variable `s` would be valid.
+`s` değişkeni, dizgi değerinin programımızın metnine sabit kodlanmış olduğu bir dizgi değişmezi anlamına gelir. 
+Değişken, bildirildiği noktadan geçerli kapsamın sonuna kadar geçerlidir. Liste 4-1, `s` değişkeninin nerede geçerli 
+olacağını açıklayan açıklamalar içeren bir programı gösterir.
+
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-01/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-1: A variable and the scope in which it is
-valid</span>
+<span class="caption">Liste 4-1: Bir değişken ve geçerli olduğu kapsam
+</span>
 
-In other words, there are two important points in time here:
+Başka bir deyişle, burada iki önemli nokta vardır:
 
-* When `s` comes *into scope*, it is valid.
-* It remains valid until it goes *out of scope*.
+* `s`'in *kapsama* girmesi geçerli bir durumdur.
+* *kapsam dışına* çıkana kadar geçerliliğini korur.
 
-At this point, the relationship between scopes and when variables are valid is
-similar to that in other programming languages. Now we’ll build on top of this
-understanding by introducing the `String` type.
+Bu noktada, kapsamlar ve değişkenlerin ne zaman geçerli olduğu arasındaki ilişki diğer programlama dillerindekine benzer.
+Şimdi `String` türünü tanıtarak bu anlayışın üzerine inşa edeceğiz.
 
 ### The `String` Type
 
-To illustrate the rules of ownership, we need a data type that is more complex
-than those we covered in the [“Data Types”][data-types]<!-- ignore --> section
-of Chapter 3. The types covered previously are all a known size, can be stored
-on the stack and popped off the stack when their scope is over, and can be
-quickly and trivially copied to make a new, independent instance if another
-part of code needs to use the same value in a different scope. But we want to
-look at data that is stored on the heap and explore how Rust knows when to
-clean up that data, and the `String` type is a great example.
+Sahiplik kurallarını göstermek için, Bölüm 3'ün [“Veri Türleri”][data-types]<!-- ignore --> bölümünde ele aldıklarımızdan daha 
+karmaşık bir veri tipine ihtiyacımız var. Yığıt, kapsamı sona erdiğinde ve kodun başka bir bölümünün aynı değeri farklı bir kapsamda kullanması gerekiyorsa, yeni, bağımsız bir örnek oluşturmak için hızlı ve önemsiz bir şekilde kopyalanabilir. 
+Ancak yığında depolanan verilere bakmak ve Rust'ın bu verileri ne zaman temizleyeceğini nasıl bildiğini keşfetmek istiyoruz ve `String` türü 
+bu durum için harika bir örnek.
 
-We’ll concentrate on the parts of `String` that relate to ownership. These
-aspects also apply to other complex data types, whether they are provided by
-the standard library or created by you. We’ll discuss `String` in more depth in
-[Chapter 8][ch8]<!-- ignore -->.
+`String`'in sahiplikle ilgili kısımlarına odaklanacağız. Bu yönler, standart küyüphane tarafından sağlanmış veya sizin tarafınızdan 
+oluşturulmuş olsun (ki diğer karmaşık veri türleri için de geçerlidir). `String`'i [Bölüm 8][ch8]<!-- ignore -->'de daha derinlemesine tartışacağız.
 
-We’ve already seen string literals, where a string value is hardcoded into our
-program. String literals are convenient, but they aren’t suitable for every
-situation in which we may want to use text. One reason is that they’re
-immutable. Another is that not every string value can be known when we write
-our code: for example, what if we want to take user input and store it? For
-these situations, Rust has a second string type, `String`. This type manages
-data allocated on the heap and as such is able to store an amount of text that
-is unknown to us at compile time. You can create a `String` from a string
-literal using the `from` function, like so:
+Bir dizgi değerinin programımıza sabit kodlanmış olduğu dizgi değişmezlerini zaten gördük. 
+Dizgi değişmezleri uygundur, ancak metin kullanmak isteyebileceğimiz her durum için uygun değildirler. 
+Bunun bir nedeni, değişmez olmalarıdır. Bir diğeri ise, kodumuzu yazarken her dizgi değeri bilinemez: 
+örneğin, kullanıcı girdisini alıp depolamak istersek ne olur? Bu durumlar için Rust'ın ikinci bir dizgi türü vardır, 
+`String`. Bu tür, yığına ayrılan verileri yönetir ve bu nedenle derleme zamanında bizim için bilinmeyen bir miktarda metin depolayabilir. 
+`from` fonksiyonunu kullanarak bir dizgi değişmezinden bir `String` oluşturabilirsiniz, şöyle:
 
 ```rust
 let s = String::from("hello");
 ```
 
-The double colon `::` operator allows us to namespace this particular `from`
-function under the `String` type rather than using some sort of name like
-`string_from`. We’ll discuss this syntax more in the [“Method
-Syntax”][method-syntax]<!-- ignore --> section of Chapter 5 and when we talk
-about namespacing with modules in [“Paths for Referring to an Item in the
-Module Tree”][paths-module-tree]<!-- ignore --> in Chapter 7.
+Çift iki nokta üst üste `::` operatörü, 
+`string_from` gibi bir tür isim kullanmak yerine, bu özel fonksiyondan `String` tipi altında isim-alanına izin verir. 
+Bu söz dizimini Bölüm 5'in [“Metod Söz Dizimi”][method-syntax]<!-- ignore --> bölümünde ve Bölüm 7'deki [“Modül Ağacındaki Bir Öğeye Başvurma Yolları”][paths-module-tree]<!-- ignore --> daha fazla tartışacağız.
 
-This kind of string *can* be mutated:
+Bu tür bir dizgi de *değiştirilebilir*:
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-01-can-mutate-string/src/main.rs:here}}
 ```
 
-So, what’s the difference here? Why can `String` be mutated but literals
-cannot? The difference is how these two types deal with memory.
+Peki, buradaki fark nedir? Neden `String` değiştirilebilir, ancak değişmezler (*adı üstünde*) değişemezler? 
+Aradaki fark, bu iki türün bellekle nasıl başa çıktığıdır.
 
-### Memory and Allocation
+### Bellek ve Tahsis
 
-In the case of a string literal, we know the contents at compile time, so the
-text is hardcoded directly into the final executable. This is why string
-literals are fast and efficient. But these properties only come from the string
-literal’s immutability. Unfortunately, we can’t put a blob of memory into the
-binary for each piece of text whose size is unknown at compile time and whose
-size might change while running the program.
+Bir dizgi değişmezi durumunda, içeriğini derleme zamanında biliyoruz, bu nedenle metin doğrudan son yürütülebilir
+dosyaya sabit kodlanmıştır. Bu nedenle dize değişmezleri hızlı ve verimlidir. Ancak bu özellikler yalnızca dize değişmezinin 
+değişmezliğinden gelir. Ne yazık ki, derleme zamanında boyutu bilinmeyen ve programı çalıştırırken boyutu değişebilecek her metin 
+parçası için yürütülebilir ikili dosyaya bir bellek bloğu koyamıyoruz.
 
-With the `String` type, in order to support a mutable, growable piece of text,
-we need to allocate an amount of memory on the heap, unknown at compile time,
-to hold the contents. This means:
+`String` türüyle; değişebilir, büyütülebilir bir metin parçasını desteklemek ve içeriğini tutmak 
+için yığın üzerinde derleme zamanında bilinmeyen bir miktar bellek ayırmamız gerekir. 
 
-* The memory must be requested from the memory allocator at runtime.
-* We need a way of returning this memory to the allocator when we’re
-  done with our `String`.
+Bu, şu anlama gelir:
 
-That first part is done by us: when we call `String::from`, its implementation
-requests the memory it needs. This is pretty much universal in programming
-languages.
+* Bellek, çalışma zamanında bellek ayırıcıdan talep edilmelidir.
+* `String` ile işimiz bittiğinde bu hafızayı ayırıcıya geri döndürmenin 
+  bir yoluna ihtiyacımız vardır.
 
-However, the second part is different. In languages with a *garbage collector
-(GC)*, the GC keeps track of and cleans up memory that isn’t being used
-anymore, and we don’t need to think about it. In most languages without a GC,
-it’s our responsibility to identify when memory is no longer being used and
-call code to explicitly free it, just as we did to request it. Doing this
-correctly has historically been a difficult programming problem. If we forget,
-we’ll waste memory. If we do it too early, we’ll have an invalid variable. If
-we do it twice, that’s a bug too. We need to pair exactly one `allocate` with
-exactly one `free`.
+Bu ilk kısım bizim tarafımızdan yapılır: `String::from`'u çağırdığımızda, 
+süreklemesi ihtiyaç duyduğu hafızayı ister. Bu, programlama dillerinde oldukça evrenseldir.
 
-Rust takes a different path: the memory is automatically returned once the
-variable that owns it goes out of scope. Here’s a version of our scope example
-from Listing 4-1 using a `String` instead of a string literal:
+Ancak ikinci kısım farklıdır. *Çöp toplayıcı (GC)* olan dillerde, GC artık kullanılmayan belleği izler ve 
+temizler. Bellek tahsisi hakkında düşünmemize gerek yoktur. 
+GC olmayan çoğu dilde, belleğin artık kullanılmadığını belirlemek ve tıpkı bizim talep ettiğimiz gibi, 
+belleği açıkça boşaltmak için kodu çağırmak bizim sorumluluğumuzdadır. Bunu doğru yapmak, tarihsel olarak zor bir programlama problemi olmuştur. Unutursak, hafızayı boşa harcarız. Çok erken yaparsak geçersiz bir değişkenimiz olur. İki kez yaparsak, bu da bir hatadır. 
+Tam olarak bir `tahsisi` tam olarak bir `geri verme` ile eşleştirmemiz gerekiyor.
+
+Rust farklı bir yol izler: sahip olduğu değişken kapsam dışına çıktığında bellek otomatik olarak döndürülür. 
+Aşağıda, bir dizgi değişmezi yerine bir `String` kullanarak Liste 4-1'deki kapsam örneğimizin farklı bir sürümü verilmiştir:
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-02-string-scope/src/main.rs:here}}
 ```
 
-There is a natural point at which we can return the memory our `String` needs
-to the allocator: when `s` goes out of scope. When a variable goes out of
-scope, Rust calls a special function for us. This function is called
-[`drop`][drop]<!-- ignore -->, and it’s where the author of `String` can put
-the code to return the memory. Rust calls `drop` automatically at the closing
-curly bracket.
+`String`'imizin ihtiyaç duyduğu belleği ayırıcıya döndürebileceğimiz doğal bir nokta vardır: 
+`s`'in kapsam dışına çıkması. Bir değişken kapsam dışına çıktığında Rust bizim için özel bir fonksiyon çağırır. 
+Bu fonksiyona `drop` denir ve `String` yazarının belleği geri döndürmek için kodu koyabileceği yerdir. 
+Rust çağrıları, kapanış parantezinde otomatik olarak `drop` fonksiyonunu çağırır.
 
-> Note: In C++, this pattern of deallocating resources at the end of an item’s
-> lifetime is sometimes called *Resource Acquisition Is Initialization (RAII)*.
-> The `drop` function in Rust will be familiar to you if you’ve used RAII
-> patterns.
+> Not: C++'ta, bir öğenin kullanım süresinin sonunda kaynakları serbest bırakma modeline
+> *Resource Acquisition Is Initialization (RAII)* adı verilir. 
+> RAII kalıplarını kullandıysanız, Rust'taki `drop` fonksiyonu size tanıdık gelecektir.
 
-This pattern has a profound impact on the way Rust code is written. It may seem
-simple right now, but the behavior of code can be unexpected in more
-complicated situations when we want to have multiple variables use the data
-we’ve allocated on the heap. Let’s explore some of those situations now.
+Bu model, Rust kodunun yazılma şekli üzerinde derin bir etkiye sahiptir.
+Şu anda basit görünebilir, ancak yığında tahsis ettiğimiz verileri birden çok değişkenin kullanmasını istediğimizde, 
+daha karmaşık durumlarda kodun davranışı beklenmedik olabilir. 
+Şimdi bu durumlardan bazılarını inceleyelim.
 
-#### Ways Variables and Data Interact: Move
+#### Değişkenlerin ve Veri Etkileşiminin Yolları: Hareket Ettirme
 
-Multiple variables can interact with the same data in different ways in Rust.
-Let’s look at an example using an integer in Listing 4-2.
+Birden çok değişken, Rust'ta aynı verilerle farklı şekillerde etkileşime girebilir. Liste 4-2'de, 
+tam sayı kullanan bir örneğe bakalım.
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-02/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 4-2: Assigning the integer value of variable `x`
-to `y`</span>
+<span class="caption">Liste 4-2: `x` değişkeninin tam sayı değerini `y`'ye atama</span>
 
-We can probably guess what this is doing: “bind the value `5` to `x`; then make
-a copy of the value in `x` and bind it to `y`.” We now have two variables, `x`
-and `y`, and both equal `5`. This is indeed what is happening, because integers
-are simple values with a known, fixed size, and these two `5` values are pushed
-onto the stack.
+Muhtemelen bunun ne yaptığını tahmin edebiliriz: 
+“`5`'i `x`'e ata; sonra `x`'deki değerin bir kopyasını al ve onu `y`'ye ata.".
+Yani iki değişkenimiz olmuş oluyor, `x` ve `y`'nin her ikisi de `5`'e eşittir. Bu gerçekten olan şeydir, 
+çünkü tam sayılar bilinen, sabit bir boyuta sahip basit değerlerdir ve bu iki `5` değeri yığına itilir.
 
-Now let’s look at the `String` version:
+Hadi `String` versiyonuna bakalım:
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-03-string-move/src/main.rs:here}}
 ```
+Bu çok benzer duruyor, bu yüzden çalışma şeklinin aynı olacağını varsayabiliriz: 
+yani ikinci satır `s1`'deki değerin bir kopyasını alır ve onu `s2`'ye atar. Ama bu tam olarak ne olduğunu açıklamıyor.
 
-This looks very similar, so we might assume that the way it works would be the
-same: that is, the second line would make a copy of the value in `s1` and bind
-it to `s2`. But this isn’t quite what happens.
+Arka kapılar ardında `String`'e ne olduğunu görmek için Şekil 4-1'e bakın. 
+Bir `String`, solda gösterilen üç bölümden oluşur: dizginin içeriğini, uzunluğunu ve kapasitesini tutan belleğe yönelik 
+bir işaretçi. 
+Bu veri grubu yığıtta depolanır. Sağda, içeriği tutan yığın üzerindeki bellek bulunur.
 
-Take a look at Figure 4-1 to see what is happening to `String` under the
-covers. A `String` is made up of three parts, shown on the left: a pointer to
-the memory that holds the contents of the string, a length, and a capacity.
-This group of data is stored on the stack. On the right is the memory on the
-heap that holds the contents.
+<img alt="Bellekteki String" src="img/trpl04-01.svg" class="center" style="width: 50%;" />
 
-<img alt="String in memory" src="img/trpl04-01.svg" class="center" style="width: 50%;" />
+<span class="caption">Şekil 4-1: `s1`'e atanmış `"hello"` değerini tutan bir `String`'in bellekteki temsili</span>
 
-<span class="caption">Figure 4-1: Representation in memory of a `String`
-holding the value `"hello"` bound to `s1`</span>
+Uzunluk, `String` içeriğinin bayt cinsinden ne kadar bellek kullandığıdır. 
+Kapasite, `String`'in ayırıcıdan aldığı bayt cinsinden toplam bellek miktarıdır. 
+Uzunluk ve kapasite arasındaki fark önemlidir, ancak bu bağlamda değil, bu nedenle şimdilik kapasiteyi göz ardı etmekte fayda var.
 
-The length is how much memory, in bytes, the contents of the `String` is
-currently using. The capacity is the total amount of memory, in bytes, that the
-`String` has received from the allocator. The difference between length
-and capacity matters, but not in this context, so for now, it’s fine to ignore
-the capacity.
+`s1`'i `s2`'ye atadığımızda, `String` verileri kopyalanır, yani yığıttaki işaretçiyi, uzunluğu ve kapasiteyi kopyalarız. 
+İşaretçinin başvurduğu yığın üzerindeki verileri kopyalamayız. 
+Başka bir deyişle, bellekteki veri gösterimi Şekil 4-2'ye benzer.
 
-When we assign `s1` to `s2`, the `String` data is copied, meaning we copy the
-pointer, the length, and the capacity that are on the stack. We do not copy the
-data on the heap that the pointer refers to. In other words, the data
-representation in memory looks like Figure 4-2.
+<img alt="s1 ve s2 aynı değere işaret ediyor" src="img/trpl04-02.svg" class="center" style="width: 50%;" />
 
-<img alt="s1 and s2 pointing to the same value" src="img/trpl04-02.svg" class="center" style="width: 50%;" />
+<span class="caption">Şekil 4-2: İşaretçinin, uzunluğun ve `s1` kapasitesinin bir kopyasına sahip olan `s2` değişkeninin bellekteki temsili</span>
 
-<span class="caption">Figure 4-2: Representation in memory of the variable `s2`
-that has a copy of the pointer, length, and capacity of `s1`</span>
+Temsil, Şekil 4-3'e *benzemiyor*; bu, Rust'un yığın verilerini de kopyalaması durumunda belleğin nasıl görüneceğini gösterir. 
+Bunu Rust yapsaydı, yığın üzerindeki veriler de büyük olsaydı `s2 = s1` işlemi çalışma zamanı performansı açısından çok pahalı olabilirdi.
 
-The representation does *not* look like Figure 4-3, which is what memory would
-look like if Rust instead copied the heap data as well. If Rust did this, the
-operation `s2 = s1` could be very expensive in terms of runtime performance if
-the data on the heap were large.
+<img alt="s1 ve s2 iki farklı yeri işaret ediyor" src="img/trpl04-03.svg" class="center" style="width: 50%;" />
 
-<img alt="s1 and s2 to two places" src="img/trpl04-03.svg" class="center" style="width: 50%;" />
+<span class="caption">Şekil 4-3: Rust yığın verilerini de kopyalasaydı `s2 = s1`'in neler yapabileceğine dair başka bir olasılık</span>
 
-<span class="caption">Figure 4-3: Another possibility for what `s2 = s1` might
-do if Rust copied the heap data as well</span>
+Daha önce, bir değişken kapsam dışına çıktığında Rust'ın otomatik olarak `drop` fonksiyonunu çağırdığını ve o değişken için 
+yığın belleğini temizlediğini söylemiştik. Ancak Şekil 4-2, aynı konuma işaret eden her iki veri işaretçisini de göstermektedir. 
+Bu bir sorundur: `s2` ve `s1` kapsam dışına çıktığında, ikisi de aynı belleği boşaltmaya çalışacaklardır. 
+Bu, *çifte serbest bırakma hatası* olarak bilinir ve daha önce bahsettiğimiz bellek güvenlik hatalarından biridir. 
+Belleği iki kez boşaltmak bellek bozulmasına neden olabilir ve bu da potansiyel olarak güvenlik açıklarına yol açabilir.
 
-Earlier, we said that when a variable goes out of scope, Rust automatically
-calls the `drop` function and cleans up the heap memory for that variable. But
-Figure 4-2 shows both data pointers pointing to the same location. This is a
-problem: when `s2` and `s1` go out of scope, they will both try to free the
-same memory. This is known as a *double free* error and is one of the memory
-safety bugs we mentioned previously. Freeing memory twice can lead to memory
-corruption, which can potentially lead to security vulnerabilities.
-
-To ensure memory safety, after the line `let s2 = s1`, Rust considers `s1` as
-no longer valid. Therefore, Rust doesn’t need to free anything when `s1` goes
-out of scope. Check out what happens when you try to use `s1` after `s2` is
-created; it won’t work:
+Bellek güvenliğini sağlamak için, `let s2 = s1` satırından sonra Rust, `s1`'in artık geçerli olmadığını düşünür. 
+Bu nedenle, `s1` kapsam dışına çıktığında Rust'ın hiçbir şeyi serbest bırakmasına gerek yoktur. 
+`s2` oluşturulduktan sonra `s1`'i kullanmaya çalıştığınızda ne olduğuna bakın; çalışmayacaktır:
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/src/main.rs:here}}
 ```
 
-You’ll get an error like this because Rust prevents you from using the
-invalidated reference:
+Rust, geçersiz kılınan referansı kullanmanızı engellediği için şöyle bir hata alırsınız:
 
 ```console
 {{#include ../listings/ch04-understanding-ownership/no-listing-04-cant-use-after-move/output.txt}}
 ```
 
-If you’ve heard the terms *shallow copy* and *deep copy* while working with
-other languages, the concept of copying the pointer, length, and capacity
-without copying the data probably sounds like making a shallow copy. But
-because Rust also invalidates the first variable, instead of calling it a
-shallow copy, it’s known as a *move*. In this example, we would say that
-`s1` was *moved* into `s2`. So what actually happens is shown in Figure 4-4.
+Diğer dillerle çalışırken *sığ kopyalama* ve *derin kopyalama* terimlerini duymuşsanız, verileri kopyalamadan işaretçiyi, 
+uzunluğu ve kapasiteyi kopyalama kavramı muhtemelen sığ bir kopya oluşturmaya benziyor. 
+Ancak Rust aynı zamanda ilk değişkeni de geçersiz kıldığı için, onu sığ bir kopya olarak adlandırmak yerine *hareket* olarak adlandırırız. 
+Bu örnekte, `s1`'in `s2`'ye hareket ettiğini söyleyebiliriz. Yani gerçekte ne olduğu Şekil 4-4'te gösterilmektedir.
 
-<img alt="s1 moved to s2" src="img/trpl04-04.svg" class="center" style="width: 50%;" />
+<img alt="s1, s2'ye hareket ettirildi" src="img/trpl04-04.svg" class="center" style="width: 50%;" />
 
-<span class="caption">Figure 4-4: Representation in memory after `s1` has been
-invalidated</span>
+<span class="caption">Şekil 4-4: `s1` geçersiz kılındıktan sonra hafızadaki temsili</span>
 
-That solves our problem! With only `s2` valid, when it goes out of scope, it
-alone will free the memory, and we’re done.
+Bu bizim sorunumuzu çözüyor! Yalnızca `s2` geçerli olduğunda, 
+kapsam dışına çıktığında tek başına belleği boşaltır ve yapmamız gereken bir ley kalmaz.
 
-In addition, there’s a design choice that’s implied by this: Rust will never
-automatically create “deep” copies of your data. Therefore, any *automatic*
-copying can be assumed to be inexpensive in terms of runtime performance.
+Ek olarak, bununla ima edilen bir tasarım seçeneği vardır: 
+Rust, verilerinizin “derin” kopyalarını asla otomatik olarak oluşturmaz. 
+Bu nedenle, herhangi bir otomatik kopyalamanın çalışma zamanı performansı açısından ucuz olduğu varsayılabilir.
 
-#### Ways Variables and Data Interact: Clone
+#### Değişkenlerin ve Veri Etkileşiminin Yolları: Klonlama
 
-If we *do* want to deeply copy the heap data of the `String`, not just the
-stack data, we can use a common method called `clone`. We’ll discuss method
-syntax in Chapter 5, but because methods are a common feature in many
-programming languages, you’ve probably seen them before.
+Yalnızca yığıt verilerini değil, `String`'in yığın verilerini de derinlemesine kopyalamak istiyorsak, 
+`clone` adı verilen ortak metodu kullanabiliriz. 
+Metod söz dizimini Bölüm 5'te tartışacağız, ancak metodlar birçok programlama dilinde ortak bir özellik olduğundan, 
+muhtemelen onları daha önce görmüşsünüzdür.
 
-Here’s an example of the `clone` method in action:
+İşte çalışma halindeki `clone` metodunun bir örneği:
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-05-clone/src/main.rs:here}}
 ```
 
-This works just fine and explicitly produces the behavior shown in Figure 4-3,
-where the heap data *does* get copied.
+Bu gayet iyi çalışır ve yığın verilerinin kopyalandığı Şekil 4-3'te gösterilen davranışı açıkça *üretir*.
 
-When you see a call to `clone`, you know that some arbitrary code is being
-executed and that code may be expensive. It’s a visual indicator that something
-different is going on.
+Bir `clone` çağrısı gördüğünüzde, bazı rastgele kodların yürütüldüğünü ve bu kodun pahalı olabileceğini bilirsiniz. 
+Bu, farklı bir şeyin olup bittiğinin bir göstergesidir.
 
-#### Stack-Only Data: Copy
+#### Yalnızca Yığıt Kullanan Veriler: Kopyalama
 
-There’s another wrinkle we haven’t talked about yet. This code using integers –
-part of which was shown in Listing 4-2 – works and is valid:
+Henüz bahsetmediğimiz başka bir olay daha var. Bir kısmı Liste 4-2'de gösterilen 
+tam sayıları kullanan bu kod çalışır ve geçerlidir:
+
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/no-listing-06-copy/src/main.rs:here}}
 ```
 
-But this code seems to contradict what we just learned: we don’t have a call to
-`clone`, but `x` is still valid and wasn’t moved into `y`.
+Ancak bu kod, az önce öğrendiklerimizle çelişiyor gibi görünüyor: `clone` çağrımız yok, ancak `x` hala geçerli ve `y`'ye hareket ettirilmedi.
 
-The reason is that types such as integers that have a known size at compile
-time are stored entirely on the stack, so copies of the actual values are quick
-to make. That means there’s no reason we would want to prevent `x` from being
-valid after we create the variable `y`. In other words, there’s no difference
-between deep and shallow copying here, so calling `clone` wouldn’t do anything
-different from the usual shallow copying and we can leave it out.
+Bunun nedeni, derleme zamanında boyutu bilinen tam sayılar gibi türlerin tamamen yığıtta saklanmasıdır, 
+bu nedenle gerçek değerlerin kopyaları hızlı bir şekilde oluşturulur. Bu, `y` değişkenini oluşturduktan sonra `x`'in geçerli olmasını engellemek istememiz için hiçbir neden olmadığı anlamına gelir. Başka bir deyişle, burada derin ve sığ kopyalama arasında bir fark yoktur, 
+bu nedenle `clone` çağırmak normal sığ kopyalamadan farklı bir şey yapmaz ve bunu dışarıda bırakabiliriz.
 
-Rust has a special annotation called the `Copy` trait that we can place on
-types that are stored on the stack, as integers are (we’ll talk more about
-traits in [Chapter 10][traits]<!-- ignore -->). If a type implements the `Copy`
-trait, variables that use it do not move, but rather are trivially copied,
-making them still valid after assignment to another variable.
+Rust'ın, tam sayılar gibi yığıtta depolanan türlere yerleştirebileceğimiz `Copy` tanımı adı verilen özel bir açıklaması vardır 
+(tanımlar hakkında [Bölüm 10][traits]<!-- ignore -->'da daha fazla konuşacağız). 
+Bir tür, `Copy` özelliğini süreklerse (uygularsa), onu kullanan değişkenler hareket etmez, 
+bunun yerine önemsiz bir şekilde kopyalanır, bu da onları başka bir değişkene atandıktan sonra hala geçerli hale getirir.
 
-Rust won’t let us annotate a type with `Copy` if the type, or any of its parts,
-has implemented the `Drop` trait. If the type needs something special to happen
-when the value goes out of scope and we add the `Copy` annotation to that type,
-we’ll get a compile-time error. To learn about how to add the `Copy` annotation
-to your type to implement the trait, see [“Derivable
-Traits”][derivable-traits]<!-- ignore --> in Appendix C.
+Rust, tür veya türün herhangi bir parçası `Drop` tanımını süreklemişse, bir türe `Copy` ile açıklama eklememize izin vermez. 
+Değer kapsam dışına çıktığında türün özel bir şeye ihtiyacı varsa ve bu türe `Copy` ek açıklamasını eklersek, 
+bir derleme zamanı hatası alırız. Niteliği uygulamak için `Copy` ek açıklamasını türünüze nasıl ekleyeceğinizi öğrenmek için 
+Ek C'deki [“Türetilebilir Tanımlar”][derivable-traits]<!-- ignore --> başlığına bakın.
 
-So what types implement the `Copy` trait? You can check the documentation for
-the given type to be sure, but as a general rule, any group of simple scalar
-values can implement `Copy`, and nothing that requires allocation or is some
-form of resource can implement `Copy`. Here are some of the types that
-implement `Copy`:
+Peki, `Copy` tanımını hangi türler sürekler? Emin olmak için verilen türün dokümantasyonunu kontrol edebilirsiniz, 
+ancak genel bir kural olarak, herhangi bir basit skaler değer grubu `Copy`'i sürekleyebilir. 
+`Copy`'i sürekleyen türlerden bazıları şunlardır:
 
-* All the integer types, such as `u32`.
-* The Boolean type, `bool`, with values `true` and `false`.
-* All the floating point types, such as `f64`.
-* The character type, `char`.
-* Tuples, if they only contain types that also implement `Copy`. For example,
-  `(i32, i32)` implements `Copy`, but `(i32, String)` does not.
+* Tüm tam sayı türleri, meselax `u32`.
+* Boole türü, `bool`, `true` ve `false`.
+* Tüm kayan nokta türleri, mesela `f64`.
+* Karakter türü, `char`.
+* Demetler, eğer tutulan tür de `Copy`'i süreklemiş ise. Mesela,
+  `(i32, i32)`, `Copy`i sürekler fakat `(i32, String)` süreklemez.
 
-### Ownership and Functions
+### Sahiplik ve Fonksiyonlar
 
-The mechanics of passing a value to a function are similar to those when
-assigning a value to a variable. Passing a variable to a function will move or
-copy, just as assignment does. Listing 4-3 has an example with some annotations
-showing where variables go into and out of scope.
+Bir fonksiyona değer aktarmanın mekanikleri, bir değişkene değer atamaya benzer. 
+Bir fonksiyona değişken iletmek, tıpkı atamada olduğu gibi taşınır veya kopyalanır. 
+Liste 4-3, değişkenlerin nerede kapsam içine girip nerede kapsam dışında kaldığını 
+gösteren bazı açıklamalar içeren bir örneğe sahiptir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-03/src/main.rs}}
 ```
 
-<span class="caption">Listing 4-3: Functions with ownership and scope
-annotated</span>
+<span class="caption">Liste 4-3: Sahiplik ve kapsam açıklamalı fonksiyonlar</span>
 
-If we tried to use `s` after the call to `takes_ownership`, Rust would throw a
-compile-time error. These static checks protect us from mistakes. Try adding
-code to `main` that uses `s` and `x` to see where you can use them and where
-the ownership rules prevent you from doing so.
+`takes_ownership` çağrısından sonra `s`'i kullanmaya çalışırsak, 
+Rust bir derleme zamanı hatası verir. Bu tarz statik kontroller bizi hatalardan korur. 
+Bunları nerede kullanabileceğinizi ve sahiplik kurallarının bunu yapmanızı nerede engellediğini görmek 
+için `s` ve `x` kullanan kodu `main`'e eklemeyi deneyin.
 
-### Return Values and Scope
+### Dönüş Değerleri ve Kapsam
 
-Returning values can also transfer ownership. Listing 4-4 shows an example
-of a function that returns some value, with similar annotations as those in
-Listing 4-3.
+Dönen değerler de sahipliği aktarabilir. 
+Liste 4-4, Liste 4-3'tekilere benzer açıklamalarla bir değer döndüren bir fonksiyon örneğini gösterir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-04/src/main.rs}}
 ```
 
-<span class="caption">Listing 4-4: Transferring ownership of return
-values</span>
+<span class="caption">Liste 4-4: Dönüş değerlerinin sahipliğini aktarma</span>
 
-The ownership of a variable follows the same pattern every time: assigning a
-value to another variable moves it. When a variable that includes data on the
-heap goes out of scope, the value will be cleaned up by `drop` unless ownership
-of the data has been moved to another variable.
+Bir değişkenin sahipliği her seferinde aynı kalıbı takip eder: 
+başka bir değişkene bir değer atamak onu hareket ettirir. 
+Yığın üzerindeki verileri içeren bir değişken kapsam dışına çıktığında, 
+verilerin sahipliği başka bir değişkene taşınmadıkça değer `drop` ile temizlenir.
 
-While this works, taking ownership and then returning ownership with every
-function is a bit tedious. What if we want to let a function use a value but
-not take ownership? It’s quite annoying that anything we pass in also needs to
-be passed back if we want to use it again, in addition to any data resulting
-from the body of the function that we might want to return as well.
+Bu işe yararken, sahiplik almak ve ardından her fonksiyonla birlikte sahipliğini iade etmek biraz sıkıcıdır. 
+Ya bir fonksiyonun bir değer kullanmasına izin vermek istiyorsak ancak sahipliğini almak istemiyorsak? 
+Döndürmek isteyebileceğimiz fonksiyonun gövdesinden kaynaklanan herhangi bir veriye ek olarak, 
+tekrar kullanmak istiyorsak ilettiğimiz herhangi bir şeyin de geri iletilmesinin gerekmesi oldukça can sıkıcıdır.
 
-Rust does let us return multiple values using a tuple, as shown in Listing 4-5.
+Rust, Liste 4-5'te gösterildiği gibi, bir demet kullanarak birden çok değer döndürmemize izin verir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch04-understanding-ownership/listing-04-05/src/main.rs}}
 ```
 
-<span class="caption">Listing 4-5: Returning ownership of parameters</span>
+<span class="caption">Liste 4-5: Parametrelerin sahipliğini geri döndürme</span>
 
-But this is too much ceremony and a lot of work for a concept that should be
-common. Luckily for us, Rust has a feature for using a value without
-transferring ownership, called *references*.
+Ancak bu, yaygın olması gereken bir konsept için çok fazla başımıza iş açıyor. 
+Şansımıza Rust, *referans* adı verilen, sahipliği devretmeden bir değeri kullanma özelliğine sahip.
 
 [data-types]: ch03-02-data-types.html#data-types
 [ch8]: ch08-02-strings.html
