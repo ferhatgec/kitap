@@ -1,6 +1,6 @@
 ## Referanslar ve Ödünç Alma
 
-Liste 4-5'teki tanımlama grubu koduyla ilgili sorun, `String`'i çağıran fonksiyona döndürmemiz gerekmesidir, 
+Liste 4-5'teki tanımlama grubu koduyla ilgili sorun, `String`'i çağıran fonksiyona döndürmemizi gerektirmesidir, 
 böylece `String`, `calculate_length` çağrısından sonra hala `String`'i kullanabiliriz, çünkü `String`, içine taşınmıştır. 
 Bunun yerine, `String` değerine bir referans sağlayabiliriz. Referans, bir işaretçi gibidir, çünkü o adreste depolanan verilere erişmek için takip edebileceğimiz bir adrestir; bu veriler başka bir değişkene aittir. Bir işaretçiden farklı olarak, bir referansın, o referansın ömrü boyunca belirli bir türün geçerli bir değerine işaret etmesi garanti edilir. Değerin sahipliğini almak yerine parametre olarak bir nesneye referansı olan bir 
 `calculate_length` fonksiyonunu nasıl tanımlayacağınız ve kullanacağınız aşağıda açıklanmıştır:
