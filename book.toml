@@ -1,5 +1,5 @@
 [book]
-title = "The Rust Programming Language"
+title = "Rust Programlama Dili"
 authors = ["Steve Klabnik", "Carol Nichols", "Contributions from the Rust Community"]
 
 [output.html]
