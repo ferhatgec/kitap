@@ -1,0 +1,602 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Sahiplik Nedir? - Rust Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Rust Programlama Dili</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Ön söz</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Başlangıç</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Başlarken</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Yükleme</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Merhaba, Dünya!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Merhaba, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Tahmin Oyunu Programlamak</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Yaygın Programlama Kavramları</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Değişkenler ve Değişebilirlik</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Yorum Satırları</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Kontrol Akışı</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Sahipliği Anlamak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html" class="active"><strong aria-hidden="true">4.1.</strong> Sahiplik Nedir?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Referanslar ve Ödünç Alma Mekanizması</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Dilim Türü</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> İlintili Verileri Yapılandırmak için Yapıları Kullanmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Yapıları Tanımlamak ve Örneklendirmek</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Yapıları Kullanan Örnek Bir Program</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Metod Söz dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Numaralandırılmış Yapılar ve Model Eşleme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Numaralandırılmış Yapı Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> match Kontrol Akış Yapısı</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> if let ile Kısa Kontrol Akış Yapısı</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Büyüyen Projeleri Paketler, Kasalar ve Modüllerle Yönetme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Paketler ve Kasalar</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Gizlilik ve Kontrol Kapsamı için Modüller Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Modül Ağacındaki bir Öğeyi Referanslama Yolları</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> use Kullanarak Yolları Kapsama Getirmek</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Modülleri Farklı Dosyalara Ayırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Yaygın Koleksiyon Türleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Veri Listelerini Vektörlerle Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> UTF-8 ile Kodlanmış Dizgiyi Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> İlişkili Değerlerle Anahtarları Saklamak</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Hata Yönetimi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> panic! ile Kurtarılamayan Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Result ile Kurtarılabilir Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic!lemek ya da panic!lememek</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Yaygın Türler, Tanımlar ve Ömürlükler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Yaygın Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Tanımlar: Yaygın Davranış Tanımlama</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Ömürlük Yapısıyla Referans Doğrulama</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Otomatikleşmiş Testler Yazma</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Testler Nasıl Yazılır</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Testlerin Nasıl Çalıştığını Kontrol Etmek</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Test Organizasyonu</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Bir G/Ç Projesi: Komut Satırı Programı Yazmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Komut Satırı Argümanlarını Ayrıştırmak</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Dosya Okumak</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Modülerliği ve Hata Yönetimini Geliştirmek için Yeniden Düzenlemek</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Test Odaklı Geliştirme ile Kütüphanenin İşlevliğini Artırmak</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Ortam Değişkenlerini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Hata Mesajlarını Standart Çıktı yerine Standart Hata Akışına Yazdırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Fonksiyonel Dil Özellikleri: Yineleyiciler ve Kapanış İfadeleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Kapanış İfadeleri: Ortamda Tutulabilen Anonim Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Yineleyicilerle Bir Dizi Öğeyi İşlemek</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> G/Ç Projemizi Geliştirmek</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Performans Kıyaslaması: Döngüler vs. Yineleyiciler</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Cargo ve Crates.io Hakkında Daha Fazla Bilgi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Dağıtım Profilleriyle İnşaları Özelleştirmek</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Crates.io'da Bir Kasa Paylaşmak</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Cargo Çalışma Alanları</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> cargo install ile Crates.io'dan Derlenmişleri Yüklemek</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Özel Komutlarla Cargo'yu Genişletmek</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Akıllı İşaretçiler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Yığındaki Verileri İşaretlemek için Box&lt;T&gt; Kullanmak</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Akıllı İşaretçilere Deref ile Normal Referanslar Gibi Tanım Yapmak</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Drop Tanımlamasıyla Temizlik Aşamasında Kod Çalıştırmak</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, Referans Sayaçlı Akıllı İşaretçi</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; ve İç Değişebilirlik Modeli</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Referans Döngüleri Bellek Sızdırabilir</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Korkusuz Eşzamanlılık</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Kodu Eşzamanlı Çalıştırmak için İş Parçacıklarını Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Konular Arasında Veri Aktarmak için İleti Geçişini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Paylaşımlı Eşzamanlık</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Sync ve Send Tanımlarıyla Genişletilebilir Eşzamanlılık</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Rust'taki Nesne Yönemimli Programlama Özellikleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Nesne Yönelimli Dillerin Karakteristik Özellikleri</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Farklı Türlerdeki Değerlere İzin Veren Özellik Tanımlarını Kullanma</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Nesneye Yönelik Tasarım Modelini Süreklemek</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Modeller ve Eşleştirme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Modeller Her Yerde Kullanılabilir</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Reddedilebilirlik: Modelin Eşleştirmede Başarısız Olup Olmayacağı</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Model Söz Dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Gelişmiş Özellikler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Güvensiz Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Gelişmiş Tanımlar</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Gelişmiş Türler</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Gelimiş Fonksiyonlar ve Kapanış İfadeleri</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Makrolar</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Final Projesi: Çoklu İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Tek İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Tek İş Parçacıklı Sunucumuzu Çok Parçacıklı Sunucuya Çevirmek</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> Zarifçe Kapatmak ve Temizlemek</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Eklemeler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> A - Anahtar Sözcükler</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B - Operatörler ve Semboller</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C - Türetilebilir Tanımlar</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D - Kullanışlı Geliştirme Araçları</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E - Sürümler</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F - Kitap'ın Çevirileri</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G - Rust ve “Gecelik Rust” Nasıl Yapıldı</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="sahiplik-nedir"><a class="header" href="#sahiplik-nedir">Sahiplik Nedir?</a></h2>
+<p><em>Sahiplik</em>, bir Rust programının belleği nasıl yönettiğini yöneten bir dizi kuraldır. 
+Tüm programlar, çalışırken bilgisayarın belleğini kullanma şeklini yönetmek zorundadır. 
+Bazı dillerde, program çalışırken düzenli olarak artık kullanılmayan belleği arayan çöp toplama vardır; diğer dillerde, 
+programcı belleği açıkça tahsis etmeli ve serbest bırakmalıdır. Rust üçüncü bir yaklaşım kullanır: 
+bellek, derleyicinin kontrol ettiği bir dizi kurala sahip bir sahiplik sistemi aracılığıyla yönetilir. 
+Kurallardan herhangi biri ihlal edilirse program derlenmeyecektir. Sahiplik özelliklerinin hiçbiri, 
+çalışırken programınızı yavaşlatmaz.</p>
+<p>Sahiplik birçok programcı için yeni bir kavram olduğu için alışması biraz zaman alıyor. 
+İyi haber şu ki, Rust ve sahiplik sisteminin kuralları konusunda ne kadar deneyimli olursanız, 
+doğal olarak güvenli ve verimli kod geliştirmeyi o kadar kolay bulacaksınız. Öğrenmeye devam edin!</p>
+<p>Sahipliği anladığınızda, Rust'ı benzersiz kılan özellikleri anlamak için sağlam bir temele sahip olacaksınız. 
+Bu bölümde, çok yaygın bir veri yapısına odaklanan bazı örnekler üzerinde çalışarak sahipliği öğreneceksiniz (bkz. <em>dizgiler</em>).</p>
+<blockquote>
+<h3 id="yığıt-ve-yığın"><a class="header" href="#yığıt-ve-yığın">Yığıt ve Yığın</a></h3>
+<p>Çoğu programlama dili, yığıt ve yığın hakkında çok sık düşünmenizi gerektirecek  özelliklere sahip değildir. 
+Ancak Rust gibi bir sistem programlama dilinde, bir değerin yığıtta mı yoksa yığında mı olması dilin nasıl davrandığını 
+ve neden belirli kararlar vermeniz gerektiğini etkiler. Sahiplik, bu bölümün ilerleyen kısımlarında yığıt ve yığınla ilgili olarak 
+açıklanacaktır, bu nedenle burada hazırlık aşamasında olan kısa bir açıklama bulunmaktadır.
+Hem yığıt hem de yığın, çalışma zamanında kodunuzun kullanabileceği bellek parçalarıdır, 
+ancak bunlar farklı şekillerde yapılandırılmıştır. Yığıt, değerleri aldığı sırayla saklar ve değerleri ters sırada tutar. 
+Buna <em>son giren ilk çıkar</em> (LIFO) denir. 
+Bir tabak yığıtını düşünün: daha fazla tabak eklediğinizde, 
+onları yığıtın üstüne koyarsınız ve bir tabağa ihtiyacınız olduğunda üstten bir tane alırsınız. 
+Ortadan veya alttan tabak eklemek veya çıkarmak da işe yaramaz! 
+Veri eklemeye yığıta itme denir ve veri kaldırmaya yığıttan çıkarma denir. 
+Yığıtta depolanan tüm verilerin bilinen, sabit bir boyutu olmalıdır. Derleme zamanında bilinmeyen bir boyuta veya değişebilecek bir
+boyuta sahip veriler, yığın (heap) üzerinde depolanmalıdır.</p>
+<p>Yığın daha az organizedir: yığına veri koyduğunuzda, belirli bir miktar alan talep edersiniz. 
+Bellek ayırıcı, yığında yeterince büyük boş bir nokta bulur, onu kullanımda olarak işaretler ve o konumun adresi olan bir işaretçi
+döndürür. Bu işleme yığın üzerinde ayırma denir ve bazen sadece ayırma olarak kısaltılır (değerleri yığına itmek ayırma olarak kabul edilmez). 
+Yığın işaretçisi bilinen, sabit bir boyut olduğundan, işaretçiyi yığında saklayabilirsiniz, ancak gerçek verileri istediğinizde 
+işaretçiyi izlemelisiniz. Bir restoranda oturduğunuzu düşünün. Girdiğinizde grubunuzdaki kişi sayısını 
+belirtiyorsunuz ve görevliler herkese uygun boş bir masa bulup sizi oraya yönlendiriyor. 
+Grubunuzdan biri geç gelirse, sizi bulmak için nerede oturduğunuzu sorabilir.
+Yığıta itme, yığında tahsis etmekten daha hızlıdır, çünkü ayırıcı hiçbir zaman yeni verileri depolamak için 
+bir yer aramak zorunda kalmaz; bu konum her zaman yığıtın en üstündedir. Nispeten, yığın üzerinde alan tahsis 
+etmek daha fazla iş gerektirir, çünkü tahsis edenin önce verileri tutacak kadar büyük bir alan bulması ve 
+ardından bir sonraki tahsise hazırlanmak için defter tutma yapması gerekir.
+Yığındaki verilere erişmek, oraya ulaşmak için bir işaretçiyi izlemeniz gerektiğinden yığıttaki 
+verilere erişmekten daha yavaştır. Çağdaş işlemciler, bellekte daha az zıplarlarsa daha hızlı 
+olarak kabul edilir. Analojiye devam edersek, bir restoranda birçok masadan sipariş alan bir sunucu düşünün. 
+Bir sonraki masaya geçmeden önce tüm siparişleri bir masada toplamak en verimli yöntemdir. 
+A masasından bir sipariş, sonra B masasından, sonra tekrar A'dan ve sonra tekrar B'den bir sipariş almak çok 
+daha yavaş bir süreç olacaktır. Aynı şekilde, bir işlemci daha uzakta (yığın üzerinde olabileceği gibi) yerine diğer 
+verilere yakın olan (yığıt üzerinde olduğu gibi) veriler üzerinde çalışıyorsa işini daha iyi yapabilir.</p>
+<p>Kodunuz bir fonksiyonu çağırdığında, fonksiyona iletilen değerler (potansiyel olarak yığın üzerindeki verilere işaretçiler de dahil) 
+ve işlevin yerel değişkenleri yığıta aktarılır. Fonksiyon bittiğinde, bu değerler yığıttan atılır.
+Kodun hangi bölümlerinin yığındaki hangi verileri kullandığını takip etmek, yığındaki yinelenen veri miktarını 
+en aza indirmek ve alanınız bitmemek için yığındaki kullanılmayan verileri temizlemek, 
+sahipliğin ele aldığı sorunlardır. Sahipliği anladıktan sonra, yığıt ve yığın hakkında çok sık düşünmenize gerek kalmayacak, 
+ancak sahipliğin asıl amacının yığın verilerini yönetmek olduğunu bilmek, neden böyle çalıştığını açıklamaya yardımcı olabilir.</p>
+</blockquote>
+<h3 id="sahiplik-kuralları"><a class="header" href="#sahiplik-kuralları">Sahiplik Kuralları</a></h3>
+<p>İlk olarak, sahiplik kurallarına bir göz atalım. 
+Bunları gösteren örnekler üzerinde çalışırken bu kuralları aklınızda bulundurun:</p>
+<ul>
+<li>Rust'ta her değerin bir <em>sahibi</em> vardır.</li>
+<li>Aynı zamanda sadece bir sahip olabilir.</li>
+<li>Sahip kapsam dışına çıktığında değer düşürülür.</li>
+</ul>
+<h3 id="değişken-kapsamı"><a class="header" href="#değişken-kapsamı">Değişken Kapsamı</a></h3>
+<p>Artık temel Rust söz dizimini geride bıraktığımıza göre, 
+örneklere <code>fn main() {</code> kodunu dahil etmeyeceğiz, bu nedenle takip ediyorsanız, aşağıdaki örnekleri
+<code>main</code> fonksiyonunun içine koyduğunuzdan emin olun. Sonuç olarak, örneklerimiz biraz daha kısa olacak ve 
+ortak kod yerine gerçek ayrıntılara odaklanmamıza izin verecek.</p>
+<p>İlk sahiplik örneği olarak, bazı değişkenlerin kapsamına bakacağız. 
+Kapsam, bir öğenin geçerli olduğu bir program içindeki aralıktır. Aşağıdaki değişkeni bakın:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = &quot;hello&quot;;
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>s</code> değişkeni, dizgi değerinin programımızın metnine sabit kodlanmış olduğu bir dizgi değişmezi anlamına gelir. 
+Değişken, bildirildiği noktadan geçerli kapsamın sonuna kadar geçerlidir. Liste 4-1, <code>s</code> değişkeninin nerede geçerli 
+olacağını açıklayan açıklamalar içeren bir programı gösterir.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {                      // s is not valid here, it’s not yet declared
+        let s = &quot;hello&quot;;   // s is valid from this point forward
+
+        // do stuff with s
+    }                      // this scope is now over, and s is no longer valid
+<span class="boring">}
+</span></code></pre></pre>
+<p><span class="caption">Liste 4-1: Bir değişken ve geçerli olduğu kapsam
+</span></p>
+<p>Başka bir deyişle, burada iki önemli nokta vardır:</p>
+<ul>
+<li><code>s</code>'in <em>kapsama</em> girmesi geçerli bir durumdur.</li>
+<li><em>kapsam dışına</em> çıkana kadar geçerliliğini korur.</li>
+</ul>
+<p>Bu noktada, kapsamlar ve değişkenlerin ne zaman geçerli olduğu arasındaki ilişki diğer programlama dillerindekine benzer.
+Şimdi <code>String</code> türünü tanıtarak bu anlayışın üzerine inşa edeceğiz.</p>
+<h3 id="string-türü"><a class="header" href="#string-türü"><code>String</code> Türü</a></h3>
+<p>Sahiplik kurallarını göstermek için, Bölüm 3'ün <a href="ch03-02-data-types.html#data-types">“Veri Türleri”</a><!-- ignore --> bölümünde ele aldıklarımızdan daha 
+karmaşık bir veri tipine ihtiyacımız var. Yığıt, kapsamı sona erdiğinde ve kodun başka bir bölümünün aynı değeri farklı bir kapsamda kullanması gerekiyorsa, yeni, bağımsız bir örnek oluşturmak için hızlı ve önemsiz bir şekilde kopyalanabilir. 
+Ancak yığında depolanan verilere bakmak ve Rust'ın bu verileri ne zaman temizleyeceğini nasıl bildiğini keşfetmek istiyoruz ve <code>String</code> türü 
+bu durum için harika bir örnek.</p>
+<p><code>String</code>'in sahiplikle ilgili kısımlarına odaklanacağız. Bu yönler, standart küyüphane tarafından sağlanmış veya sizin tarafınızdan 
+oluşturulmuş olsun (ki diğer karmaşık veri türleri için de geçerlidir). <code>String</code>'i <a href="ch08-02-strings.html">Bölüm 8</a><!-- ignore -->'de daha derinlemesine tartışacağız.</p>
+<p>Bir dizgi değerinin programımıza sabit kodlanmış olduğu dizgi değişmezlerini zaten gördük. 
+Dizgi değişmezleri uygundur, ancak metin kullanmak isteyebileceğimiz her durum için uygun değildirler. 
+Bunun bir nedeni, değişmez olmalarıdır. Bir diğeri ise, kodumuzu yazarken her dizgi değeri bilinemez: 
+örneğin, kullanıcı girdisini alıp depolamak istersek ne olur? Bu durumlar için Rust'ın ikinci bir dizgi türü vardır, 
+<code>String</code>. Bu tür, yığına ayrılan verileri yönetir ve bu nedenle derleme zamanında bizim için bilinmeyen bir miktarda metin depolayabilir. 
+<code>from</code> fonksiyonunu kullanarak bir dizgi değişmezinden bir <code>String</code> oluşturabilirsiniz, şöyle:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from(&quot;hello&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Çift iki nokta üst üste <code>::</code> operatörü, 
+<code>string_from</code> gibi bir tür isim kullanmak yerine, bu özel fonksiyondan <code>String</code> tipi altında isim-alanına izin verir. 
+Bu söz dizimini Bölüm 5'in <a href="ch05-03-method-syntax.html#method-syntax">“Metod Söz Dizimi”</a><!-- ignore --> bölümünde ve Bölüm 7'deki <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Modül Ağacındaki Bir Öğeye Başvurma Yolları”</a><!-- ignore --> daha fazla tartışacağız.</p>
+<p>Bu tür bir dizgi de <em>değiştirilebilir</em>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from(&quot;hello&quot;);
+
+    s.push_str(&quot;, world!&quot;); // push_str() appends a literal to a String
+
+    println!(&quot;{}&quot;, s); // This will print `hello, world!`
+<span class="boring">}
+</span></code></pre></pre>
+<p>Peki, buradaki fark nedir? Neden <code>String</code> değiştirilebilir, ancak değişmezler (<em>adı üstünde</em>) değişemezler? 
+Aradaki fark, bu iki türün bellekle nasıl başa çıktığıdır.</p>
+<h3 id="bellek-ve-tahsis"><a class="header" href="#bellek-ve-tahsis">Bellek ve Tahsis</a></h3>
+<p>Bir dizgi değişmezi durumunda, içeriğini derleme zamanında biliyoruz, bu nedenle metin doğrudan son yürütülebilir
+dosyaya sabit kodlanmıştır. Bu nedenle dize değişmezleri hızlı ve verimlidir. Ancak bu özellikler yalnızca dize değişmezinin 
+değişmezliğinden gelir. Ne yazık ki, derleme zamanında boyutu bilinmeyen ve programı çalıştırırken boyutu değişebilecek her metin 
+parçası için yürütülebilir ikili dosyaya bir bellek bloğu koyamıyoruz.</p>
+<p><code>String</code> türüyle; değişebilir, büyütülebilir bir metin parçasını desteklemek ve içeriğini tutmak 
+için yığın üzerinde derleme zamanında bilinmeyen bir miktar bellek ayırmamız gerekir. </p>
+<p>Bu, şu anlama gelir:</p>
+<ul>
+<li>Bellek, çalışma zamanında bellek ayırıcıdan talep edilmelidir.</li>
+<li><code>String</code> ile işimiz bittiğinde bu hafızayı ayırıcıya geri döndürmenin 
+bir yoluna ihtiyacımız vardır.</li>
+</ul>
+<p>Bu ilk kısım bizim tarafımızdan yapılır: <code>String::from</code>'u çağırdığımızda, 
+süreklemesi ihtiyaç duyduğu hafızayı ister. Bu, programlama dillerinde oldukça evrenseldir.</p>
+<p>Ancak ikinci kısım farklıdır. <em>Çöp toplayıcı (GC)</em> olan dillerde, GC artık kullanılmayan belleği izler ve 
+temizler. Bellek tahsisi hakkında düşünmemize gerek yoktur. 
+GC olmayan çoğu dilde, belleğin artık kullanılmadığını belirlemek ve tıpkı bizim talep ettiğimiz gibi, 
+belleği açıkça boşaltmak için kodu çağırmak bizim sorumluluğumuzdadır. Bunu doğru yapmak, tarihsel olarak zor bir programlama problemi olmuştur. Unutursak, hafızayı boşa harcarız. Çok erken yaparsak geçersiz bir değişkenimiz olur. İki kez yaparsak, bu da bir hatadır. 
+Tam olarak bir <code>tahsisi</code> tam olarak bir <code>geri verme</code> ile eşleştirmemiz gerekiyor.</p>
+<p>Rust farklı bir yol izler: sahip olduğu değişken kapsam dışına çıktığında bellek otomatik olarak döndürülür. 
+Aşağıda, bir dizgi değişmezi yerine bir <code>String</code> kullanarak Liste 4-1'deki kapsam örneğimizin farklı bir sürümü verilmiştir:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {
+        let s = String::from(&quot;hello&quot;); // s is valid from this point forward
+
+        // do stuff with s
+    }                                  // this scope is now over, and s is no
+                                       // longer valid
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>String</code>'imizin ihtiyaç duyduğu belleği ayırıcıya döndürebileceğimiz doğal bir nokta vardır: 
+<code>s</code>'in kapsam dışına çıkması. Bir değişken kapsam dışına çıktığında Rust bizim için özel bir fonksiyon çağırır. 
+Bu fonksiyona <code>drop</code> denir ve <code>String</code> yazarının belleği geri döndürmek için kodu koyabileceği yerdir. 
+Rust çağrıları, kapanış parantezinde otomatik olarak <code>drop</code> fonksiyonunu çağırır.</p>
+<blockquote>
+<p>Not: C++'ta, bir öğenin kullanım süresinin sonunda kaynakları serbest bırakma modeline
+<em>Resource Acquisition Is Initialization (RAII)</em> adı verilir. 
+RAII kalıplarını kullandıysanız, Rust'taki <code>drop</code> fonksiyonu size tanıdık gelecektir.</p>
+</blockquote>
+<p>Bu model, Rust kodunun yazılma şekli üzerinde derin bir etkiye sahiptir.
+Şu anda basit görünebilir, ancak yığında tahsis ettiğimiz verileri birden çok değişkenin kullanmasını istediğimizde, 
+daha karmaşık durumlarda kodun davranışı beklenmedik olabilir. 
+Şimdi bu durumlardan bazılarını inceleyelim.</p>
+<h4 id="değişkenlerin-ve-veri-etkileşiminin-yolları-hareket-ettirme"><a class="header" href="#değişkenlerin-ve-veri-etkileşiminin-yolları-hareket-ettirme">Değişkenlerin ve Veri Etkileşiminin Yolları: Hareket Ettirme</a></h4>
+<p>Birden çok değişken, Rust'ta aynı verilerle farklı şekillerde etkileşime girebilir. Liste 4-2'de, 
+tam sayı kullanan bir örneğe bakalım.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+    let y = x;
+<span class="boring">}
+</span></code></pre></pre>
+<p><span class="caption">Liste 4-2: <code>x</code> değişkeninin tam sayı değerini <code>y</code>'ye atama</span></p>
+<p>Muhtemelen bunun ne yaptığını tahmin edebiliriz: 
+“<code>5</code>'i <code>x</code>'e ata; sonra <code>x</code>'deki değerin bir kopyasını al ve onu <code>y</code>'ye ata.&quot;.
+Yani iki değişkenimiz olmuş oluyor, <code>x</code> ve <code>y</code>'nin her ikisi de <code>5</code>'e eşittir. Bu gerçekten olan şeydir, 
+çünkü tam sayılar bilinen, sabit bir boyuta sahip basit değerlerdir ve bu iki <code>5</code> değeri yığına itilir.</p>
+<p>Hadi <code>String</code> versiyonuna bakalım:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from(&quot;hello&quot;);
+    let s2 = s1;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Bu çok benzer duruyor, bu yüzden çalışma şeklinin aynı olacağını varsayabiliriz: 
+yani ikinci satır <code>s1</code>'deki değerin bir kopyasını alır ve onu <code>s2</code>'ye atar. Ama bu tam olarak ne olduğunu açıklamıyor.</p>
+<p>Arka kapılar ardında <code>String</code>'e ne olduğunu görmek için Şekil 4-1'e bakın. 
+Bir <code>String</code>, solda gösterilen üç bölümden oluşur: dizginin içeriğini, uzunluğunu ve kapasitesini tutan belleğe yönelik 
+bir işaretçi. 
+Bu veri grubu yığıtta depolanır. Sağda, içeriği tutan yığın üzerindeki bellek bulunur.</p>
+<img alt="Bellekteki String" src="img/trpl04-01.svg" class="center" style="width: 50%;" />
+<p><span class="caption">Şekil 4-1: <code>s1</code>'e atanmış <code>&quot;hello&quot;</code> değerini tutan bir <code>String</code>'in bellekteki temsili</span></p>
+<p>Uzunluk, <code>String</code> içeriğinin bayt cinsinden ne kadar bellek kullandığıdır. 
+Kapasite, <code>String</code>'in ayırıcıdan aldığı bayt cinsinden toplam bellek miktarıdır. 
+Uzunluk ve kapasite arasındaki fark önemlidir, ancak bu bağlamda değil, bu nedenle şimdilik kapasiteyi göz ardı etmekte fayda var.</p>
+<p><code>s1</code>'i <code>s2</code>'ye atadığımızda, <code>String</code> verileri kopyalanır, yani yığıttaki işaretçiyi, uzunluğu ve kapasiteyi kopyalarız. 
+İşaretçinin başvurduğu yığın üzerindeki verileri kopyalamayız. 
+Başka bir deyişle, bellekteki veri gösterimi Şekil 4-2'ye benzer.</p>
+<img alt="s1 ve s2 aynı değere işaret ediyor" src="img/trpl04-02.svg" class="center" style="width: 50%;" />
+<p><span class="caption">Şekil 4-2: İşaretçinin, uzunluğun ve <code>s1</code> kapasitesinin bir kopyasına sahip olan <code>s2</code> değişkeninin bellekteki temsili</span></p>
+<p>Temsil, Şekil 4-3'e <em>benzemiyor</em>; bu, Rust'un yığın verilerini de kopyalaması durumunda belleğin nasıl görüneceğini gösterir. 
+Bunu Rust yapsaydı, yığın üzerindeki veriler de büyük olsaydı <code>s2 = s1</code> işlemi çalışma zamanı performansı açısından çok pahalı olabilirdi.</p>
+<img alt="s1 ve s2 iki farklı yeri işaret ediyor" src="img/trpl04-03.svg" class="center" style="width: 50%;" />
+<p><span class="caption">Şekil 4-3: Rust yığın verilerini de kopyalasaydı <code>s2 = s1</code>'in neler yapabileceğine dair başka bir olasılık</span></p>
+<p>Daha önce, bir değişken kapsam dışına çıktığında Rust'ın otomatik olarak <code>drop</code> fonksiyonunu çağırdığını ve o değişken için 
+yığın belleğini temizlediğini söylemiştik. Ancak Şekil 4-2, aynı konuma işaret eden her iki veri işaretçisini de göstermektedir. 
+Bu bir sorundur: <code>s2</code> ve <code>s1</code> kapsam dışına çıktığında, ikisi de aynı belleği boşaltmaya çalışacaklardır. 
+Bu, <em>çifte serbest bırakma hatası</em> olarak bilinir ve daha önce bahsettiğimiz bellek güvenlik hatalarından biridir. 
+Belleği iki kez boşaltmak bellek bozulmasına neden olabilir ve bu da potansiyel olarak güvenlik açıklarına yol açabilir.</p>
+<p>Bellek güvenliğini sağlamak için, <code>let s2 = s1</code> satırından sonra Rust, <code>s1</code>'in artık geçerli olmadığını düşünür. 
+Bu nedenle, <code>s1</code> kapsam dışına çıktığında Rust'ın hiçbir şeyi serbest bırakmasına gerek yoktur. 
+<code>s2</code> oluşturulduktan sonra <code>s1</code>'i kullanmaya çalıştığınızda ne olduğuna bakın; çalışmayacaktır:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1 = String::from(&quot;hello&quot;);
+    let s2 = s1;
+
+    println!(&quot;{}, world!&quot;, s1);
+<span class="boring">}
+</span></code></pre>
+<p>Rust, geçersiz kılınan referansı kullanmanızı engellediği için şöyle bir hata alırsınız:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0382]: borrow of moved value: `s1`
+ --&gt; src/main.rs:5:28
+  |
+2 |     let s1 = String::from(&quot;hello&quot;);
+  |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+3 |     let s2 = s1;
+  |              -- value moved here
+4 | 
+5 |     println!(&quot;{}, world!&quot;, s1);
+  |                            ^^ value borrowed here after move
+  |
+  = note: this error originates in the macro `$crate::format_args_nl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `ownership` due to previous error
+</code></pre>
+<p>Diğer dillerle çalışırken <em>sığ kopyalama</em> ve <em>derin kopyalama</em> terimlerini duymuşsanız, verileri kopyalamadan işaretçiyi, 
+uzunluğu ve kapasiteyi kopyalama kavramı muhtemelen sığ bir kopya oluşturmaya benziyor. 
+Ancak Rust aynı zamanda ilk değişkeni de geçersiz kıldığı için, onu sığ bir kopya olarak adlandırmak yerine <em>hareket</em> olarak adlandırırız. 
+Bu örnekte, <code>s1</code>'in <code>s2</code>'ye hareket ettiğini söyleyebiliriz. Yani gerçekte ne olduğu Şekil 4-4'te gösterilmektedir.</p>
+<img alt="s1, s2'ye hareket ettirildi" src="img/trpl04-04.svg" class="center" style="width: 50%;" />
+<p><span class="caption">Şekil 4-4: <code>s1</code> geçersiz kılındıktan sonra hafızadaki temsili</span></p>
+<p>Bu bizim sorunumuzu çözüyor! Yalnızca <code>s2</code> geçerli olduğunda, 
+kapsam dışına çıktığında tek başına belleği boşaltır ve yapmamız gereken bir ley kalmaz.</p>
+<p>Ek olarak, bununla ima edilen bir tasarım seçeneği vardır: 
+Rust, verilerinizin “derin” kopyalarını asla otomatik olarak oluşturmaz. 
+Bu nedenle, herhangi bir otomatik kopyalamanın çalışma zamanı performansı açısından ucuz olduğu varsayılabilir.</p>
+<h4 id="değişkenlerin-ve-veri-etkileşiminin-yolları-klonlama"><a class="header" href="#değişkenlerin-ve-veri-etkileşiminin-yolları-klonlama">Değişkenlerin ve Veri Etkileşiminin Yolları: Klonlama</a></h4>
+<p>Yalnızca yığıt verilerini değil, <code>String</code>'in yığın verilerini de derinlemesine kopyalamak istiyorsak, 
+<code>clone</code> adı verilen ortak metodu kullanabiliriz. 
+Metod söz dizimini Bölüm 5'te tartışacağız, ancak metodlar birçok programlama dilinde ortak bir özellik olduğundan, 
+muhtemelen onları daha önce görmüşsünüzdür.</p>
+<p>İşte çalışma halindeki <code>clone</code> metodunun bir örneği:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from(&quot;hello&quot;);
+    let s2 = s1.clone();
+
+    println!(&quot;s1 = {}, s2 = {}&quot;, s1, s2);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Bu gayet iyi çalışır ve yığın verilerinin kopyalandığı Şekil 4-3'te gösterilen davranışı açıkça <em>üretir</em>.</p>
+<p>Bir <code>clone</code> çağrısı gördüğünüzde, bazı rastgele kodların yürütüldüğünü ve bu kodun pahalı olabileceğini bilirsiniz. 
+Bu, farklı bir şeyin olup bittiğinin bir göstergesidir.</p>
+<h4 id="yalnızca-yığıt-kullanan-veriler-kopyalama"><a class="header" href="#yalnızca-yığıt-kullanan-veriler-kopyalama">Yalnızca Yığıt Kullanan Veriler: Kopyalama</a></h4>
+<p>Henüz bahsetmediğimiz başka bir olay daha var. Bir kısmı Liste 4-2'de gösterilen 
+tam sayıları kullanan bu kod çalışır ve geçerlidir:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+    let y = x;
+
+    println!(&quot;x = {}, y = {}&quot;, x, y);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Ancak bu kod, az önce öğrendiklerimizle çelişiyor gibi görünüyor: <code>clone</code> çağrımız yok, ancak <code>x</code> hala geçerli ve <code>y</code>'ye hareket ettirilmedi.</p>
+<p>Bunun nedeni, derleme zamanında boyutu bilinen tam sayılar gibi türlerin tamamen yığıtta saklanmasıdır, 
+bu nedenle gerçek değerlerin kopyaları hızlı bir şekilde oluşturulur. Bu, <code>y</code> değişkenini oluşturduktan sonra <code>x</code>'in geçerli olmasını engellemek istememiz için hiçbir neden olmadığı anlamına gelir. Başka bir deyişle, burada derin ve sığ kopyalama arasında bir fark yoktur, 
+bu nedenle <code>clone</code> çağırmak normal sığ kopyalamadan farklı bir şey yapmaz ve bunu dışarıda bırakabiliriz.</p>
+<p>Rust'ın, tam sayılar gibi yığıtta depolanan türlere yerleştirebileceğimiz <code>Copy</code> tanımı adı verilen özel bir açıklaması vardır 
+(tanımlar hakkında <a href="ch10-02-traits.html">Bölüm 10</a><!-- ignore -->'da daha fazla konuşacağız). 
+Bir tür, <code>Copy</code> özelliğini süreklerse (uygularsa), onu kullanan değişkenler hareket etmez, 
+bunun yerine önemsiz bir şekilde kopyalanır, bu da onları başka bir değişkene atandıktan sonra hala geçerli hale getirir.</p>
+<p>Rust, tür veya türün herhangi bir parçası <code>Drop</code> tanımını süreklemişse, bir türe <code>Copy</code> ile açıklama eklememize izin vermez. 
+Değer kapsam dışına çıktığında türün özel bir şeye ihtiyacı varsa ve bu türe <code>Copy</code> ek açıklamasını eklersek, 
+bir derleme zamanı hatası alırız. Niteliği uygulamak için <code>Copy</code> ek açıklamasını türünüze nasıl ekleyeceğinizi öğrenmek için 
+Ek C'deki <a href="appendix-03-derivable-traits.html">“Türetilebilir Tanımlar”</a><!-- ignore --> başlığına bakın.</p>
+<p>Peki, <code>Copy</code> tanımını hangi türler sürekler? Emin olmak için verilen türün dokümantasyonunu kontrol edebilirsiniz, 
+ancak genel bir kural olarak, herhangi bir basit skaler değer grubu <code>Copy</code>'i sürekleyebilir. 
+<code>Copy</code>'i sürekleyen türlerden bazıları şunlardır:</p>
+<ul>
+<li>Tüm tam sayı türleri, meselax <code>u32</code>.</li>
+<li>Boole türü, <code>bool</code>, <code>true</code> ve <code>false</code>.</li>
+<li>Tüm kayan nokta türleri, mesela <code>f64</code>.</li>
+<li>Karakter türü, <code>char</code>.</li>
+<li>Demetler, eğer tutulan tür de <code>Copy</code>'i süreklemiş ise. Mesela,
+<code>(i32, i32)</code>, <code>Copy</code>i sürekler fakat <code>(i32, String)</code> süreklemez.</li>
+</ul>
+<h3 id="sahiplik-ve-fonksiyonlar"><a class="header" href="#sahiplik-ve-fonksiyonlar">Sahiplik ve Fonksiyonlar</a></h3>
+<p>Bir fonksiyona değer aktarmanın mekanikleri, bir değişkene değer atamaya benzer. 
+Bir fonksiyona değişken iletmek, tıpkı atamada olduğu gibi taşınır veya kopyalanır. 
+Liste 4-3, değişkenlerin nerede kapsam içine girip nerede kapsam dışında kaldığını 
+gösteren bazı açıklamalar içeren bir örneğe sahiptir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from(&quot;hello&quot;);  // s comes into scope
+
+    takes_ownership(s);             // s's value moves into the function...
+                                    // ... and so is no longer valid here
+
+    let x = 5;                      // x comes into scope
+
+    makes_copy(x);                  // x would move into the function,
+                                    // but i32 is Copy, so it's okay to still
+                                    // use x afterward
+
+} // Here, x goes out of scope, then s. But because s's value was moved, nothing
+  // special happens.
+
+fn takes_ownership(some_string: String) { // some_string comes into scope
+    println!(&quot;{}&quot;, some_string);
+} // Here, some_string goes out of scope and `drop` is called. The backing
+  // memory is freed.
+
+fn makes_copy(some_integer: i32) { // some_integer comes into scope
+    println!(&quot;{}&quot;, some_integer);
+} // Here, some_integer goes out of scope. Nothing special happens.
+</code></pre></pre>
+<p><span class="caption">Liste 4-3: Sahiplik ve kapsam açıklamalı fonksiyonlar</span></p>
+<p><code>takes_ownership</code> çağrısından sonra <code>s</code>'i kullanmaya çalışırsak, 
+Rust bir derleme zamanı hatası verir. Bu tarz statik kontroller bizi hatalardan korur. 
+Bunları nerede kullanabileceğinizi ve sahiplik kurallarının bunu yapmanızı nerede engellediğini görmek 
+için <code>s</code> ve <code>x</code> kullanan kodu <code>main</code>'e eklemeyi deneyin.</p>
+<h3 id="dönüş-değerleri-ve-kapsam"><a class="header" href="#dönüş-değerleri-ve-kapsam">Dönüş Değerleri ve Kapsam</a></h3>
+<p>Dönen değerler de sahipliği aktarabilir. 
+Liste 4-4, Liste 4-3'tekilere benzer açıklamalarla bir değer döndüren bir fonksiyon örneğini gösterir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = gives_ownership();         // gives_ownership moves its return
+                                        // value into s1
+
+    let s2 = String::from(&quot;hello&quot;);     // s2 comes into scope
+
+    let s3 = takes_and_gives_back(s2);  // s2 is moved into
+                                        // takes_and_gives_back, which also
+                                        // moves its return value into s3
+} // Here, s3 goes out of scope and is dropped. s2 was moved, so nothing
+  // happens. s1 goes out of scope and is dropped.
+
+fn gives_ownership() -&gt; String {             // gives_ownership will move its
+                                             // return value into the function
+                                             // that calls it
+
+    let some_string = String::from(&quot;yours&quot;); // some_string comes into scope
+
+    some_string                              // some_string is returned and
+                                             // moves out to the calling
+                                             // function
+}
+
+// This function takes a String and returns one
+fn takes_and_gives_back(a_string: String) -&gt; String { // a_string comes into
+                                                      // scope
+
+    a_string  // a_string is returned and moves out to the calling function
+}
+</code></pre></pre>
+<p><span class="caption">Liste 4-4: Dönüş değerlerinin sahipliğini aktarma</span></p>
+<p>Bir değişkenin sahipliği her seferinde aynı kalıbı takip eder: 
+başka bir değişkene bir değer atamak onu hareket ettirir. 
+Yığın üzerindeki verileri içeren bir değişken kapsam dışına çıktığında, 
+verilerin sahipliği başka bir değişkene taşınmadıkça değer <code>drop</code> ile temizlenir.</p>
+<p>Bu işe yararken, sahiplik almak ve ardından her fonksiyonla birlikte sahipliğini iade etmek biraz sıkıcıdır. 
+Ya bir fonksiyonun bir değer kullanmasına izin vermek istiyorsak ancak sahipliğini almak istemiyorsak? 
+Döndürmek isteyebileceğimiz fonksiyonun gövdesinden kaynaklanan herhangi bir veriye ek olarak, 
+tekrar kullanmak istiyorsak ilettiğimiz herhangi bir şeyin de geri iletilmesinin gerekmesi oldukça can sıkıcıdır.</p>
+<p>Rust, Liste 4-5'te gösterildiği gibi, bir demet kullanarak birden çok değer döndürmemize izin verir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = String::from(&quot;hello&quot;);
+
+    let (s2, len) = calculate_length(s1);
+
+    println!(&quot;The length of '{}' is {}.&quot;, s2, len);
+}
+
+fn calculate_length(s: String) -&gt; (String, usize) {
+    let length = s.len(); // len() returns the length of a String
+
+    (s, length)
+}
+</code></pre></pre>
+<p><span class="caption">Liste 4-5: Parametrelerin sahipliğini geri döndürme</span></p>
+<p>Ancak bu, yaygın olması gereken bir konsept için çok fazla başımıza iş açıyor. 
+Şansımıza Rust, <em>referans</em> adı verilen, sahipliği devretmeden bir değeri kullanma özelliğine sahip.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch04-00-understanding-ownership.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="ch04-02-references-and-borrowing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch04-00-understanding-ownership.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="ch04-02-references-and-borrowing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="ferris.js"></script>
+
+
+    </body>
+</html>
