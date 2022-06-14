@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>G - Rust ve “Gecelik Rust” Nasıl Yapıldı - Rust Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Rust Programlama Dili</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Ön söz</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Başlangıç</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Başlarken</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Yükleme</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Merhaba, Dünya!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Merhaba, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Tahmin Oyunu Programlamak</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Yaygın Programlama Kavramları</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Değişkenler ve Değişebilirlik</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Yorum Satırları</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Kontrol Akışı</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Sahipliği Anlamak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html"><strong aria-hidden="true">4.1.</strong> Sahiplik Nedir?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Referanslar ve Ödünç Alma Mekanizması</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Dilim Türü</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> İlintili Verileri Yapılandırmak için Yapıları Kullanmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Yapıları Tanımlamak ve Örneklendirmek</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Yapıları Kullanan Örnek Bir Program</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Metod Söz dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Numaralandırılmış Yapılar ve Model Eşleme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Numaralandırılmış Yapı Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> match Kontrol Akış Yapısı</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> if let ile Kısa Kontrol Akış Yapısı</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Büyüyen Projeleri Paketler, Kasalar ve Modüllerle Yönetme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Paketler ve Kasalar</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Gizlilik ve Kontrol Kapsamı için Modüller Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Modül Ağacındaki bir Öğeyi Referanslama Yolları</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> use Kullanarak Yolları Kapsama Getirmek</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Modülleri Farklı Dosyalara Ayırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Yaygın Koleksiyon Türleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Veri Listelerini Vektörlerle Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> UTF-8 ile Kodlanmış Dizgiyi Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> İlişkili Değerlerle Anahtarları Saklamak</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Hata Yönetimi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> panic! ile Kurtarılamayan Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Result ile Kurtarılabilir Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic!lemek ya da panic!lememek</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Yaygın Türler, Tanımlar ve Ömürlükler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Yaygın Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Tanımlar: Yaygın Davranış Tanımlama</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Ömürlük Yapısıyla Referans Doğrulama</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Otomatikleşmiş Testler Yazma</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Testler Nasıl Yazılır</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Testlerin Nasıl Çalıştığını Kontrol Etmek</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Test Organizasyonu</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Bir G/Ç Projesi: Komut Satırı Programı Yazmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Komut Satırı Argümanlarını Ayrıştırmak</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Dosya Okumak</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Modülerliği ve Hata Yönetimini Geliştirmek için Yeniden Düzenlemek</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Test Odaklı Geliştirme ile Kütüphanenin İşlevliğini Artırmak</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Ortam Değişkenlerini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Hata Mesajlarını Standart Çıktı yerine Standart Hata Akışına Yazdırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Fonksiyonel Dil Özellikleri: Yineleyiciler ve Kapanış İfadeleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Kapanış İfadeleri: Ortamda Tutulabilen Anonim Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Yineleyicilerle Bir Dizi Öğeyi İşlemek</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> G/Ç Projemizi Geliştirmek</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Performans Kıyaslaması: Döngüler vs. Yineleyiciler</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Cargo ve Crates.io Hakkında Daha Fazla Bilgi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Dağıtım Profilleriyle İnşaları Özelleştirmek</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Crates.io'da Bir Kasa Paylaşmak</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Cargo Çalışma Alanları</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> cargo install ile Crates.io'dan Derlenmişleri Yüklemek</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Özel Komutlarla Cargo'yu Genişletmek</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Akıllı İşaretçiler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Yığındaki Verileri İşaretlemek için Box&lt;T&gt; Kullanmak</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Akıllı İşaretçilere Deref ile Normal Referanslar Gibi Tanım Yapmak</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Drop Tanımlamasıyla Temizlik Aşamasında Kod Çalıştırmak</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, Referans Sayaçlı Akıllı İşaretçi</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; ve İç Değişebilirlik Modeli</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Referans Döngüleri Bellek Sızdırabilir</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Korkusuz Eşzamanlılık</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Kodu Eşzamanlı Çalıştırmak için İş Parçacıklarını Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Konular Arasında Veri Aktarmak için İleti Geçişini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Paylaşımlı Eşzamanlık</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Sync ve Send Tanımlarıyla Genişletilebilir Eşzamanlılık</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Rust'taki Nesne Yönemimli Programlama Özellikleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Nesne Yönelimli Dillerin Karakteristik Özellikleri</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Farklı Türlerdeki Değerlere İzin Veren Özellik Tanımlarını Kullanma</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Nesneye Yönelik Tasarım Modelini Süreklemek</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Modeller ve Eşleştirme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Modeller Her Yerde Kullanılabilir</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Reddedilebilirlik: Modelin Eşleştirmede Başarısız Olup Olmayacağı</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Model Söz Dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Gelişmiş Özellikler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Güvensiz Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Gelişmiş Tanımlar</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Gelişmiş Türler</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Gelimiş Fonksiyonlar ve Kapanış İfadeleri</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Makrolar</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Final Projesi: Çoklu İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Tek İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Tek İş Parçacıklı Sunucumuzu Çok Parçacıklı Sunucuya Çevirmek</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> Zarifçe Kapatmak ve Temizlemek</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Eklemeler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> A - Anahtar Sözcükler</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B - Operatörler ve Semboller</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C - Türetilebilir Tanımlar</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D - Kullanışlı Geliştirme Araçları</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E - Sürümler</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F - Kitap'ın Çevirileri</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html" class="active"><strong aria-hidden="true">21.7.</strong> G - Rust ve “Gecelik Rust” Nasıl Yapıldı</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="ekleme-g---gecelik-rust-ve-rust-nasıl-yapıldı"><a class="header" href="#ekleme-g---gecelik-rust-ve-rust-nasıl-yapıldı">Ekleme G - “Gecelik Rust” ve Rust Nasıl Yapıldı</a></h2>
+<p>Bu ek, Rust'ın nasıl yapıldığı ve bunun bir Rust geliştiricisi olarak sizi nasıl etkilediği hakkındadır.</p>
+<h3 id="durgunluk-olmadan-stabilite"><a class="header" href="#durgunluk-olmadan-stabilite">Durgunluk Olmadan Stabilite</a></h3>
+<p>Rust, kodunuzun kararlılığına <em>çok</em> önem verir. Rust'ı üzerine inşa edebileceğiniz kaya gibi sağlam bir temel olmasını istiyoruz ve işler sürekli değişiyor olsaydı bu imkansız olurdu. Aynı zamanda, yeni özellikleri deneyemezsek kusurları çözemeyiz. Bu soruna bizim çözümümüz “durgunluk olmadan istikrar” dediğimiz şeydir ve yol gösterici ilkemiz şudur: Asla yeni bir kararlı Rust sürümüne geçmekten korkmamalısınız. Her yükseltme sorunsuz olmalı, ancak size yeni özellikler, daha az hata ve daha hızlı derleme süreleri de getirmelidir.</p>
+<h3 id="Çuf-çuf-kanalları-bırakın-ve-yeni-trenlere-binin"><a class="header" href="#Çuf-çuf-kanalları-bırakın-ve-yeni-trenlere-binin">Çuf çuf! Kanalları Bırakın ve Yeni Trenlere Binin</a></h3>
+<p>Rust'ın gelişimi, bir <em>tren tarifesine</em> göre çalışır. Yani, tüm geliştirmeler Rust deposunun ana dalında yapılır. Sürümler, Cisco IOS ve diğer yazılım projeleri tarafından kullanılan bir yazılım sürüm dizisi modelini takip eder. </p>
+<p>Rust için üç yayın kanalı vardır:</p>
+<ul>
+<li>Gecelik</li>
+<li>Beta</li>
+<li>Stabil</li>
+</ul>
+<p>Çoğu Rust geliştiricisi ana olarak stabil kanalını kullanır fakat deneysel yeni özellikleri denemek isteyen
+Rustseverler isterlerse gecelik ya da beta kanallarını da kullanabilirler.</p>
+<p>Geliştirme ve sürüm sürecinin nasıl çalıştığına dair bir örnek: 
+Rust ekibinin Rust 1.5'in sürümü üzerinde çalıştığını varsayalım. Bu sürüm Aralık 2015'te yayınlandı 
+ve Rust'a yeni bir çok özellik eklendi: bunlar eklenirken ana dalda birçok yeni bir taahhüt (commit) gönderilmiş oluyor. 
+Her gece, Rust'ın yeni bir gecelik versiyonu üretilir. Her gün bir yayın günüdür ve bu yayınlar yayın altyapımız tarafından otomatik olarak oluşturulur. Zaman geçtikçe, yayınlarımız gecede bir kez şöyle görünür:</p>
+<pre><code class="language-text">nightly: * - - * - - *
+</code></pre>
+<p>Her altı haftada bir, bizim için yayın zamanıdır! <code>beta</code> dalı Rust deposundan geceliğin kullandığı <code>master</code> dalını çıkarır. 
+Burada artık iki yayın var olmuş olur:</p>
+<pre><code class="language-text">nightly: * - - * - - *
+                     |
+beta:                *
+</code></pre>
+<p>Çoğu Rust kullanıcısı beta yayınlarını aktif olarak kullanmaz, ancak Rust'ın olası sorunları keşfetmesine yardımcı olmak için CI sistemlerinde betaya karşı test yapar. Bu arada, her gece gecelik sürümünün yayınlandığını hatırlatmış olalım:</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - *
+                     |
+beta:                *
+</code></pre>
+<p>Diyelim ki bir sorun bulundu. İyi bir şey olacak ki, sorun kararlı bir sürüme girmeden önce <code>beta</code> sürümünü test edebilecek vaktimiz kalıyor.
+Düzeltme <code>master</code>'a uygulanır, böylece oluşan sorunlar gece düzeltilir ve ardından düzeltme <code>beta</code> dalına geri aktarılır ve yeni bir <code>beta</code> sürümü üretilir:</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - * - - *
+                     |
+beta:                * - - - - - - - - *
+</code></pre>
+<p>İlk <code>beta</code> oluşturulduktan altı hafta sonra, <code>stable</code> sürümünün zamanı geldi!
+<code>stable</code> dalı <code>beta</code> dalından türetilir:</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - * - - * - * - *
+                     |
+beta:                * - - - - - - - - *
+                                       |
+stable:                                *
+</code></pre>
+<p>Yaşasın! Rust 1.5 tamam! Ancak bir şeyi unuttuk: 
+altı hafta geçtiği için, Rust'ın bir sonraki sürümü olan 1.6'nın yeni bir <code>beta</code> sürümünün de yayınlanması gerekiyor. Bu nedenle, <code>beta</code>'nın <code>stable</code>'dan dallanmasından sonra, <code>beta</code>'nın bir sonraki sürümü her gece tekrar dallanır ve güncellenir:</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - * - - * - * - *
+                     |                         |
+beta:                * - - - - - - - - *       *
+                                       |
+stable:                                *
+</code></pre>
+<p>Buna “tren modeli” denir, çünkü her altı haftada bir, bir sürüm ”istasyonu terk eder”, ancak kararlı bir sürüm olarak gelmeden önce yine de beta kanalında bir yolculuğa daha çıkması gerekir. Rust, saat altı gibi haftada bir çıkıyor. Bir Rust sürümünün tarihini biliyorsanız, bir sonrakinin tarihini de bilirsiniz: altı hafta sonra. Her altı haftada bir planlanan yayınlara sahip olmanın güzel bir yönü, bir sonraki trenin yakında gelmesidir. Bir özellik belirli bir sürümü kaçırırsa, endişelenmenize gerek yok: kısa süre içinde bir yenisi daha geliyor! Bu, son teslim tarihine yakın olası cilasız özellikleri gizlice sokma baskısını azaltmaya yardımcı olur. Bu süreç sayesinde, her zaman Rust'ın bir sonraki sürümünü kontrol edebilir ve yükseltmenin kolay olduğunu kendiniz doğrulayabilirsiniz: bir beta sürümü beklendiği gibi çalışmazsa, bunu ekibe bildirebilir ve güncellemeden önce düzeltmesini sağlayabilirsiniz ve sonraki kararlı sürümde çıkabilecek bir sorun çözülmüş olur! Beta sürümünde çökmeler nispeten nadirdir, ancak <code>rustc</code> hala bir yazılım parçasıdır ve sorunlar mevcuttur.</p>
+<h3 id="kararsız-Özellikler"><a class="header" href="#kararsız-Özellikler">Kararsız Özellikler</a></h3>
+<p>Bu sürüm modeliyle ilgili bir sorun daha var: 
+kararsız özellikler. </p>
+<p>Rust, belirli bir sürümde hangi özelliklerin etkinleştirildiğini belirlemek için “özellik bayrakları“ adı verilen bir teknik kullanır. </p>
+<p>Yeni bir özellik aktif olarak geliştiriliyorsa, o özelliği gerekli özellik bayraklarını kullanarak çağırabilirsiniz. En son değişiklikleri
+kullanabilmeniz için <code>nightly</code> de olmanız gerekebilir. Bir kullanıcı olarak, devam eden çalışmaları denemek istiyorsanız, deneyebilirsiniz, ancak Rust'ın her gece yayınlanan sürümünü kullanıyor olmanız ve istenilen özelliği kullanabilmek için kaynak kodunuza uygun bayrakla açıklama eklemeniz gerekir. Son teknolojiyi kullanmak isteyenler bunu yapabilir ve kaya gibi sağlam bir deneyim isteyenler kararlı bir şekilde kalabilir ve kodlarının kırılmayacağını bilir. Durgunluk olmadan istikrar. Bu kitap yalnızca kararlı özellikler hakkında bilgi içerir, çünkü devam eden özellikler hala değişmektedir ve kesinlikle bu kitabın yazıldığı zaman ile kararlı yapılarda etkinleştirildikleri zaman arasında farklı olacaktır. Yalnızca gecelik özelliklerle ilgili belgeleri çevrimiçi olarak bulabilirsiniz.</p>
+<h3 id="rustup-ve-rust-nightlynin-rolü"><a class="header" href="#rustup-ve-rust-nightlynin-rolü">Rustup ve Rust Nightly'nin Rolü</a></h3>
+<p>Rustup, farklı yayın kanalları arasındaki dönüşümleri sizin için kolaylaştırır.
+Varsayılan olarak, stabil Rust sürümünün yüklü olması gerekir. Gecelik sürümünü yükleyebilimeniz için şu
+komutu girebilirsiniz:</p>
+<pre><code class="language-console">$ rustup toolchain install nightly
+</code></pre>
+<p>Göründüğü gibi tüm araç takımlarını (Rust'ın sürüm yayınlarını ve bileşenlerini)
+<code>rustup</code>'la da pekala yükleyebilirsiniz. İşte Windows bilgisayarından bir örnek:</p>
+<pre><code class="language-powershell">&gt; rustup toolchain list
+stable-x86_64-pc-windows-msvc (default)
+beta-x86_64-pc-windows-msvc
+nightly-x86_64-pc-windows-msvc
+</code></pre>
+<p>Gördüğünüz gibi, kararlı araç zinciri varsayılandır. 
+Çoğu Rust kullanıcısı çoğu zaman kararlı sürümü kullanır. Kök dizindeyken <code>rustup</code>'un kullanması gereken tek gecelik araç zincirini ayarlamak için o projenin dizininde <code>rustup override</code> komutunu kullanabilirsiniz:</p>
+<pre><code class="language-console">$ cd ~/projects/needs-nightly
+$ rustup override set nightly
+</code></pre>
+<h3 id="rfc-süreci-ve-ekipler"><a class="header" href="#rfc-süreci-ve-ekipler">RFC Süreci ve Ekipler</a></h3>
+<p>Peki bu yeni özellikler hakkında nasıl bilgi edineceksiniz? Rust'ın geliştirme modeli, bir <em>Yorum İsteği</em> (RFC) sürecini takip eder. 
+Rust'ta bir iyileştirme istiyorsanız, RFC adlı bir teklif yazabilirsiniz. 
+Rust'ı geliştirmek için herkes RFC'ler yazabilir ve öneriler, birçok konu alt ekibinden oluşan Rust ekibi tarafından incelenir ve tartışılır. 
+<a href="https://www.rust-lang.org/governance">Rust'ın web sitesinde</a>, dil tasarımı, derleyici uygulaması, altyapı, dokümantasyon ve daha fazlası gibi projenin her alanı için ekipleri içeren tam bir ekip listesi bulunmaktadır. Uygun ekip teklifi ve yorumları okur, kendi yorumlarını yazar ve sonunda özelliği kabul veya reddetme konusunda fikir birliği sağlanır. Özellik kabul edilirse Rust deposunda bir sorun açılır ve birisi bunu . Bunu çok iyi uygulayan kişi, özelliği ilk etapta öneren kişi olmayabilir! Uygulama hazır olduğunda, <a href="#unstable-features">“Kararsız Özellikler”</a><!-- ignore --> bölümünde tartıştığımız gibi, bir özellik kapısının arkasındaki ana dal üzerine iner. Bir süre sonra, her gece yayınlananları kullanan Rust geliştiricileri yeni özelliği deneyebildiklerinde, ekip üyeleri bu özelliği, her gece nasıl çalıştığını tartışacak ve kararlı Rust'a dönüştürüp dönüştürmeyeceğine karar verecek. Bu da gelecek trenin içinde olabileceği anlamına gelebilir!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="appendix-06-translation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="appendix-06-translation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="ferris.js"></script>
+
+
+    </body>
+</html>

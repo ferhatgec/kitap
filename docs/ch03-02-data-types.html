@@ -1,0 +1,511 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Veri Türleri - Rust Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Rust Programlama Dili</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Ön söz</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Başlangıç</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Başlarken</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Yükleme</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Merhaba, Dünya!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Merhaba, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Tahmin Oyunu Programlamak</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Yaygın Programlama Kavramları</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Değişkenler ve Değişebilirlik</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html" class="active"><strong aria-hidden="true">3.2.</strong> Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Yorum Satırları</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Kontrol Akışı</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Sahipliği Anlamak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html"><strong aria-hidden="true">4.1.</strong> Sahiplik Nedir?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html"><strong aria-hidden="true">4.2.</strong> Referanslar ve Ödünç Alma Mekanizması</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Dilim Türü</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> İlintili Verileri Yapılandırmak için Yapıları Kullanmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Yapıları Tanımlamak ve Örneklendirmek</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Yapıları Kullanan Örnek Bir Program</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Metod Söz dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Numaralandırılmış Yapılar ve Model Eşleme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Numaralandırılmış Yapı Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> match Kontrol Akış Yapısı</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> if let ile Kısa Kontrol Akış Yapısı</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Büyüyen Projeleri Paketler, Kasalar ve Modüllerle Yönetme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Paketler ve Kasalar</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Gizlilik ve Kontrol Kapsamı için Modüller Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Modül Ağacındaki bir Öğeyi Referanslama Yolları</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> use Kullanarak Yolları Kapsama Getirmek</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Modülleri Farklı Dosyalara Ayırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Yaygın Koleksiyon Türleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Veri Listelerini Vektörlerle Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> UTF-8 ile Kodlanmış Dizgiyi Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> İlişkili Değerlerle Anahtarları Saklamak</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Hata Yönetimi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> panic! ile Kurtarılamayan Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Result ile Kurtarılabilir Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic!lemek ya da panic!lememek</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Yaygın Türler, Tanımlar ve Ömürlükler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Yaygın Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Tanımlar: Yaygın Davranış Tanımlama</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Ömürlük Yapısıyla Referans Doğrulama</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Otomatikleşmiş Testler Yazma</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Testler Nasıl Yazılır</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Testlerin Nasıl Çalıştığını Kontrol Etmek</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Test Organizasyonu</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Bir G/Ç Projesi: Komut Satırı Programı Yazmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Komut Satırı Argümanlarını Ayrıştırmak</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Dosya Okumak</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Modülerliği ve Hata Yönetimini Geliştirmek için Yeniden Düzenlemek</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Test Odaklı Geliştirme ile Kütüphanenin İşlevliğini Artırmak</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Ortam Değişkenlerini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Hata Mesajlarını Standart Çıktı yerine Standart Hata Akışına Yazdırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Fonksiyonel Dil Özellikleri: Yineleyiciler ve Kapanış İfadeleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Kapanış İfadeleri: Ortamda Tutulabilen Anonim Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Yineleyicilerle Bir Dizi Öğeyi İşlemek</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> G/Ç Projemizi Geliştirmek</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Performans Kıyaslaması: Döngüler vs. Yineleyiciler</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Cargo ve Crates.io Hakkında Daha Fazla Bilgi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Dağıtım Profilleriyle İnşaları Özelleştirmek</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Crates.io'da Bir Kasa Paylaşmak</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Cargo Çalışma Alanları</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> cargo install ile Crates.io'dan Derlenmişleri Yüklemek</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Özel Komutlarla Cargo'yu Genişletmek</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Akıllı İşaretçiler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Yığındaki Verileri İşaretlemek için Box&lt;T&gt; Kullanmak</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Akıllı İşaretçilere Deref ile Normal Referanslar Gibi Tanım Yapmak</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Drop Tanımlamasıyla Temizlik Aşamasında Kod Çalıştırmak</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, Referans Sayaçlı Akıllı İşaretçi</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; ve İç Değişebilirlik Modeli</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Referans Döngüleri Bellek Sızdırabilir</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Korkusuz Eşzamanlılık</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Kodu Eşzamanlı Çalıştırmak için İş Parçacıklarını Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Konular Arasında Veri Aktarmak için İleti Geçişini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Paylaşımlı Eşzamanlık</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Sync ve Send Tanımlarıyla Genişletilebilir Eşzamanlılık</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Rust'taki Nesne Yönemimli Programlama Özellikleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Nesne Yönelimli Dillerin Karakteristik Özellikleri</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Farklı Türlerdeki Değerlere İzin Veren Özellik Tanımlarını Kullanma</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Nesneye Yönelik Tasarım Modelini Süreklemek</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Modeller ve Eşleştirme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Modeller Her Yerde Kullanılabilir</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Reddedilebilirlik: Modelin Eşleştirmede Başarısız Olup Olmayacağı</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Model Söz Dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Gelişmiş Özellikler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Güvensiz Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Gelişmiş Tanımlar</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Gelişmiş Türler</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Gelimiş Fonksiyonlar ve Kapanış İfadeleri</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Makrolar</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Final Projesi: Çoklu İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Tek İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Tek İş Parçacıklı Sunucumuzu Çok Parçacıklı Sunucuya Çevirmek</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> Zarifçe Kapatmak ve Temizlemek</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Eklemeler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> A - Anahtar Sözcükler</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B - Operatörler ve Semboller</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C - Türetilebilir Tanımlar</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D - Kullanışlı Geliştirme Araçları</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E - Sürümler</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F - Kitap'ın Çevirileri</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G - Rust ve “Gecelik Rust” Nasıl Yapıldı</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="veri-türleri"><a class="header" href="#veri-türleri">Veri Türleri</a></h2>
+<p>Rust'taki her değer, 
+Rust'a bu verilerle nasıl çalışacağını bilmesi için ne tür verilerin belirtildiğini söyleyen belirli bir veri türündendir. İki veri türü alt kümesine bakacağız: skaler ve bileşik. </p>
+<p>Rust'ın <em>statik yazılmış</em> bir dil olduğunu unutmayın; bu, derleme zamanında tüm değişkenlerin türlerini bilmesi gerektiği anlamına gelir. Derleyici genellikle değere ve onu nasıl kullandığımıza bağlı olarak ne tür kullanmak istediğimizi çıkarabilir. 
+Birçok türün mümkün olduğu durumlarda, örneğin Bölüm 2'deki <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">“Tahminle Gizli Numarayı Karşılaştırma”</a><!-- ignore --> bölümünde <code>parse</code>'ı kullanarak bir <code>String</code>'i sayısal bir türe dönüştürdüğümüzde, aşağıdaki gibi bir tür ek açıklaması eklemeliyiz:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let guess: u32 = &quot;42&quot;.parse().expect(&quot;Not a number!&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Yukarıdaki gibi <code>: u32</code> tipini eklemezsek, Rust aşağıdaki hatayı döndürür, 
+bu da derleyicinin hangi türü kullanmak istediğimizi bilmesi için bizden daha fazla bilgiye ihtiyacı olduğu anlamına gelir:</p>
+<pre><code class="language-console">$ cargo build
+   Compiling no_type_annotations v0.1.0 (file:///projects/no_type_annotations)
+error[E0282]: type annotations needed
+ --&gt; src/main.rs:2:9
+  |
+2 |     let guess = &quot;42&quot;.parse().expect(&quot;Not a number!&quot;);
+  |         ^^^^^ consider giving `guess` a type
+
+For more information about this error, try `rustc --explain E0282`.
+error: could not compile `no_type_annotations` due to previous error
+</code></pre>
+<p>Diğer veri türleri için farklı tür ek açıklamaları göreceksiniz.</p>
+<h3 id="skaler-tipler"><a class="header" href="#skaler-tipler">Skaler Tipler</a></h3>
+<p>Bir <em>skaler</em> tip, tek bir değeri temsil eder. 
+Rust'ın dört birincil skaler türü vardır: 
+tamsayılar, kayan noktalı sayılar, Boole'ler ve karakterler. 
+Bunları diğer programlama dillerinden tanıyabilirsiniz. Hadi Rust'ta nasıl çalıştıklarına geçelim.</p>
+<h4 id="tam-sayı-türleri"><a class="header" href="#tam-sayı-türleri">Tam Sayı Türleri</a></h4>
+<p>Tam sayı, kesirli bileşeni olmayan bir sayıdır. 
+Bölüm 2'de bir tam sayı türü olan <code>u32</code> türü kullandık. Bu tür bildirimi, ilişkilendirildiği değerin 32 bit yer kaplayan işaretsiz bir tam sayı (işaretli tamsayı türleri <code>u</code> yerine <code>i</code> ile başlar) olması gerektiğini belirtir. 
+Tablo 3-1, Rust'taki yerleşik tam sayı türlerini gösterir. Bir tam sayı değerinin türünü bildirmek için bu değişkenlerden herhangi birini kullanabiliriz. </p>
+<p><span class="caption">Tablo 3-1: Rust'ta Tam Sayı Türleri</span></p>
+<table><thead><tr><th>Büyüklüğü</th><th>İşaretli</th><th>İşaretsiz</th></tr></thead><tbody>
+<tr><td>8-bit</td><td><code>i8</code></td><td><code>u8</code></td></tr>
+<tr><td>16-bit</td><td><code>i16</code></td><td><code>u16</code></td></tr>
+<tr><td>32-bit</td><td><code>i32</code></td><td><code>u32</code></td></tr>
+<tr><td>64-bit</td><td><code>i64</code></td><td><code>u64</code></td></tr>
+<tr><td>128-bit</td><td><code>i128</code></td><td><code>u128</code></td></tr>
+<tr><td>(mimariye bağlı)</td><td><code>isize</code></td><td><code>usize</code></td></tr>
+</tbody></table>
+<p>Her varyant işaretli veya işaretsiz olabilir ve açık bir boyutu vardır. 
+<em>İşaretli</em> ve <em>işaretsiz</em>, sayının negatif olmasının mümkün olup olmadığına - başka bir deyişle, sayının onunla bir işareti olması gerekip gerekmediğine (işaretli) veya yalnızca pozitif olup olmayacağına ve bu nedenle işaretsiz temsil edilip edilemeyeceğine (işaretsiz) atıfta bulunur. Kağıda sayılar yazmak gibidir: işaret önemli olduğunda, bir sayı artı veya eksi işaretiyle gösterilir; ancak, sayının pozitif olduğunu varsaymak güvenli olduğunda, işaretsiz olarak gösterilir. İşaretli sayılar, <a href="https://en.wikipedia.org/wiki/Two%27s_complement">ikinin tümleyen gösterimi</a><!-- ignore --> 
+kullanılarak saklanır. </p>
+<p>Her işaretli varyant -(2<sup>n - 1</sup>) ile 2<sup>n - 1</sup> - 1 arasındaki sayıları saklayabilir; 
+burada n, varyantın kullandığı bit sayısıdır.</p>
+<p>Böylece bir <code>i8</code>, -(2<sup>7</sup>) ile 2<sup>7</sup> - 1 arasındaki sayıları saklayabilir, bu da -128 ile 127'ye eşittir. 
+İşaretsiz değişkenler 0 ile 2<sup>n</sup> - 1 arasındaki sayıları saklayabilir, dolayısıyla bir <code>u8</code> 0 ile 2<sup>8</sup> - 1 arasındaki sayıları saklayabilir, bu da 0 ila 255'e eşittir. </p>
+<p>Ek olarak, <code>isize</code> ve <code>usize</code>, programınızın üzerinde çalıştığı bilgisayarın mimarisine bağlıdır; bu, tabloda “arch” olarak gösterilir: 
+64 bit mimarideyseniz 64 bit; 32 bit eğer 32 bit mimarideyseniz. Tam sayı değişmezlerini Tablo 3-2'de gösterilen herhangi bir biçimde yazabilirsiniz. 
+Birden çok sayısal tür olabilen sayı değişmezlerinin, <code>57u8</code> gibi bir tür son ekinin türü belirlemesine izin verdiğini unutmayın. 
+Sayı değişmezleri, <code>1000</code> şeklinde belirttiğiniz gibi aynı değere sahip olacak <code>1_000</code> gibi sayının okunmasını kolaylaştırmak için görsel ayırıcı olarak <code>_</code>'yi de kullanabilir.</p>
+<p><span class="caption">Tablo 3-2: Rust'ta Tamsayı Değişmezlerit</span></p>
+<table><thead><tr><th>Sayı değişmezleri</th><th>Örnek</th></tr></thead><tbody>
+<tr><td>Ondalıklı</td><td><code>98_222</code></td></tr>
+<tr><td>On altılık tabanda</td><td><code>0xff</code></td></tr>
+<tr><td>Sekizlik tabanda</td><td><code>0o77</code></td></tr>
+<tr><td>İkilik tabanda</td><td><code>0b1111_0000</code></td></tr>
+<tr><td>Bit (sadece <code>u8</code> türü için)</td><td><code>b'A'</code></td></tr>
+</tbody></table>
+<p>Peki hangi tamsayı türünü kullanacağınızı nasıl bileceksiniz? 
+Emin değilseniz, Rust'ın varsayılanları genellikle başlamak için iyi yerlerdir: 
+tam sayı türleri varsayılan olarak <code>i32</code>'dir. <code>isize</code> veya <code>usize</code> kullandığınız birincil durum, bir tür koleksiyonu dizine eklerken olur.</p>
+<blockquote>
+<h5 id="tam-sayı-taşması"><a class="header" href="#tam-sayı-taşması">Tam sayı taşması</a></h5>
+<p>Diyelim ki 0 ile 255 arasında değerler tutabilen <code>u8</code> tipinde bir değişkeniniz var. 
+Değişkeni bu aralığın dışında, örneğin 256 gibi bir değerle değiştirmeye çalışırsanız, <em>tam sayı taşması</em> meydana gelir ve 
+bu iki davranıştan biriyle sonuçlanabilir. Hata ayıklama modunda derleme yaparken; Rust, 
+bu davranış ortaya çıkarsa programınızın çalışma zamanında panik yapmasına neden olan <em>tam sayı taşması</em> için bazı kontroller içerir. 
+Rust, bir program bir hatayla çıktığında panikleme terimini kullanır; <a href="ch09-01-unrecoverable-errors-with-panic.html">“<code>panic!</code>'le Kurtarılamayan Hatalar”</a><!-- ignore -->  bölümünde panikleri daha derinlemesine tartışacağız. 
+<code>--release</code> bayrağıyla yayın modunda derlediğinizde, Rust paniklere neden olan <em>tam sayı taşması</em> denetimlerini içermez. 
+Bunun yerine, taşma meydana gelirse, Rust iki tamamlayıcı sarmayı gerçekleştirir. Kısacası, türün tutabileceği maksimum değerden daha büyük 
+değerler, türün tutabileceği değerlerin minimumuna &quot;sarılır&quot;. Bir <code>u8</code> durumunda, 256 değeri 0 olur, 257 değeri 1 olur ve bu böyle devam eder. 
+Program paniğe kapılmaz, ancak değişken muhtemelen beklediğiniz değerde olmayan bir değere sahip olacaktır. <em>Tam sayı taşmasının</em> sarma davranışına 
+güvenmek bir hata olarak kabul edilir. </p>
+<p>Taşma olasılığını açıkça ele almak için, ilkel sayı türleri için standart kütüphane tarafından sağlanan bu metodları kullanabilirsiniz:</p>
+<ul>
+<li><code>wrapping_add</code> gibi <code>wrapping_*</code> metodlarını kullanabilirsiniz</li>
+<li><code>checked_*</code> yöntemlerinde taşma varsa <code>None</code> değerini döndürebilirsiniz</li>
+<li><code>overflowing_*</code> yöntemleriyle taşma olup olmadığını gösteren değeri Boole olarak döndürebilirsiniz</li>
+<li><code>saturating_*</code> yöntemleri ile değerin minimum veya maksimum değerlerinde 'doyurun' </li>
+</ul>
+</blockquote>
+<h4 id="kayan-nokta-türleri"><a class="header" href="#kayan-nokta-türleri">Kayan Nokta Türleri</a></h4>
+<p>Rust ayrıca ondalık basamaklı sayılar olan <em>kayan noktalı sayılar</em> için iki temel türe sahiptir. 
+Rust'ın kayan nokta türleri, sırasıyla 32 bit ve 64 bit boyutunda olan <code>f32</code> ve <code>f64</code>'tür. 
+Varsayılan tür <code>f64</code>'tür çünkü modern CPU'larda kabaca <code>f32</code> ile aynı hızdadır ancak daha fazla hassasiyete sahiptir. 
+Tüm kayan nokta türleri işaretlidir. </p>
+<p>İşte kayan noktalı sayılarını çalışırken gösteren bir örnek:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 2.0; // f64
+
+    let y: f32 = 3.0; // f32
+}
+</code></pre></pre>
+<p>Kayan nokta sayıları, <em>IEEE-754 standardına</em> göre tanımlanmıştır. <code>f32</code> türü tek duyarlıklı bir kayan noktadır 
+ve <code>f64</code> çift duyarlıklıdır.</p>
+<h4 id="sayısal-İşlemler"><a class="header" href="#sayısal-İşlemler">Sayısal İşlemler</a></h4>
+<p>Rust, tüm sayı türleri için beklediğiniz temel matematiksel işlemleri destekler: 
+toplama, çıkarma, çarpma, bölme ve kalan. </p>
+<p>Tam sayı bölümü en yakın tam sayıya yuvarlar. </p>
+<p>Aşağıdaki kod, bir <code>let</code> ifadesinde her bir sayısal işlemi nasıl kullanacağınızı gösterir:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    // addition
+    let sum = 5 + 10;
+
+    // subtraction
+    let difference = 95.5 - 4.3;
+
+    // multiplication
+    let product = 4 * 30;
+
+    // division
+    let quotient = 56.7 / 32.2;
+    let floored = 2 / 3; // Results in 0
+
+    // remainder
+    let remainder = 43 % 5;
+}
+</code></pre></pre>
+<p>Bu ifadelerdeki her ifade bir matematiksel operatör kullanır ve daha sonra bir değişkene bağlanan tek bir değer olarak değerlendirilir. 
+<a href="appendix-02-operators.html">Ekleme B</a><!-- ignore -->, Rust'ın sağladığı tüm operatörlerin bir listesini içerir.</p>
+<h4 id="boole-türü"><a class="header" href="#boole-türü">Boole Türü</a></h4>
+<p>Diğer programlama dillerinin çoğunda olduğu gibi, Rust'ta da bir Boole türünün iki olası değeri vardır: 
+<code>true</code> ve <code>false</code>. Boole'ların boyutu bir bayttır. Rust'taki Boole türü <code>bool</code> kullanılarak belirtilir. </p>
+<p>Örneğin:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let t = true;
+
+    let f: bool = false; // with explicit type annotation
+}
+</code></pre></pre>
+<p>Boole değerlerini kullanmanın ana yolu, <code>if</code> ifadesi gibi koşullu ifadelerdir. 
+Rust'ta ifadelerin nasıl çalışacağını <a href="ch03-05-control-flow.html#control-flow">“Kontrol Akışı”</a><!-- ignore --> bölümünde ele alacağız.</p>
+<h4 id="karakter-türü"><a class="header" href="#karakter-türü">Karakter Türü</a></h4>
+<p>Rust'ın <code>char</code> türü, dilin en temel alfabetik türüdür. </p>
+<p>Aşağıda, <code>char</code> değerlerinin bildirilmesine ilişkin bazı örnekler verilmiştir:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let c = 'z';
+    let z: char = 'ℤ'; // with explicit type annotation
+    let heart_eyed_cat = '😻';
+}
+</code></pre></pre>
+<p>Çift tırnak kullanan dize değişmezlerinin aksine, 
+tek tırnaklı <code>char</code> değişmezlerini belirttiğimize dikkat edin. 
+Rust'ın <code>char</code> türü, dört bayt boyutundadır ve bir Unicode Skaler Değerini temsil eder; 
+bu, yalnızca ASCII'den çok daha fazlasını temsil edebileceği anlamına gelir. </p>
+<p>Aksanlı harfler; Çince, Japonca ve Korece karakterler; emoji; ve sıfır genişlikli boşlukların tümü Rust'taki geçerli karakter değerleridir. </p>
+<p>Unicode Skaler Değerleri, <code>U+0000</code> ile <code>U+D7FF</code> ve <code>U+E000</code> ile <code>U+10FFFF</code> dahil arasında değişir. 
+Bununla birlikte, bir <code>char</code>, Unicode'da gerçekten bir kavram değildir, bu nedenle, bir “karakterin” ne olduğuna ilişkin insan sezginiz, 
+Rust'ta bir karakterin ne olduğu ile eşleşmeyebilir. Bu konuyu Bölüm 8'deki <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">“UTF-8 Kodlu Metinleri Dizgilerde Depolama”</a><!-- ignore --> bölümünde ayrıntılı olarak tartışacağız.</p>
+<h3 id="bileşik-türler"><a class="header" href="#bileşik-türler">Bileşik Türler</a></h3>
+<p><em>Bileşik türler</em> birden çok değeri tek bir türde gruplayabilir. 
+Rust'ın iki temel bileşik türü vardır: demetler ve diziler.</p>
+<h4 id="demet-türü"><a class="header" href="#demet-türü">Demet Türü</a></h4>
+<p>Demet, çeşitli türlere sahip bir dizi değeri tek bir bileşik türde gruplandırmanın genel bir yoludur. 
+Demetlerin sabit bir uzunluğu vardır: bir kez bildirildiğinde, boyut olarak büyüyemez veya küçülemezler.</p>
+<p>Parantez içinde virgülle ayrılmış bir değerler listesi yazarak bir demet oluşturuyoruz. 
+Tanımlama grubundaki her konumun bir türü vardır ve tanımlama grubundaki farklı değerlerin türlerinin aynı olması gerekmez.
+Bu örnekte isteğe bağlı tür ek açıklamaları ekledik:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let tup: (i32, f64, u8) = (500, 6.4, 1);
+}
+</code></pre></pre>
+<p>Değişken <code>tup</code>'a bütün bir demet atanır, çünkü bir demet tek bir bileşik eleman olarak kabul edilir. 
+Bir tanımlama grubundan tek tek değerleri elde etmek için, bir tanımlama grubunu yok etmek için <em>model eşleştirmeyi</em> kullanabiliriz, 
+bunun gibi:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let tup = (500, 6.4, 1);
+
+    let (x, y, z) = tup;
+
+    println!(&quot;The value of y is: {y}&quot;);
+}
+</code></pre></pre>
+<p>Bu program önce bir tanımlama grubu oluşturur ve onu <code>tup</code> değişkenine atar. Daha sonra <code>let</code> <code>tup</code>'u alıp onu <code>x</code>, <code>y</code> ve <code>z</code> 
+olmak üzere üç ayrı değişkene dönüştüren bir model kullanır. Buna <em>yıkım</em> denir, çünkü tek demeti üç parçaya böler. 
+Son olarak, program <code>y</code>'nin <code>6.4</code> değerini yazdırır.</p>
+<p>Ayrıca, bir nokta (<code>.</code>) ve ardından erişmek istediğimiz değerin sırasını (indeksini) kullanarak bir 
+tanımlama grubu öğesine doğrudan erişebiliriz. </p>
+<p>Örneğin:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x: (i32, f64, u8) = (500, 6.4, 1);
+
+    let five_hundred = x.0;
+
+    let six_point_four = x.1;
+
+    let one = x.2;
+}
+</code></pre></pre>
+<p>Bu program, <code>x</code> demetini oluşturur ve ardından ilgili dizinleri kullanarak grubun her bir öğesine erişir. 
+Çoğu programlama dilinde olduğu gibi, bir demet içindeki ilk sıra 0'dır.</p>
+<p>Herhangi bir değeri olmayan demetin özel bir adı vardır, birim. Bu değer ve buna karşılık gelen tür yazılır <code>()</code> 
+ve boş bir değeri veya boş bir dönüş türünü temsil eder. 
+İfadeler, başka bir değer döndürmezlerse örtük olarak birim değerini döndürür.</p>
+<h4 id="dizi-türü"><a class="header" href="#dizi-türü">Dizi Türü</a></h4>
+<p>Birden çok değerden oluşan bir koleksiyona sahip olmanın başka bir yolu da dizi kullanmaktır. 
+Demetlerden farklı olarak, bir dizinin her elemanı aynı tipte olmalıdır. 
+Diğer bazı dillerdeki dizilerin aksine, Rust'taki dizilerin sabit bir uzunluğu vardır.</p>
+<p>Bir dizideki değerleri köşeli parantezler içinde virgülle ayrılmış bir liste olarak yazıyoruz:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let a = [1, 2, 3, 4, 5];
+}
+</code></pre></pre>
+<p>Diziler, verilerinizin yığın yerine yığına atanmasını istediğinizde (yığın (stack) ve yığıtı (heap) <a href="ch04-01-what-is-ownership.html#the-stack-and-the-heap">Bölüm 4</a><!-- ignore -->'te daha fazla tartışacağız) veya her zaman sabit sayıda öğeye sahip olduğunuzdan emin olmak istediğinizde yararlıdır. 
+Yine de bir dizi, vektör türü kadar esnek değildir. 
+Vektör, standart kütüphane tarafından sağlanan ve boyutunun büyümesine veya küçülmesine izin verilen benzer bir koleksiyon türüdür. 
+Dizi mi yoksa vektör mü kullanacağınızdan emin değilseniz, büyük olasılıkla bir vektör kullanmalısınız. <a href="ch08-01-vectors.html">Bölüm 8</a><!-- ignore -->, vektörleri daha ayrıntılı olarak tartışır.</p>
+<p>Ancak diziler, eleman sayısının değişmesi gerekmediğini bildiğiniz zaman daha kullanışlıdır.
+Örneğin, bir programda ayın adlarını kullanıyor olsaydınız, her zaman 12 öğe içereceğini bildiğiniz için vektör yerine muhtemelen bir dizi kullanırdınız:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let months = [&quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;,
+              &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;];
+<span class="boring">}
+</span></code></pre></pre>
+<p>Her öğenin türü, noktalı virgül ve ardından dizideki öğelerin sayısıyla birlikte köşeli
+parantezler kullanarak bir dizinin türünü yazarsınız, şöyle:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a: [i32; 5] = [1, 2, 3, 4, 5];
+<span class="boring">}
+</span></code></pre></pre>
+<p>Burada <code>i32</code>, her bir elemanın tipidir. 
+Noktalı virgülden sonraki <code>5</code> sayısı, dizinin beş eleman içerdiğini gösterir.</p>
+<p>Ayrıca, burada gösterildiği gibi ilk değeri, ardından noktalı virgül ve
+ardından dizinin uzunluğunu köşeli parantez içinde belirterek her öğe için aynı değeri içerecek bir dizi tanımlayabilirsiniz:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a = [3; 5];
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>a</code> adlı dizi, tümü başlangıçta <code>3</code> değerine ayarlanacak <code>5</code> öğe içerecektir. Bu, <code>let a = [3, 3, 3, 3, 3];</code> ile aynıdır
+fakat daha yalındır.</p>
+<h5 id="dizi-Öğelerine-erişim"><a class="header" href="#dizi-Öğelerine-erişim">Dizi Öğelerine Erişim</a></h5>
+<p>Dizi, yığına ayrılabilen, bilinen, sabit boyuttaki tek bir bellek yığınıdır. 
+Dizinin öğelerine aşağıdaki gibi dizin oluşturmayı kullanarak erişebilirsiniz:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    let first = a[0];
+    let second = a[1];
+}
+</code></pre></pre>
+<p>Bu örnekte, <code>first</code> olarak adlandırılan değişken <code>1</code> değerini alacaktır, çünkü bu, dizideki <code>[0]</code> dizinindeki değerdir. 
+<code>second</code> adlı değişken, dizideki <code>[1]</code> dizininden <code>2</code> değerini alacaktır.</p>
+<h5 id="geçersiz-dizi-Öğesine-erişmek"><a class="header" href="#geçersiz-dizi-Öğesine-erişmek">Geçersiz Dizi Öğesine Erişmek</a></h5>
+<p>Dizinin sonunu aşan bir dizinin bir öğesine erişmeye çalışırsanız ne olacağını birlikte görelim. 
+Kullanıcıdan bir dizi sırası almak için Bölüm 2'deki tahmin oyununa benzer şekilde 
+bu kodu çalıştırdığınızı varsayalım:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><code class="language-rust ignore panics">use std::io;
+
+fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    println!(&quot;Please enter an array index.&quot;);
+
+    let mut index = String::new();
+
+    io::stdin()
+        .read_line(&amp;mut index)
+        .expect(&quot;Failed to read line&quot;);
+
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect(&quot;Index entered was not a number&quot;);
+
+    let element = a[index];
+
+    println!(&quot;The value of the element at index {index} is: {element}&quot;);
+}
+</code></pre>
+<p>Bu kod başarıyla derlenir. Bu kodu <code>cargo run</code> komutunu kullanarak çalıştırırsanız ve girdi olarak
+0, 1, 2, 3 veya 4 girerseniz, program dizideki o sırada karşılık gelen değeri yazdıracaktır.
+Bunun yerine, 10 gibi; dizinin sonunu aşan bir sayı girerseniz, şöyle bir çıktı görürsünüz:</p>
+<!-- manual-regeneration
+cd listings/ch03-common-programming-concepts/no-listing-15-invalid-array-access
+cargo run
+10
+-->
+<pre><code class="language-console">thread 'main' panicked at 'index out of bounds: the len is 5 but the index is 10', src/main.rs:19:19
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Program, <em>sırasına koyma</em> (indeksleme) işleminde geçersiz bir değer kullanma noktasında 
+bir <em>çalışma zamanı hatasıyla</em> sonuçlandı. Program bir hata mesajıyla çıktı ve son eklenen <code>println</code>'i çalıştırmadı! 
+Sırasına koyma işlemini kullanarak bir elemana erişmeye çalıştığınızda Rust, 
+belirttiğiniz sıranın dizi uzunluğundan küçük olup olmadığını kontrol eder. Sıra, uzunluktan büyük veya ona eşitse, 
+Rust panikleyecektir. Bu kontrol, özellikle bu durumda ve bu kodda, çalışma zamanında yapılmalıdır, çünkü derleyici, 
+bir kullanıcının kodu daha sonra çalıştırdığında hangi değeri gireceğini muhtemelen bilemez.</p>
+<p>Bu, Rust'ın bellek güvenliği ilkelerinin uygulamadaki bir örneğidir. 
+Birçok düşük seviyeli dilde bu tür bir kontrol yapılmaz ve yanlış bir sıra verdiğinizde geçersiz hafızaya erişilebilir. 
+Rust, belleğe erişime izin vermek ve devam etmek yerine hemen çıkarak sizi bu tür hatalara karşı korur. </p>
+<p>Bölüm 9, Rust'ın hata işlemesini ve panik yaratmayan veya geçersiz bellek erişimine izin vermeyen okunabilir, güvenli kodu nasıl yazabileceğinizi daha fazla tartışıyor olacak.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch03-01-variables-and-mutability.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="ch03-03-how-functions-work.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch03-01-variables-and-mutability.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="ch03-03-how-functions-work.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="ferris.js"></script>
+
+
+    </body>
+</html>

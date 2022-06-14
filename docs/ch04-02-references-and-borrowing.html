@@ -1,0 +1,507 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Referanslar ve Ödünç Alma Mekanizması - Rust Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title-page.html">Rust Programlama Dili</a></li><li class="chapter-item expanded affix "><a href="foreword.html">Ön söz</a></li><li class="chapter-item expanded affix "><a href="ch00-00-introduction.html">Başlangıç</a></li><li class="chapter-item expanded "><a href="ch01-00-getting-started.html"><strong aria-hidden="true">1.</strong> Başlarken</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch01-01-installation.html"><strong aria-hidden="true">1.1.</strong> Yükleme</a></li><li class="chapter-item expanded "><a href="ch01-02-hello-world.html"><strong aria-hidden="true">1.2.</strong> Merhaba, Dünya!</a></li><li class="chapter-item expanded "><a href="ch01-03-hello-cargo.html"><strong aria-hidden="true">1.3.</strong> Merhaba, Cargo!</a></li></ol></li><li class="chapter-item expanded "><a href="ch02-00-guessing-game-tutorial.html"><strong aria-hidden="true">2.</strong> Tahmin Oyunu Programlamak</a></li><li class="chapter-item expanded "><a href="ch03-00-common-programming-concepts.html"><strong aria-hidden="true">3.</strong> Yaygın Programlama Kavramları</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch03-01-variables-and-mutability.html"><strong aria-hidden="true">3.1.</strong> Değişkenler ve Değişebilirlik</a></li><li class="chapter-item expanded "><a href="ch03-02-data-types.html"><strong aria-hidden="true">3.2.</strong> Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch03-03-how-functions-work.html"><strong aria-hidden="true">3.3.</strong> Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch03-04-comments.html"><strong aria-hidden="true">3.4.</strong> Yorum Satırları</a></li><li class="chapter-item expanded "><a href="ch03-05-control-flow.html"><strong aria-hidden="true">3.5.</strong> Kontrol Akışı</a></li></ol></li><li class="chapter-item expanded "><a href="ch04-00-understanding-ownership.html"><strong aria-hidden="true">4.</strong> Sahipliği Anlamak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch04-01-what-is-ownership.html"><strong aria-hidden="true">4.1.</strong> Sahiplik Nedir?</a></li><li class="chapter-item expanded "><a href="ch04-02-references-and-borrowing.html" class="active"><strong aria-hidden="true">4.2.</strong> Referanslar ve Ödünç Alma Mekanizması</a></li><li class="chapter-item expanded "><a href="ch04-03-slices.html"><strong aria-hidden="true">4.3.</strong> Dilim Türü</a></li></ol></li><li class="chapter-item expanded "><a href="ch05-00-structs.html"><strong aria-hidden="true">5.</strong> İlintili Verileri Yapılandırmak için Yapıları Kullanmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch05-01-defining-structs.html"><strong aria-hidden="true">5.1.</strong> Yapıları Tanımlamak ve Örneklendirmek</a></li><li class="chapter-item expanded "><a href="ch05-02-example-structs.html"><strong aria-hidden="true">5.2.</strong> Yapıları Kullanan Örnek Bir Program</a></li><li class="chapter-item expanded "><a href="ch05-03-method-syntax.html"><strong aria-hidden="true">5.3.</strong> Metod Söz dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch06-00-enums.html"><strong aria-hidden="true">6.</strong> Numaralandırılmış Yapılar ve Model Eşleme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch06-01-defining-an-enum.html"><strong aria-hidden="true">6.1.</strong> Numaralandırılmış Yapı Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch06-02-match.html"><strong aria-hidden="true">6.2.</strong> match Kontrol Akış Yapısı</a></li><li class="chapter-item expanded "><a href="ch06-03-if-let.html"><strong aria-hidden="true">6.3.</strong> if let ile Kısa Kontrol Akış Yapısı</a></li></ol></li><li class="chapter-item expanded "><a href="ch07-00-managing-growing-projects-with-packages-crates-and-modules.html"><strong aria-hidden="true">7.</strong> Büyüyen Projeleri Paketler, Kasalar ve Modüllerle Yönetme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch07-01-packages-and-crates.html"><strong aria-hidden="true">7.1.</strong> Paketler ve Kasalar</a></li><li class="chapter-item expanded "><a href="ch07-02-defining-modules-to-control-scope-and-privacy.html"><strong aria-hidden="true">7.2.</strong> Gizlilik ve Kontrol Kapsamı için Modüller Tanımlamak</a></li><li class="chapter-item expanded "><a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html"><strong aria-hidden="true">7.3.</strong> Modül Ağacındaki bir Öğeyi Referanslama Yolları</a></li><li class="chapter-item expanded "><a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html"><strong aria-hidden="true">7.4.</strong> use Kullanarak Yolları Kapsama Getirmek</a></li><li class="chapter-item expanded "><a href="ch07-05-separating-modules-into-different-files.html"><strong aria-hidden="true">7.5.</strong> Modülleri Farklı Dosyalara Ayırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch08-00-common-collections.html"><strong aria-hidden="true">8.</strong> Yaygın Koleksiyon Türleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch08-01-vectors.html"><strong aria-hidden="true">8.1.</strong> Veri Listelerini Vektörlerle Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-02-strings.html"><strong aria-hidden="true">8.2.</strong> UTF-8 ile Kodlanmış Dizgiyi Tutmak</a></li><li class="chapter-item expanded "><a href="ch08-03-hash-maps.html"><strong aria-hidden="true">8.3.</strong> İlişkili Değerlerle Anahtarları Saklamak</a></li></ol></li><li class="chapter-item expanded "><a href="ch09-00-error-handling.html"><strong aria-hidden="true">9.</strong> Hata Yönetimi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch09-01-unrecoverable-errors-with-panic.html"><strong aria-hidden="true">9.1.</strong> panic! ile Kurtarılamayan Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-02-recoverable-errors-with-result.html"><strong aria-hidden="true">9.2.</strong> Result ile Kurtarılabilir Hatalar</a></li><li class="chapter-item expanded "><a href="ch09-03-to-panic-or-not-to-panic.html"><strong aria-hidden="true">9.3.</strong> panic!lemek ya da panic!lememek</a></li></ol></li><li class="chapter-item expanded "><a href="ch10-00-generics.html"><strong aria-hidden="true">10.</strong> Yaygın Türler, Tanımlar ve Ömürlükler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch10-01-syntax.html"><strong aria-hidden="true">10.1.</strong> Yaygın Veri Türleri</a></li><li class="chapter-item expanded "><a href="ch10-02-traits.html"><strong aria-hidden="true">10.2.</strong> Tanımlar: Yaygın Davranış Tanımlama</a></li><li class="chapter-item expanded "><a href="ch10-03-lifetime-syntax.html"><strong aria-hidden="true">10.3.</strong> Ömürlük Yapısıyla Referans Doğrulama</a></li></ol></li><li class="chapter-item expanded "><a href="ch11-00-testing.html"><strong aria-hidden="true">11.</strong> Otomatikleşmiş Testler Yazma</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch11-01-writing-tests.html"><strong aria-hidden="true">11.1.</strong> Testler Nasıl Yazılır</a></li><li class="chapter-item expanded "><a href="ch11-02-running-tests.html"><strong aria-hidden="true">11.2.</strong> Testlerin Nasıl Çalıştığını Kontrol Etmek</a></li><li class="chapter-item expanded "><a href="ch11-03-test-organization.html"><strong aria-hidden="true">11.3.</strong> Test Organizasyonu</a></li></ol></li><li class="chapter-item expanded "><a href="ch12-00-an-io-project.html"><strong aria-hidden="true">12.</strong> Bir G/Ç Projesi: Komut Satırı Programı Yazmak</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch12-01-accepting-command-line-arguments.html"><strong aria-hidden="true">12.1.</strong> Komut Satırı Argümanlarını Ayrıştırmak</a></li><li class="chapter-item expanded "><a href="ch12-02-reading-a-file.html"><strong aria-hidden="true">12.2.</strong> Dosya Okumak</a></li><li class="chapter-item expanded "><a href="ch12-03-improving-error-handling-and-modularity.html"><strong aria-hidden="true">12.3.</strong> Modülerliği ve Hata Yönetimini Geliştirmek için Yeniden Düzenlemek</a></li><li class="chapter-item expanded "><a href="ch12-04-testing-the-librarys-functionality.html"><strong aria-hidden="true">12.4.</strong> Test Odaklı Geliştirme ile Kütüphanenin İşlevliğini Artırmak</a></li><li class="chapter-item expanded "><a href="ch12-05-working-with-environment-variables.html"><strong aria-hidden="true">12.5.</strong> Ortam Değişkenlerini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch12-06-writing-to-stderr-instead-of-stdout.html"><strong aria-hidden="true">12.6.</strong> Hata Mesajlarını Standart Çıktı yerine Standart Hata Akışına Yazdırmak</a></li></ol></li><li class="chapter-item expanded "><a href="ch13-00-functional-features.html"><strong aria-hidden="true">13.</strong> Fonksiyonel Dil Özellikleri: Yineleyiciler ve Kapanış İfadeleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch13-01-closures.html"><strong aria-hidden="true">13.1.</strong> Kapanış İfadeleri: Ortamda Tutulabilen Anonim Fonksiyonlar</a></li><li class="chapter-item expanded "><a href="ch13-02-iterators.html"><strong aria-hidden="true">13.2.</strong> Yineleyicilerle Bir Dizi Öğeyi İşlemek</a></li><li class="chapter-item expanded "><a href="ch13-03-improving-our-io-project.html"><strong aria-hidden="true">13.3.</strong> G/Ç Projemizi Geliştirmek</a></li><li class="chapter-item expanded "><a href="ch13-04-performance.html"><strong aria-hidden="true">13.4.</strong> Performans Kıyaslaması: Döngüler vs. Yineleyiciler</a></li></ol></li><li class="chapter-item expanded "><a href="ch14-00-more-about-cargo.html"><strong aria-hidden="true">14.</strong> Cargo ve Crates.io Hakkında Daha Fazla Bilgi</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch14-01-release-profiles.html"><strong aria-hidden="true">14.1.</strong> Dağıtım Profilleriyle İnşaları Özelleştirmek</a></li><li class="chapter-item expanded "><a href="ch14-02-publishing-to-crates-io.html"><strong aria-hidden="true">14.2.</strong> Crates.io'da Bir Kasa Paylaşmak</a></li><li class="chapter-item expanded "><a href="ch14-03-cargo-workspaces.html"><strong aria-hidden="true">14.3.</strong> Cargo Çalışma Alanları</a></li><li class="chapter-item expanded "><a href="ch14-04-installing-binaries.html"><strong aria-hidden="true">14.4.</strong> cargo install ile Crates.io'dan Derlenmişleri Yüklemek</a></li><li class="chapter-item expanded "><a href="ch14-05-extending-cargo.html"><strong aria-hidden="true">14.5.</strong> Özel Komutlarla Cargo'yu Genişletmek</a></li></ol></li><li class="chapter-item expanded "><a href="ch15-00-smart-pointers.html"><strong aria-hidden="true">15.</strong> Akıllı İşaretçiler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch15-01-box.html"><strong aria-hidden="true">15.1.</strong> Yığındaki Verileri İşaretlemek için Box&lt;T&gt; Kullanmak</a></li><li class="chapter-item expanded "><a href="ch15-02-deref.html"><strong aria-hidden="true">15.2.</strong> Akıllı İşaretçilere Deref ile Normal Referanslar Gibi Tanım Yapmak</a></li><li class="chapter-item expanded "><a href="ch15-03-drop.html"><strong aria-hidden="true">15.3.</strong> Drop Tanımlamasıyla Temizlik Aşamasında Kod Çalıştırmak</a></li><li class="chapter-item expanded "><a href="ch15-04-rc.html"><strong aria-hidden="true">15.4.</strong> Rc&lt;T&gt;, Referans Sayaçlı Akıllı İşaretçi</a></li><li class="chapter-item expanded "><a href="ch15-05-interior-mutability.html"><strong aria-hidden="true">15.5.</strong> RefCell&lt;T&gt; ve İç Değişebilirlik Modeli</a></li><li class="chapter-item expanded "><a href="ch15-06-reference-cycles.html"><strong aria-hidden="true">15.6.</strong> Referans Döngüleri Bellek Sızdırabilir</a></li></ol></li><li class="chapter-item expanded "><a href="ch16-00-concurrency.html"><strong aria-hidden="true">16.</strong> Korkusuz Eşzamanlılık</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch16-01-threads.html"><strong aria-hidden="true">16.1.</strong> Kodu Eşzamanlı Çalıştırmak için İş Parçacıklarını Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-02-message-passing.html"><strong aria-hidden="true">16.2.</strong> Konular Arasında Veri Aktarmak için İleti Geçişini Kullanmak</a></li><li class="chapter-item expanded "><a href="ch16-03-shared-state.html"><strong aria-hidden="true">16.3.</strong> Paylaşımlı Eşzamanlık</a></li><li class="chapter-item expanded "><a href="ch16-04-extensible-concurrency-sync-and-send.html"><strong aria-hidden="true">16.4.</strong> Sync ve Send Tanımlarıyla Genişletilebilir Eşzamanlılık</a></li></ol></li><li class="chapter-item expanded "><a href="ch17-00-oop.html"><strong aria-hidden="true">17.</strong> Rust'taki Nesne Yönemimli Programlama Özellikleri</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch17-01-what-is-oo.html"><strong aria-hidden="true">17.1.</strong> Nesne Yönelimli Dillerin Karakteristik Özellikleri</a></li><li class="chapter-item expanded "><a href="ch17-02-trait-objects.html"><strong aria-hidden="true">17.2.</strong> Farklı Türlerdeki Değerlere İzin Veren Özellik Tanımlarını Kullanma</a></li><li class="chapter-item expanded "><a href="ch17-03-oo-design-patterns.html"><strong aria-hidden="true">17.3.</strong> Nesneye Yönelik Tasarım Modelini Süreklemek</a></li></ol></li><li class="chapter-item expanded "><a href="ch18-00-patterns.html"><strong aria-hidden="true">18.</strong> Modeller ve Eşleştirme</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch18-01-all-the-places-for-patterns.html"><strong aria-hidden="true">18.1.</strong> Modeller Her Yerde Kullanılabilir</a></li><li class="chapter-item expanded "><a href="ch18-02-refutability.html"><strong aria-hidden="true">18.2.</strong> Reddedilebilirlik: Modelin Eşleştirmede Başarısız Olup Olmayacağı</a></li><li class="chapter-item expanded "><a href="ch18-03-pattern-syntax.html"><strong aria-hidden="true">18.3.</strong> Model Söz Dizimi</a></li></ol></li><li class="chapter-item expanded "><a href="ch19-00-advanced-features.html"><strong aria-hidden="true">19.</strong> Gelişmiş Özellikler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch19-01-unsafe-rust.html"><strong aria-hidden="true">19.1.</strong> Güvensiz Rust</a></li><li class="chapter-item expanded "><a href="ch19-03-advanced-traits.html"><strong aria-hidden="true">19.2.</strong> Gelişmiş Tanımlar</a></li><li class="chapter-item expanded "><a href="ch19-04-advanced-types.html"><strong aria-hidden="true">19.3.</strong> Gelişmiş Türler</a></li><li class="chapter-item expanded "><a href="ch19-05-advanced-functions-and-closures.html"><strong aria-hidden="true">19.4.</strong> Gelimiş Fonksiyonlar ve Kapanış İfadeleri</a></li><li class="chapter-item expanded "><a href="ch19-06-macros.html"><strong aria-hidden="true">19.5.</strong> Makrolar</a></li></ol></li><li class="chapter-item expanded "><a href="ch20-00-final-project-a-web-server.html"><strong aria-hidden="true">20.</strong> Final Projesi: Çoklu İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="ch20-01-single-threaded.html"><strong aria-hidden="true">20.1.</strong> Tek İş Parçacıklı Web Sunucusu İnşa Etmek</a></li><li class="chapter-item expanded "><a href="ch20-02-multithreaded.html"><strong aria-hidden="true">20.2.</strong> Tek İş Parçacıklı Sunucumuzu Çok Parçacıklı Sunucuya Çevirmek</a></li><li class="chapter-item expanded "><a href="ch20-03-graceful-shutdown-and-cleanup.html"><strong aria-hidden="true">20.3.</strong> Zarifçe Kapatmak ve Temizlemek</a></li></ol></li><li class="chapter-item expanded "><a href="appendix-00.html"><strong aria-hidden="true">21.</strong> Eklemeler</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix-01-keywords.html"><strong aria-hidden="true">21.1.</strong> A - Anahtar Sözcükler</a></li><li class="chapter-item expanded "><a href="appendix-02-operators.html"><strong aria-hidden="true">21.2.</strong> B - Operatörler ve Semboller</a></li><li class="chapter-item expanded "><a href="appendix-03-derivable-traits.html"><strong aria-hidden="true">21.3.</strong> C - Türetilebilir Tanımlar</a></li><li class="chapter-item expanded "><a href="appendix-04-useful-development-tools.html"><strong aria-hidden="true">21.4.</strong> D - Kullanışlı Geliştirme Araçları</a></li><li class="chapter-item expanded "><a href="appendix-05-editions.html"><strong aria-hidden="true">21.5.</strong> E - Sürümler</a></li><li class="chapter-item expanded "><a href="appendix-06-translation.html"><strong aria-hidden="true">21.6.</strong> F - Kitap'ın Çevirileri</a></li><li class="chapter-item expanded "><a href="appendix-07-nightly-rust.html"><strong aria-hidden="true">21.7.</strong> G - Rust ve “Gecelik Rust” Nasıl Yapıldı</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="referanslar-ve-Ödünç-alma"><a class="header" href="#referanslar-ve-Ödünç-alma">Referanslar ve Ödünç Alma</a></h2>
+<p>Liste 4-5'teki tanımlama grubu koduyla ilgili sorun, <code>String</code>'i çağıran fonksiyona döndürmemizi gerektirmesidir, 
+böylece <code>String</code>, <code>calculate_length</code> çağrısından sonra hala <code>String</code>'i kullanabiliriz, çünkü <code>String</code>, içine taşınmıştır. 
+Bunun yerine, <code>String</code> değerine bir referans sağlayabiliriz. Referans, bir işaretçi gibidir, çünkü o adreste depolanan verilere erişmek için takip edebileceğimiz bir adrestir; bu veriler başka bir değişkene aittir. Bir işaretçiden farklı olarak, bir referansın, o referansın ömrü boyunca belirli bir türün geçerli bir değerine işaret etmesi garanti edilir. Değerin sahipliğini almak yerine parametre olarak bir nesneye referansı olan bir 
+<code>calculate_length</code> fonksiyonunu nasıl tanımlayacağınız ve kullanacağınız aşağıda açıklanmıştır:</p>
+<p>Değerin sahipliğini almak yerine parametre olarak bir nesneye referansı olan bir <code>calculate_length</code> fonksiyonunu nasıl tanımlayacağınız ve 
+kullanacağınız aşağıda açıklanmıştır:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = String::from(&quot;hello&quot;);
+
+    let len = calculate_length(&amp;s1);
+
+    println!(&quot;The length of '{}' is {}.&quot;, s1, len);
+}
+
+fn calculate_length(s: &amp;String) -&gt; usize {
+    s.len()
+}
+</code></pre></pre>
+<p>İlk olarak, değişken bildirimindeki tüm tanımlama grubu kodunun ve fonksiyonun dönüş değerinin kaybolduğuna dikkat edin. 
+İkinci olarak, <code>&amp;s1</code>'i <code>calculate_length</code>'e ilettiğimizi ve tanımında <code>String</code> yerine <code>&amp;String</code>'i kullandığımızı unutmayın. 
+Bu ve bunun işaretleri, <em>referansları</em> temsil eder ve sahipliğini almadan bazı değerlere başvurmanıza izin verir. 
+Şekil 4-5 bu konsepti tasvir ediyor.</p>
+<img alt="&amp;String s String s1'e işaret ediyor" src="img/trpl04-05.svg" class="center" />
+<p><span class="caption">Şekil 4-5: <code>String s1</code>'i gösteren <code>&amp;String s</code> diyagramı</span></p>
+<blockquote>
+<p>Not: <code>&amp;</code> kullanılarak yapılan referansın tersi, referanstan çıkarma operatörü <code>*</code> ile 
+gerçekleştirilen <em>referanstan çıkarma</em>'dır. Bölüm 8'de referans kaldırma operatörünün 
+bazı kullanımlarını göreceğiz ve 
+Bölüm 15'te referans kaldırmanın ayrıntılarını tartışacağız.</p>
+</blockquote>
+<p>Fonksiyon çağrısına daha yakından bakalım:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from(&quot;hello&quot;);
+
+    let len = calculate_length(&amp;s1);
+<span class="boring">
+</span><span class="boring">    println!(&quot;The length of '{}' is {}.&quot;, s1, len);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn calculate_length(s: &amp;String) -&gt; usize {
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span></code></pre></pre>
+<p><code>&amp;s1</code> söz dizimi, <code>s1</code> değerine refere eden ancak kendisine ait olmayan bir referans oluşturmamıza izin verir. 
+Kendisine ait olmadığı için, referansın kullanımı durduğunda işaret ettiği değer düşürülmeyecektir. 
+Benzer şekilde, fonksiyonun imzası, <code>s</code> parametresinin türünün bir referans olduğunu belirtmek için <code>&amp;</code> kullanır. </p>
+<p>Bazı açıklayıcı notlar ekleyelim:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let s1 = String::from(&quot;hello&quot;);
+</span><span class="boring">
+</span><span class="boring">    let len = calculate_length(&amp;s1);
+</span><span class="boring">
+</span><span class="boring">    println!(&quot;The length of '{}' is {}.&quot;, s1, len);
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn calculate_length(s: &amp;String) -&gt; usize { // s is a reference to a String
+    s.len()
+} // Here, s goes out of scope. But because it does not have ownership of what
+  // it refers to, it is not dropped.
+</code></pre></pre>
+<p><code>s</code> değişkeninin geçerli olduğu kapsam, herhangi bir fonksiyonla aynıdır.
+Sahipliği olmadığı için <code>s</code> kullanımı durduğunda parametrenin kapsamı bırakılır. 
+Ancak referansın gösterdiği değer bırakılmaz.
+Sahipliği geri vermek için değerleri döndürmelisiniz, çünkü hiç sahibi olmadınız.</p>
+<p>Peki ödünç aldığımız bir şeyi değiştirmeye çalışırsak ne olur?
+Liste 4-6'daki kodu deneyin. Uyarı: çalışmıyor!</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let s = String::from(&quot;hello&quot;);
+
+    change(&amp;s);
+}
+
+fn change(some_string: &amp;String) {
+    some_string.push_str(&quot;, world&quot;);
+}
+</code></pre>
+<p><span class="caption">Liste 4-6: Ödünç alınan bir değeri değiştirmeye çalışmak</span></p>
+<p>İşte hata:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0596]: cannot borrow `*some_string` as mutable, as it is behind a `&amp;` reference
+ --&gt; src/main.rs:8:5
+  |
+7 | fn change(some_string: &amp;String) {
+  |                        ------- help: consider changing this to be a mutable reference: `&amp;mut String`
+8 |     some_string.push_str(&quot;, world&quot;);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `some_string` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `ownership` due to previous error
+</code></pre>
+<p>Değişkenler varsayılan olarak değişmez olduğu gibi, referanslar da öyledir. 
+Referansımız olan bir şeyi değiştirmemize izin verilmez.</p>
+<h3 id="değişebilir-referanslar"><a class="header" href="#değişebilir-referanslar">Değişebilir Referanslar</a></h3>
+<p>Liste 4-6'daki kodu, ödünç alınan bir değeri, bunun yerine <em>değişken bir referans</em> kullanan sadece birkaç küçük ince ayar ile 
+değiştirmemize izin verecek şekilde düzeltebiliriz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from(&quot;hello&quot;);
+
+    change(&amp;mut s);
+}
+
+fn change(some_string: &amp;mut String) {
+    some_string.push_str(&quot;, world&quot;);
+}
+</code></pre></pre>
+<p>İlk olarak, <code>s</code>'i <code>mut</code> olarak değiştiriyoruz. 
+Sonra <code>&amp;mut s</code> ile değiştirilebilen bir referans yaratır ve burada <code>change</code> fonksiyonunu çağırırız ve 
+fonksiyon imzasını, <code>some_string: &amp;mut String</code> ile değiştirilebilir bir referansı kabul edecek şekilde güncelleriz. 
+Bu, <code>change</code> fonksiyonunun ödünç aldığı değeri değiştireceğini açıkça ortaya koymaktadır.</p>
+<p>Değişken referansların büyük bir kısıtlaması vardır: bir değere değiştirilebilir referansınız varsa, 
+o değere başka referansınız olamaz. <code>s</code> için iki değişken referans oluşturmaya çalışan bu kod başarısız olur:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut s = String::from(&quot;hello&quot;);
+
+    let r1 = &amp;mut s;
+    let r2 = &amp;mut s;
+
+    println!(&quot;{}, {}&quot;, r1, r2);
+<span class="boring">}
+</span></code></pre>
+<p>İşte hata:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --&gt; src/main.rs:5:14
+  |
+4 |     let r1 = &amp;mut s;
+  |              ------ first mutable borrow occurs here
+5 |     let r2 = &amp;mut s;
+  |              ^^^^^^ second mutable borrow occurs here
+6 | 
+7 |     println!(&quot;{}, {}&quot;, r1, r2);
+  |                        -- first borrow later used here
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `ownership` due to previous error
+</code></pre>
+<p>Bu hata, <code>s</code>'i bir defada birden fazla değişken olarak ödünç alamayacağımız için bu kodun geçersiz olduğunu söylüyor. 
+İlk değişken ödünç alma <code>r1</code>'dedir ve <code>println!</code>'de kullanılana kadar sürmelidir, ancak bu değişken referansın oluşturulması ve 
+kullanımı arasında, <code>r2</code>'de <code>r1</code> ile aynı verileri ödünç alan başka bir değişken referans oluşturmaya çalıştık.</p>
+<p>Aynı anda aynı verilere birden fazla değişken referansı engelleyen kısıtlama, değişkenliğe izin verir, 
+ancak çok kontrollü bir şekilde. Bu, yeni Rustseverlerin uğraştığı bir şey çünkü çoğu dil, istediğiniz zaman 
+değişkenliğe uğramanıza izin veriyor. Bu kısıtlamaya sahip olmanın yararı, Rust'ın derleme zamanında <em>veri yarışlarını</em> önleyebilmesidir. 
+Bir veri yarışı, bir yarış durumuna benzer ve şu üç davranış gerçekleştiğinde gerçekleşir:</p>
+<ul>
+<li>İki veya daha fazla işaretçi aynı verilere aynı anda erişir.</li>
+<li>Verilere yazmak için işaretçilerden en az biri kullanılıyor.</li>
+<li>Verilere erişimi senkronize etmek için kullanılan hiçbir mekanizma yoktur.</li>
+</ul>
+<p><em>Veri yarışları</em> tanımsız davranışlara neden olur ve bunları çalışma zamanında izlemeye çalışırken 
+teşhis edilmesi ve düzeltilmesi zor olabilir; Rust, veri yarışlarıyla dolu kodu derlemeyi reddederek bu sorunu önler!</p>
+<p>Her zaman olduğu gibi, yeni bir kapsam oluşturmak için süslü parantezleri kullanabiliriz ve 
+birden çok değişken referansa izin verebiliriz:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from(&quot;hello&quot;);
+
+    {
+        let r1 = &amp;mut s;
+    } // r1 goes out of scope here, so we can make a new reference with no problems.
+
+    let r2 = &amp;mut s;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Rust, değiştirilebilir ve değişmez referansları birleştirmek için benzer bir kural uygular. Bu kod hata verir:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut s = String::from(&quot;hello&quot;);
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    let r3 = &amp;mut s; // BIG PROBLEM
+
+    println!(&quot;{}, {}, and {}&quot;, r1, r2, r3);
+<span class="boring">}
+</span></code></pre>
+<p>İşte hata:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --&gt; src/main.rs:6:14
+  |
+4 |     let r1 = &amp;s; // no problem
+  |              -- immutable borrow occurs here
+5 |     let r2 = &amp;s; // no problem
+6 |     let r3 = &amp;mut s; // BIG PROBLEM
+  |              ^^^^^^ mutable borrow occurs here
+7 | 
+8 |     println!(&quot;{}, {}, and {}&quot;, r1, r2, r3);
+  |                                -- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` due to previous error
+</code></pre>
+<p>Vay be! Aynı değere değişmez bir referansımız <em>varken</em> değiştirilebilir bir referansımız <em>da</em> olamaz.</p>
+<p>Değişmez bir referansın kullanıcıları, değerin aniden altlarında değişmesini beklemezler! 
+Bununla birlikte, birden fazla değişmez referansa izin verilir, çünkü yalnızca verileri okuyan hiç kimse, 
+başka birinin verileri okumasını etkileme yeteneğine sahip değildir.</p>
+<p>Bir referansın kapsamının tanıtıldığı yerden başladığını ve o referansın son kullanıldığı zamana kadar devam ettiğini unutmayın. 
+Örneğin, değişmez referansların son kullanımı olan <code>println!</code>, değiştirilebilir referans tanıtılmadan önce gerçekleştiği için bu kod derlenecektir:</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+</span>    let mut s = String::from(&quot;hello&quot;);
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    println!(&quot;{} and {}&quot;, r1, r2);
+    // variables r1 and r2 will not be used after this point
+
+    let r3 = &amp;mut s; // no problem
+    println!(&quot;{}&quot;, r3);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Değişmez <code>r1</code> ve <code>r2</code> referanslarının kapsamları <code>println!</code>'den sonra biter. Bu kapsamlar çakışmaz, bu nedenle bu koda izin verilir. 
+Derleyicinin, kapsamın bitiminden önceki bir noktada bir referansın artık kullanılmadığını söyleyebilmesi, <em>Sözcük Dışı Ömürlükler</em> (kısaca NLL) 
+olarak adlandırılır ve bununla ilgili daha fazla bilgiyi <a href="https://doc.rust-lang.org/edition-guide/rust-2018/ownership-and-lifetimes/non-lexical-lifetimes.html">The Edition Guide</a>'dan okuyabilirsiniz.</p>
+<p>Ödünç alma hataları bazen can sıkıcı olsa da, Rust derleyicisinin olası bir hatayı erkenden (çalışma zamanından ziyade derleme zamanında) 
+ve sorunun tam olarak nerede olduğunu size gösterdiğini unutmayın. 
+O zaman verilerinizin neden düşündüğünüz gibi olmadığını bulmak zorunda değilsiniz.</p>
+<h3 id="sarkan-referanslar"><a class="header" href="#sarkan-referanslar">Sarkan Referanslar</a></h3>
+<p>İşaretçileri olan dillerde, belleğin bir kısmını boşaltırken, o belleğe bir işaretçiyi koruyarak, 
+yanlışlıkla sarkan bir işaretçi (bellekte başka birine verilmiş olabilecek bir konuma başvuran bir işaretçi) oluşturmak kolaydır. 
+Buna karşılık Rust'ta derleyici, referansların asla sarkan referanslar olmayacağını garanti eder: 
+eğer bazı verilere referansınız varsa, derleyici, veriye yapılan referanstan önce verilerin kapsam dışına çıkmamasını sağlayacaktır.</p>
+<p>Rust'ın derleme zamanı hatasıyla bunları nasıl önlediğini görmek için sarkan bir referans oluşturmaya çalışalım:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let reference_to_nothing = dangle();
+}
+
+fn dangle() -&gt; &amp;String {
+    let s = String::from(&quot;hello&quot;);
+
+    &amp;s
+}
+</code></pre>
+<p>İşte hata:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:5:16
+  |
+5 | fn dangle() -&gt; &amp;String {
+  |                ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
+help: consider using the `'static` lifetime
+  |
+5 | fn dangle() -&gt; &amp;'static String {
+  |                ~~~~~~~~
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `ownership` due to previous error
+</code></pre>
+<p>Bu hata mesajı, henüz ele almadığımız bir özelliğe atıfta bulunuyor: ömürler. 
+Ömürleri Bölüm 10'da ayrıntılı olarak tartışacağız. 
+Ancak, ömürlerle ilgili kısımları göz ardı ederseniz, mesaj bu kodun neden bir sorun olduğunun anahtarını içerir:</p>
+<pre><code class="language-text">this function's return type contains a borrowed value, but there is no value
+for it to be borrowed from
+</code></pre>
+<pre><code class="language-text">bu fonksiyonun dönüş türü ödünç alınan bir değer içeriyor, ancak ödünç alınacak bir değer yok
+</code></pre>
+<p><em>Sarkan</em> kodumuzun her aşamasında tam olarak neler olduğuna daha yakından bakalım.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let reference_to_nothing = dangle();
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn dangle() -&gt; &amp;String { // dangle returns a reference to a String
+
+    let s = String::from(&quot;hello&quot;); // s is a new String
+
+    &amp;s // we return a reference to the String, s
+} // Here, s goes out of scope, and is dropped. Its memory goes away.
+  // Danger!
+</code></pre>
+<p><code>s</code>, <code>dangle</code> içinde oluşturulduğundan, <code>dangle</code> kodu bittiğinde, <code>s</code> serbest bırakılır. 
+Ama ona bir referans döndürmeye çalıştık. Bu, bu referansın geçersiz bir <code>String</code>'e işaret edeceği anlamına gelir. 
+Bu iyi bir fikir değildir! Rust bunu yapmamıza izin vermez.</p>
+<p>Buradaki çözüm, <code>String</code>'i doğrudan döndürmektir:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string = no_dangle();
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn no_dangle() -&gt; String {
+    let s = String::from(&quot;hello&quot;);
+
+    s
+}
+</code></pre></pre>
+<p>Bu herhangi bir sorun olmadan çalışır. Sahiplik taşınır ve hiçbir şey serbest bırakılmaz.</p>
+<h3 id="referans-kuralları"><a class="header" href="#referans-kuralları">Referans Kuralları</a></h3>
+<p>Referanslar hakkında konuştuklarımızı gözden geçirelim:</p>
+<ul>
+<li>
+<p>Herhangi bir zamanda <em>ya</em> bir değişken referansa <em>ya da</em> 
+istediğiniz sayıda değişmez referansa sahip olabilirsiniz.</p>
+</li>
+<li>
+<p>Referanslar her zaman geçerli olmalıdır.</p>
+</li>
+</ul>
+<p>Bundan sonraki başlığımızda, farklı bir referans türü olan <em>dilimlere</em> bakacağız.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch04-01-what-is-ownership.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="ch04-03-slices.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch04-01-what-is-ownership.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="ch04-03-slices.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="ferris.js"></script>
+
+
+    </body>
+</html>
