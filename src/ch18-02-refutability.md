@@ -1,90 +1,72 @@
-## Refutability: Whether a Pattern Might Fail to Match
+## Reddedilebilirlik: Bir Model; Eşleşmede Başarısız Olabilir mi?
 
-Patterns come in two forms: refutable and irrefutable. Patterns that will match
-for any possible value passed are *irrefutable*. An example would be `x` in the
-statement `let x = 5;` because `x` matches anything and therefore cannot fail
-to match. Patterns that can fail to match for some possible value are
-*refutable*. An example would be `Some(x)` in the expression `if let Some(x) =
-a_value` because if the value in the `a_value` variable is `None` rather than
-`Some`, the `Some(x)` pattern will not match.
+Modeller iki biçimde gelir: reddedilebilir ve reddedilemez. 
+Geçilen herhangi bir olası değer için eşleşecek kalıplar reddedilemez. 
+Bir örnek, `let x = 5` ifade yapısındaki `x` olabilir; çünkü `x` herhangi bir şeyle eşleşir 
+ve bu nedenle eşleşme başarısız olamaz. Bazı olası değerler için eşleşmeyen kalıplar reddedilebilir. 
 
-Function parameters, `let` statements, and `for` loops can only accept
-irrefutable patterns, because the program cannot do anything meaningful when
-values don’t match. The `if let` and `while let` expressions accept
-refutable and irrefutable patterns, but the compiler warns against
-irrefutable patterns because by definition they’re intended to handle possible
-failure: the functionality of a conditional is in its ability to perform
-differently depending on success or failure.
+Fonksiyon parametreleri, `let` deyimleri ve `for` döngüleri yalnızca reddedilemez kalıpları kabul edebilir, 
+çünkü değerler eşleşmediğinde program anlamlı bir şey yapamaz. `if let` ve `while let` ifadeleri reddedilemez ve reddedilemez 
+modelleri kabul eder, ancak derleyici reddedilemez kalıplara karşı uyarır çünkü tanımları gereği olası başarısızlığı ele almayı amaçlarlar: 
+bir koşulun işlevselliği, başarıya veya başarısızlığa bağlı olarak farklı performans gösterme yeteneğindedir.
 
-In general, you shouldn’t have to worry about the distinction between refutable
-and irrefutable patterns; however, you do need to be familiar with the concept
-of refutability so you can respond when you see it in an error message. In
-those cases, you’ll need to change either the pattern or the construct you’re
-using the pattern with, depending on the intended behavior of the code.
+Genel olarak, reddedilebilir ve reddedilemez modeller arasındaki ayrım hakkında endişelenmenize gerek yoktur; 
+ancak, bir hata mesajında gördüğünüzde yanıt verebilmeniz için reddedilebilirlik kavramına aşina olmanız gerekir. 
+Bu durumlarda, kodun amaçlanan davranışına bağlı olarak, modeli veya modeli kullandığınız yapıyı değiştirmeniz gerekir.
 
-Let’s look at an example of what happens when we try to use a refutable pattern
-where Rust requires an irrefutable pattern and vice versa. Listing 18-8 shows a
-`let` statement, but for the pattern we’ve specified `Some(x)`, a refutable
-pattern. As you might expect, this code will not compile.
+Rust'ın reddedilemez bir model gerektirdiği ve bunun tersi olduğu halde, 
+çürütülebilir bir model kullanmaya çalıştığımızda ne olduğuna dair bir örneğe bakalım. Liste 18-8, 
+bir `let` ifade yapısını gösterir, ancak `Some(x)` belirttiğimiz model için reddedilebilir bir modeldir. 
+Tahmin edebileceğiniz gibi, bu kod derlenmeyecektir:
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-8: Attempting to use a refutable pattern with
-`let`</span>
+<span class="caption">Liste 18-8: `let` ile çürütülebilir bir 
+model kullanmaya çalışmak</span>
 
-If `some_option_value` was a `None` value, it would fail to match the pattern
-`Some(x)`, meaning the pattern is refutable. However, the `let` statement can
-only accept an irrefutable pattern because there is nothing valid the code can
-do with a `None` value. At compile time, Rust will complain that we’ve tried to
-use a refutable pattern where an irrefutable pattern is required:
+`some_option_value`, `None` değerinde olsaydı, `Some(x)` modeliyle eşleşmezdi, bu da kalıbın reddedilebilir olduğu anlamına gelir. 
+Ancak, `let` ifade yapısı yalnızca reddedilemez bir kalıbı kabul edebilir, çünkü kodun `None` değeriyle yapabileceği geçerli hiçbir şey yoktur. 
+Derleme zamanında; Rust, reddedilemez bir modelin gerekli olduğu durumlarda reddedilebilir bir model kullanmaya çalıştığımızdan şikayet edecektir:
 
 ```console
 {{#include ../listings/ch18-patterns-and-matching/listing-18-08/output.txt}}
 ```
 
-Because we didn’t cover (and couldn’t cover!) every valid value with the
-pattern `Some(x)`, Rust rightfully produces a compiler error.
+`Some(x)` modeliyle geçerli her değeri kapsamadığımız (ve kapsayamadığımız) için, Rust haklı olarak bir derleyici hatası üretir.
 
-If we have a refutable pattern where an irrefutable pattern is needed, we can
-fix it by changing the code that uses the pattern: instead of using `let`, we
-can use `if let`. Then if the pattern doesn’t match, the code will just skip
-the code in the curly brackets, giving it a way to continue validly. Listing
-18-9 shows how to fix the code in Listing 18-8.
+Çürütülemez bir modele ihtiyaç duyulan bir çürütülebilir modelimiz varsa, modeli kullanan kodu değiştirerek düzeltebiliriz: 
+`let` yerine `if let` kullanabiliriz. Ardından, model eşleşmezse, kod, süslü parantezler arasındaki kodu 
+atlayarak geçerli bir şekilde devam etmesinin bir yolunu sunar. 
+Liste 18-9, Liste 18-8'deki kodun nasıl düzeltileceğini gösterir.
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-9: Using `if let` and a block with refutable
-patterns instead of `let`</span>
+<span class="caption">Liste 18-9: `let` yerine `if let` kullanan ve reddedilebilir modellere sahip 
+bir blok kullanma</span>
 
-We’ve given the code an out! This code is perfectly valid, although it means we
-cannot use an irrefutable pattern without receiving an error. If we give `if
-let` a pattern that will always match, such as `x`, as shown in Listing 18-10,
-the compiler will give a warning.
+Kodu bir çıkış verdik! Bu kod tamamen geçerlidir, ancak bir hata almadan reddedilemez bir model kullanamayacağımız 
+anlamına gelir. Liste 18-10'da gösterildiği gibi `x` gibi her zaman eşleşecek bir model verirsek, derleyici bir uyarı verecektir.
 
 ```rust
 {{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-10/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 18-10: Attempting to use an irrefutable pattern
-with `if let`</span>
+<span class="caption">Liste 18-10: `if let` ile reddedilemez bir model
+kullanmaya çalışmak</span>
 
-Rust complains that it doesn’t make sense to use `if let` with an irrefutable
-pattern:
+Rust, reddedilemez bir modelle `if let` kullanmanın mantıklı olmadığından şikayet ediyor:
 
 ```console
 {{#include ../listings/ch18-patterns-and-matching/listing-18-10/output.txt}}
 ```
 
-For this reason, match arms must use refutable patterns, except for the last
-arm, which should match any remaining values with an irrefutable pattern. Rust
-allows us to use an irrefutable pattern in a `match` with only one arm, but
-this syntax isn’t particularly useful and could be replaced with a simpler
-`let` statement.
+Bu nedenle, eşleşme kolları, kalan değerleri reddedilemez bir modelle eşleştirmesi gereken son kol hariç, 
+reddedilebilir modeller kullanmalıdır. Rust, tek kollu bir eşleşmede reddedilemez bir model kullanmamıza izin verir, 
+ancak bu söz dizimi çok kullanışlı değildir ve daha basit bir `let` ifade yapısı ile değiştirilebilir.
 
-Now that you know where to use patterns and the difference between refutable
-and irrefutable patterns, let’s cover all the syntax we can use to create
-patterns.
+Artık modeleri nerede kullanacağınızı ve reddedilebilir ve reddedilemez modeller arasındaki farkı 
+bildiğinize göre, model oluşturmak için kullanabileceğimiz söz dizimini ele alalım.
