@@ -1,16 +1,14 @@
-## Customizing Builds with Release Profiles
+## Dağıtım Profilleri ile Yapıları Özelleştirme
 
-In Rust, *release profiles* are predefined and customizable profiles with
-different configurations that allow a programmer to have more control over
-various options for compiling code. Each profile is configured independently of
-the others.
+Rust'ta dağıtım profilleri, bir programcının kod derlemek için çeşitli seçenekler üzerinde daha fazla kontrole sahip 
+olmasını sağlayan farklı konfigürasyonlara sahip önceden tanımlanmış ve özelleştirilebilir profillerdir. 
+Her profil diğerlerinden bağımsız olarak yapılandırılır.
 
-Cargo has two main profiles: the `dev` profile Cargo uses when you run `cargo
-build` and the `release` profile Cargo uses when you run `cargo build
---release`. The `dev` profile is defined with good defaults for development,
-and the `release` profile has good defaults for release builds.
+Cargo'nun iki ana profili vardır: Cargo'nun, `cargo build`'i çalıştırdığınızda kullandığı `dev` profili ve 
+`cargo build --release`'i çalıştırdığınızda kullandığı `release` profili geliştirme için iyi varsayılanlarla tanımlanır 
+ve dağıtım profili, dağıtım derlemeleri için iyi varsayılanlara sahiptir.
 
-These profile names might be familiar from the output of your builds:
+Bu profil adları, yapılarınızın çıktısından tanıdık gelebilir:
 
 <!-- manual-regeneration
 anywhere, run:
@@ -26,15 +24,14 @@ $ cargo build --release
     Finished release [optimized] target(s) in 0.0s
 ```
 
-The `dev` and `release` are these different profiles used by the compiler.
+`dev` ve `release`, derleyici tarafından kullanılan farklı tür profillerdir.
 
-Cargo has default settings for each of the profiles that apply when you haven't
-explicitly added any `[profile.*]` sections in the project’s *Cargo.toml* file.
-By adding `[profile.*]` sections for any profile you want to customize, you
-override any subset of the default settings. For example, here are the default
-values for the `opt-level` setting for the `dev` and `release` profiles:
+Cargo'nun, projenin *Cargo.toml* dosyasına açıkça herhangi bir `[profile.*]` bölümü eklemediğinizde uygulanan profillerin 
+her biri için varsayılan ayarları vardır. Özelleştirmek istediğiniz herhangi bir profil için 
+`[profil.*]` bölümlerini ekleyerek, varsayılan ayarların herhangi bir alt kümesini geçersiz kılarsınız. 
+Örneğin, `dev` ve `release` profilleri için `opt-level` ayarının varsayılan değerleri şunlardır:
 
-<span class="filename">Filename: Cargo.toml</span>
+<span class="filename">Dosya adı: Cargo.toml</span>
 
 ```toml
 [profile.dev]
@@ -44,32 +41,27 @@ opt-level = 0
 opt-level = 3
 ```
 
-The `opt-level` setting controls the number of optimizations Rust will apply to
-your code, with a range of 0 to 3. Applying more optimizations extends
-compiling time, so if you’re in development and compiling your code often,
-you’ll want fewer optimizations to compile faster even if the resulting code
-runs slower. The default `opt-level` for `dev` is therefore `0`. When you’re
-ready to release your code, it’s best to spend more time compiling. You’ll only
-compile in release mode once, but you’ll run the compiled program many times,
-so release mode trades longer compile time for code that runs faster. That is
-why the default `opt-level` for the `release` profile is `3`.
+Optimizasyon düzeyi (`opt-level`) ayarı, 0 ila 3 aralığında Rust'ın kodunuza uygulayacağı optimizasyonların 
+sayısını kontrol eder. Bu nedenle `dev` profili için varsayılan tercih düzeyi 0'dır. Kodunuzu yayınlamaya hazır olduğunuzda, 
+derlemeye daha fazla zaman harcamak en iyisidir. Dağıtım modunda yalnızca bir kez derlersiniz, 
+ancak derlenmiş programı birçok kez çalıştırırsınız, bu nedenle dağıtım modu, daha hızlı çalışan kod için 
+daha uzun derleme süresi değiştirir. Bu nedenle, `release` profili için varsayılan tercih düzeyi 3'tür.
 
-You can override a default setting by adding a different value for it in
-*Cargo.toml*. For example, if we want to use optimization level 1 in the
-development profile, we can add these two lines to our project’s *Cargo.toml*
-file:
+*Cargo.toml*'da bunun için farklı bir değer ekleyerek bir varsayılan ayarı geçersiz kılabilirsiniz. 
+Örneğin geliştirme profilinde birinci optimizasyon seviyesini kullanmak istiyorsak projemizin *Cargo.toml* 
+dosyasına şu iki satırı ekleyebiliriz:
 
-<span class="filename">Filename: Cargo.toml</span>
+<span class="filename">Dosya adı: Cargo.toml</span>
 
 ```toml
 [profile.dev]
 opt-level = 1
 ```
 
-This code overrides the default setting of `0`. Now when we run `cargo build`,
-Cargo will use the defaults for the `dev` profile plus our customization to
-`opt-level`. Because we set `opt-level` to `1`, Cargo will apply more
-optimizations than the default, but not as many as in a release build.
+Bu kod, varsayılan `0` ayarını geçersiz kılar. Şimdi, `cargo build`'i çalıştırdığımızda, 
+Cargo, `dev` profili için varsayılanları ve ayrıca `opt-level` özelleştirmemizi kullanacak. 
+`opt-level`'i `1` olarak ayarladığımız için, Cargo varsayılandan daha fazla optimizasyon uygulayacak, 
+ancak bir `release` yapısındaki kadar değil.
 
-For the full list of configuration options and defaults for each profile, see
-[Cargo’s documentation](https://doc.rust-lang.org/cargo/reference/profiles.html).
+Her profil için yapılandırma seçeneklerinin ve varsayılanların tam listesi için
+[Cargo'nun dokümantasyonuna](https://doc.rust-lang.org/cargo/reference/profiles.html) bakın.
