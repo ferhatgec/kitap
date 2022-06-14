@@ -1,28 +1,21 @@
 <!-- Old link, do not remove -->
 <a id="installing-binaries-from-cratesio-with-cargo-install"></a>
 
-## Installing Binaries with `cargo install`
+## `cargo install` ile İkili Dosyaları Yükleme
 
-The `cargo install` command allows you to install and use binary crates
-locally. This isn’t intended to replace system packages; it’s meant to be a
-convenient way for Rust developers to install tools that others have shared on
-[crates.io](https://crates.io/)<!-- ignore -->. Note that you can only install
-packages that have binary targets. A *binary target* is the runnable program
-that is created if the crate has a *src/main.rs* file or another file specified
-as a binary, as opposed to a library target that isn’t runnable on its own but
-is suitable for including within other programs. Usually, crates have
-information in the *README* file about whether a crate is a library, has a
-binary target, or both.
+`cargo install` komutu, ikili kasaları yerelde kurmanıza ve kullanmanıza olanak tanır. 
+Bunun sistem paketlerinin yerini alması amaçlanmamıştır; Rust geliştiricilerinin, diğer geliştiricilerin 
+[crates.io](https://crates.io/)<!-- ignore -->'da paylaştığı araçları yüklemeleri için uygun bir yol olması amaçlanmıştı. 
+Yalnızca ikili hedefleri olan paketleri kurabileceğinizi unutmayın. *İkili hedef*, sandıkta bir *src/main.rs* dosyası 
+veya ikili olarak belirtilen başka bir dosya varsa o kasa çalıştırılabilir kod içeriyor olabilir. Genellikle kasalar, *README*
+dosyasında bir kasanın kütüphane mi, çalıştırılabilir mi yoksa her ikisi mi olduğu hakkında bilgi içermektedir.
 
-All binaries installed with `cargo install` are stored in the installation
-root’s *bin* folder. If you installed Rust using *rustup.rs* and don’t have any
-custom configurations, this directory will be *$HOME/.cargo/bin*. Ensure that
-directory is in your `$PATH` to be able to run programs you’ve installed with
-`cargo install`.
+`cargo install` ile kurulan tüm ikili dosyalar, kurulum kökünün *bin* dizininde saklanır. 
+Rust'ı *rustup.rs* kullanarak yüklediyseniz ve herhangi bir özel yapılandırmanız yoksa bu dizin *$HOME/.cargo/bin* 
+olacaktır. `cargo install`'i kullanarak kurduğunuz programları çalıştırabilmek için dizinin *$PATH* içinde olduğundan emin olun.
 
-For example, in Chapter 12 we mentioned that there’s a Rust implementation of
-the `grep` tool called `ripgrep` for searching files. To install `ripgrep`, we
-can run the following:
+Örneğin, Bölüm 12'de, dosyaları aramak için `ripgrep` adlı `grep` aracının bir Rust süreklemesi olduğundan bahsetmiştik. 
+`Ripgrep`'i kurmak için aşağıdakileri çalıştırabiliriz:
 
 <!-- manual-regeneration
 cargo install something you don't have, copy relevant output below
@@ -41,7 +34,4 @@ $ cargo install ripgrep
    Installed package `ripgrep v11.0.2` (executable `rg`)
 ```
 
-The second-to-last line of the output shows the location and the name of the
-installed binary, which in the case of `ripgrep` is `rg`. As long as the
-installation directory is in your `$PATH`, as mentioned previously, you can
-then run `rg --help` and start using a faster, rustier tool for searching files!
+Aynı şekilde, bir inşa sistemi olan [Elite](https://github.com/ferhatgec/elite)'i de aynı yolla (`cargo install elite`) kurabiliriz.
