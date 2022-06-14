@@ -6,7 +6,7 @@ Yazının bu versiyonu, Rust 1.59 ya da daha yenisini kullandığınızı varsay
 Rust'ı güncellemek ya da yüklemek için [Bölüm 1'in “Yükleme” kısmına bakınız][install]<!-- ignore -->
 
 HTML formatı [https://doc.rust-lang.org/stable/book/](https://doc.rust-lang.org/stable/book/) sayfasından erişilebilir
-ve `rustup`; run `rustup docs --book` ile açılabilir.
+ve `rustup`; `rustup docs --book` ile açılabilir.
 
 Sayılı çeviriler [translations] kısmında mevcuttur.
 
