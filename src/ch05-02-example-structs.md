@@ -1,244 +1,215 @@
-## An Example Program Using Structs
+## Yapıları Kullanan Örnek Bir Program
 
-To understand when we might want to use structs, let’s write a program that
-calculates the area of a rectangle. We’ll start by using single variables, and
-then refactor the program until we’re using structs instead.
+Yapıları ne zaman kullanmak isteyebileceğimizi anlamak için, bir dikdörtgenin alanını hesaplayan bir program yazalım. 
+Tek değişkenler kullanarak başlayacağız ve ardından bunun yerine yapıları kullanana kadar programı yeniden düzenleyeceğiz.
 
-Let’s make a new binary project with Cargo called *rectangles* that will take
-the width and height of a rectangle specified in pixels and calculate the area
-of the rectangle. Listing 5-8 shows a short program with one way of doing
-exactly that in our project’s *src/main.rs*.
+Piksel cinsinden belirtilen bir dikdörtgenin genişlik ve yüksekliğini alacak *rectangles* adlı,
+Cargo ile yeni bir ikili proje oluşturalım ve dikdörtgenin alanını hesaplayalım. 
+Liste 5-8, projemizin *src/main.rs* dosyasında tam olarak bunu yapmanın bir yolunu içeren kısa bir program göstermektedir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:all}}
 ```
 
-<span class="caption">Listing 5-8: Calculating the area of a rectangle
-specified by separate width and height variables</span>
+<span class="caption">Liste 5-8: Ayrı genişlik ve yükseklik değişkenleri 
+tarafından belirtilen bir dikdörtgenin alanını hesaplama</span>
 
-Now, run this program using `cargo run`:
+Şimdi, bu programı `cargo run` kullanarak çalıştırın.
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/output.txt}}
 ```
 
-This code succeeds in figuring out the area of the rectangle by calling the
-`area` function with each dimension, but we can do more to make this code clear
-and readable.
+Bu kod, her bir boyutta `alan` fonksiyonunu çağırarak dikdörtgenin alanını bulmayı başarır, ancak bu kodu açık ve okunabilir hale getirmek için daha fazlasını yapabiliriz.
 
-The issue with this code is evident in the signature of `area`:
+Bu kodla ilgili sorun, `area`'nın imzasında belirgindir:
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-08/src/main.rs:here}}
 ```
 
-The `area` function is supposed to calculate the area of one rectangle, but the
-function we wrote has two parameters, and it’s not clear anywhere in our
-program that the parameters are related. It would be more readable and more
-manageable to group width and height together. We’ve already discussed one way
-we might do that in [“The Tuple Type”][the-tuple-type]<!-- ignore --> section
-of Chapter 3: by using tuples.
+`area` fonksiyonunun bir dikdörtgenin alanını hesaplaması gerekiyor, 
+ancak yazdığımız fonksiyonun iki parametresi var ve programımızın 
+hiçbir yerinde parametrelerin ilişkili olduğu net değil. 
+Genişliği ve yüksekliği birlikte gruplamak daha okunaklı ve daha 
+yönetilebilir olurdu. Bunu, Bölüm 3'ün [“Demet Türü”][the-tuple-type]<!-- ignore --> bölümünde, demetleri kullanarak yapabileceğimizin bir yolunu zaten tartışmıştık.
 
-### Refactoring with Tuples
+### Demetlerle Yeniden Düzenleme
 
-Listing 5-9 shows another version of our program that uses tuples.
+Liste 5-9, programımızın demet kullanan başka bir sürümünü gösterir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-09/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-9: Specifying the width and height of the
-rectangle with a tuple</span>
+<span class="caption">Liste 5-9: Bir demet ile 
+dikdörtgenin genişliğini ve yüksekliğini belirtme</span>
 
-In one way, this program is better. Tuples let us add a bit of structure, and
-we’re now passing just one argument. But in another way, this version is less
-clear: tuples don’t name their elements, so we have to index into the parts of
-the tuple, making our calculation less obvious.
+Bir bakıma bu program daha iyi. Demetler yapı eklememize izin 
+verir ve biz sadece bir argümanı geçeceğiz. Ancak başka bir şekilde, 
+bu versiyon daha az açıktır: demetler öğelerini adlandırmaz, 
+bu nedenle demetin bölümlerine indekslememiz gerekir, 
+bu da hesaplamamızı daha az belirgin hale getirir.
 
-Mixing up the width and height wouldn’t matter for the area calculation, but if
-we want to draw the rectangle on the screen, it would matter! We would have to
-keep in mind that `width` is the tuple index `0` and `height` is the tuple
-index `1`. This would be even harder for someone else to figure out and keep in
-mind if they were to use our code. Because we haven’t conveyed the meaning of
-our data in our code, it’s now easier to introduce errors.
+Genişlik ve yüksekliğin karıştırılması alan hesabı için önemli değil, 
+ancak dikdörtgeni ekranda çizmek istiyorsak önemlidir! Genişliğin `0` küme indeksi ve yüksekliğin küme indeksi `1` olduğunu aklımızda tutmalıyız. 
+Eğer bizim kodumuzu kullanacak olsaydı, başka birinin bunu anlaması ve 
+akılda tutması daha da zor olurdu. Verilerimizin anlamını kodumuzda iletmediğimiz için, hataları tanıtmak artık daha kolay.
 
-### Refactoring with Structs: Adding More Meaning
+### Yapılarla Yeniden Düzenleme: Daha Fazla Anlam Ekleme
 
-We use structs to add meaning by labeling the data. We can transform the tuple
-we’re using into a struct with a name for the whole as well as names for the
-parts, as shown in Listing 5-10.
+Verileri etiketleyerek anlam eklemek için yapılar kullanırız. 
+Kullandığımız demeti, Liste 5-10'da gösterildiği gibi, 
+parçaların adlarının yanı sıra bütün için bir ad içeren bir yapıya dönüştürebiliriz.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-10/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-10: Defining a `Rectangle` struct</span>
+<span class="caption">Liste 5-10: Bir `Rectangle` yapı tanımlama</span>
 
-Here we’ve defined a struct and named it `Rectangle`. Inside the curly
-brackets, we defined the fields as `width` and `height`, both of which have
-type `u32`. Then in `main`, we created a particular instance of `Rectangle`
-that has a width of 30 and a height of 50.
+Burada bir yapı tanımladık ve onu `Rectangle` olarak adlandırdık. 
+Kıvrımlı parantezler içinde, her ikisi de `u32` tipinde olan alanları 
+`width` ve `height` olarak tanımladık. Ardından, ana olarak, 
+`30` genişliğinde ve `50` yüksekliğinde belirli bir 
+`Rectangle` tanımı oluşturduk.
 
-Our `area` function is now defined with one parameter, which we’ve named
-`rectangle`, whose type is an immutable borrow of a struct `Rectangle`
-instance. As mentioned in Chapter 4, we want to borrow the struct rather than
-take ownership of it. This way, `main` retains its ownership and can continue
-using `rect1`, which is the reason we use the `&` in the function signature and
-where we call the function.
+`area` fonksiyonumuz şimdi, türü bir `struct Rectangle` tanımının değişmez bir ödünç alma şekli olan `rectangle` adını verdiğimiz bir parametre ile tanımlanır. Bölüm 4'te bahsedildiği gibi, yapıyı sahiplenmek yerine ödünç 
+almak istiyoruz. Bu şekilde `main`, sahipliğini korur ve fonksiyon 
+imzasında ve fonksiyonu çağırdığımız yerde `&'`yi kullanmamızın nedeni 
+olan `rect1`'i kullanmaya devam edebilir.
 
-The `area` function accesses the `width` and `height` fields of the `Rectangle`
-instance (note that accessing fields of a borrowed struct instance does not
-move the field values, which is why you often see borrows of structs). Our
-function signature for `area` now says exactly what we mean: calculate the area
-of `Rectangle`, using its `width` and `height` fields. This conveys that the
-width and height are related to each other, and it gives descriptive names to
-the values rather than using the tuple index values of `0` and `1`. This is a
-win for clarity.
+`area` fonksiyonu, `Rectangle` tanımının `width` ve `height` üyelerine
+erişir (ödünç alınan bir yapı tanımının üyelerine erişmenin 
+üye değerlerini hareket ettirmediğini, bu nedenle sık sık yapı 
+ödünçlerini gördüğünüzü unutmayın). 
+`area` için fonksiyon imzamız şimdi tam olarak ne demek istediğimizi söylüyor: 
+`width` ve `height` üyelerini kullanarak `Rectangle` alanını hesaplayın. 
+Bu, genişlik ve yüksekliğin birbiriyle ilişkili olduğunu ifade eder ve 
+`0` ve `1`'lik demet indeks değerlerini kullanmak yerine değerlere 
+açıklayıcı isimler verir. Bu, netlik için bir kazançtır.
 
-### Adding Useful Functionality with Derived Traits
+### Türetilmiş Tanımlar ile Faydalı İşlevsellik Ekleme
 
-It’d be useful to be able to print an instance of `Rectangle` while we’re
-debugging our program and see the values for all its fields. Listing 5-11 tries
-using the [`println!` macro][println]<!-- ignore --> as we have used in
-previous chapters. This won’t work, however.
+Programımızda hata ayıklarken bir `Rectangle` tanımını yazdırabilmek 
+ve tüm üyelerin değerlerini görebilmek faydalı olacaktır. 
+Liste 5-11 [`println!` makrosunu][println]<!-- ignore --> önceki bölümlerde kullandığımız gibi
+kullanmayı dener. Ancak bu işe yaramayacaktır.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-11: Attempting to print a `Rectangle`
-instance</span>
+<span class="caption">Liste 5-11: Bir `Rectangle` tanımını yazdırmaya 
+çalışmak</span>
 
-When we compile this code, we get an error with this core message:
+Bu kodu derlediğimizde, bir hata alıyoruz:
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:3}}
 ```
-
-The `println!` macro can do many kinds of formatting, and by default, the curly
-brackets tell `println!` to use formatting known as `Display`: output intended
-for direct end user consumption. The primitive types we’ve seen so far
-implement `Display` by default, because there’s only one way you’d want to show
-a `1` or any other primitive type to a user. But with structs, the way
-`println!` should format the output is less clear because there are more
-display possibilities: Do you want commas or not? Do you want to print the
-curly brackets? Should all the fields be shown? Due to this ambiguity, Rust
-doesn’t try to guess what we want, and structs don’t have a provided
-implementation of `Display` to use with `println!` and the `{}` placeholder.
-
-If we continue reading the errors, we’ll find this helpful note:
+`println!` makrosu birçok türde biçimlendirme yapabilir ve varsayılan olarak 
+süslü parantezler `println!`'e `Display` olarak bilinen biçimlendirmeyi kullanmasını söyler.
+Şimdiye kadar gördüğümüz ilkel tipler varsayılan olarak `Display`'i uygular, çünkü bunu yapabileceğiniz
+tek yoldur.
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-11/output.txt:9:10}}
 ```
 
-Let’s try it! The `println!` macro call will now look like `println!("rect1 is
-{:?}", rect1);`. Putting the specifier `:?` inside the curly brackets tells
-`println!` we want to use an output format called `Debug`. The `Debug` trait
-enables us to print our struct in a way that is useful for developers so we can
-see its value while we’re debugging our code.
+Hadi deneyelim! `println!` makro çağrısı şimdi `println!("rect1 is {:?}", rect1);`. 
+`:?` belirtecini küme parantezlerinin içine koymak şunu söyler: `println!` için `Debug` adında bir 
+çıktı formatı kullanmak istiyoruz. `Debug` tanımı yapımızı geliştiriciler için yararlı 
+olacak şekilde yazdırmamızı sağlar, böylece kodumuz ayıklanırken değerini görebilirsiniz.
 
-Compile the code with this change. Drat! We still get an error:
+Kodu bu değişiklikle derleyin. Hala bir hata alıyoruz:
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:3}}
 ```
 
-But again, the compiler gives us a helpful note:
+Ama yine de derleyici bize yardımcı olacak bir not veriyor:
 
 ```text
 {{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-01-debug/output.txt:9:10}}
 ```
+Rust, hata ayıklama bilgilerini yazdırma fonksiyonunu *içerir*, 
+ancak bu fonksiyonu yapımız için kullanılabilir hale getirmek için açıkça seçmeliyiz. 
+Bunu yapmak için, Liste 5-12'de gösterildiği gibi, yapı tanımından hemen önce `#[derive(Debug)]` dış niteliğini ekleriz.
 
-Rust *does* include functionality to print out debugging information, but we
-have to explicitly opt in to make that functionality available for our struct.
-To do that, we add the outer attribute `#[derive(Debug)]` just before the
-struct definition, as shown in Listing 5-12.
-
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/listing-05-12/src/main.rs}}
 ```
 
-<span class="caption">Listing 5-12: Adding the attribute to derive the `Debug`
-trait and printing the `Rectangle` instance using debug formatting</span>
+<span class="caption">Liste 5-12: `Debug` tanımını türetmek için özniteliği ekleme ve 
+hata ayıklama biçimlendirmesini kullanarak `Rectangle` tanımı yazdırma</span>
 
-Now when we run the program, we won’t get any errors, and we’ll see the
-following output:
+Şimdi programı çalıştırdığımızda herhangi bir hata almayacağız ve aşağıdaki çıktıyı göreceğiz:
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/listing-05-12/output.txt}}
 ```
 
-Nice! It’s not the prettiest output, but it shows the values of all the fields
-for this instance, which would definitely help during debugging. When we have
-larger structs, it’s useful to have output that’s a bit easier to read; in
-those cases, we can use `{:#?}` instead of `{:?}` in the `println!` string.
-In this example, using the `{:#?}` style will output:
+Güzel! En güzel çıktı değil, ancak hata ayıklama sırasında kesinlikle yardımcı olacak bu 
+örnek için tüm alanların değerlerini gösterir. Daha büyük yapılarımız olduğunda, okunması biraz daha
+kolay çıktılara sahip olmak yararlıdır; bu durumlarda `println!`'de `{:?}` yerine `{:#?}` kullanabiliriz. 
+Bu örnekte, `{:#?}` stilinin kullanılması şu sonucu verecektir:
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/output-only-02-pretty-debug/output.txt}}
 ```
 
-Another way to print out a value using the `Debug` format is to use the [`dbg!`
-macro][dbg]<!-- ignore -->, which takes ownership of an expression (as opposed
-to `println!` that takes a reference), prints the file and line number of where
-that `dbg!` macro call occurs in your code along with the resulting value of
-that expression, and returns ownership of the value.
+`Debug` formatını kullanarak bir değer yazdırmanın başka bir yolu da [`dbg!`
+makrosudur][dbg]<!-- ignore -->.
+Bu makro ifadenin sahipliğini alır (bir referans alan `println!`'nin aksine) ve bu ifadenin sonuç değeriyle birlikte kodunuzda 
+gerçekleşir ve değerin sahipliğini döndürür.
 
-> Note: Calling the `dbg!` macro prints to the standard error console stream
-> (`stderr`), as opposed to `println!` which prints to the standard output
-> console stream (`stdout`). We’ll talk more about `stderr` and `stdout` in the
-> “[“Writing Error Messages to Standard Error Instead of Standard
-> Output” section in Chapter 12][err]<!-- ignore -->.
+> Not: `dbg!`'yi çağırmak, `println!`'nin aksine standart hata konsolu 
+> akışına (`stderr`) yazdırır. 
+> Bölüm 12'deki [“Standart Çıktı Yerine Standart Hataya Hata Mesajları Yazma”][err]<!-- ignore -->
+> bölümünde `stderr` ve `stdout` hakkında daha fazla konuşacağız.
 
-Here’s an example where we’re interested in the value that gets assigned to the
-`width` field, as well as the value of the whole struct in `rect1`:
+İşte, genişlik alanına atanan değerle ve ayrıca `rect1`'deki tüm yapının değeriyle ilgilendiğimiz bir örnek:
 
 ```rust
 {{#rustdoc_include ../listings/ch05-using-structs-to-structure-related-data/no-listing-05-dbg-macro/src/main.rs}}
 ```
 
-We can put `dbg!` around the expression `30 * scale` and, because `dbg!`
-returns ownership of the expression’s value, the `width` field will get the
-same value as if we didn’t have the `dbg!` call there. We don’t want `dbg!` to
-take ownership of `rect1`, so we use a reference to `rect1` in the next call.
-Here’s what the output of this example looks like:
+`30 * scale` ifadesine `dbg!` makrosunu koyabiliriz çünkü `dbg!` ifadenin değerinin sahipliğini döndürür.
+Biz ise `dbg!`'nin `rect1`'in sahipliğini almasını istemiyor olduğumuzdan dolayı bir diğer çağrıda 
+`rect1`'in bir referansını kullanacağız.
+
+Bu örneğin çıktısı şuna benzemelidir:
 
 ```console
 {{#include ../listings/ch05-using-structs-to-structure-related-data/no-listing-05-dbg-macro/output.txt}}
 ```
 
-We can see the first bit of output came from *src/main.rs* line 10, where we’re
-debugging the expression `30 * scale`, and its resulting value is 60 (the
-`Debug` formatting implemented for integers is to print only their value). The
-`dbg!` call on line 14 of *src/main.rs* outputs the value of `&rect1`, which is
-the `Rectangle` struct. This output uses the pretty `Debug` formatting of the
-`Rectangle` type. The `dbg!` macro can be really helpful when you’re trying to
-figure out what your code is doing!
+Çıktının ilk bitinin *src/main.rs* 10. satırdan geldiğini görebiliriz, 
+burada `30 * scale` ifadesinin hatalarını ayıklıyoruz. `dbg!` *src/main.rs* dosyasının 14. satırındaki çağrı, 
+`Rectangle` yapısı olan `&rect1` değerini verir. Bu çıktı, `Rectangle` türünün güzel `Debug` biçimlendirmesini kullanır. 
+`dbg!` makrosu, kodunuzun ne yaptığını anlamaya çalışırken gerçekten yardımcı olabilir!
 
-In addition to the `Debug` trait, Rust has provided a number of traits for us
-to use with the `derive` attribute that can add useful behavior to our custom
-types. Those traits and their behaviors are listed in [Appendix C][app-c]<!--
-ignore -->. We’ll cover how to implement these traits with custom behavior as
-well as how to create your own traits in Chapter 10. There are also many
-attributes other than `derive`; for more information, see [the “Attributes”
-section of the Rust Reference][attributes].
+Rust, `Debug` tanımına ek olarak, `derive` özelliğiyle birlikte kullanmamız için özel türlerimize faydalı davranışlar ekleyebilecek bir 
+dizi özellik sağlamıştır. Bu özellikler ve davranışları [Ekleme C][app-c]<!--
+ignore -->'de listelenmiştir. Bu özellikleri özel davranışlarla nasıl uygulayacağınızı ve kendi özelliklerinizi nasıl oluşturacağınızı 
+Bölüm 10'da ele alacağız. `derive`'ın dışında da birçok nitelik vardır; daha fazla bilgi için, 
+[Rust Reference'ın “Nitelikler”][attributes] bölümüne bakın.
 
-Our `area` function is very specific: it only computes the area of rectangles.
-It would be helpful to tie this behavior more closely to our `Rectangle`
-struct, because it won’t work with any other type. Let’s look at how we can
-continue to refactor this code by turning the `area` function into an `area`
-*method* defined on our `Rectangle` type.
+`area` fonksiyonumuz çok spesifiktir: sadece dikdörtgenlerin alanını hesaplar. 
+Bu davranışı `Rectangle` yapımıza daha yakından bağlamak faydalı olacaktır, çünkü başka hiçbir türle çalışmayacaktır. 
+`area` fonksiyonunu `Rectangle` türümüzde tanımlı bir `area` metoduna çevirerek bu kodu nasıl yeniden düzenlemeye devam 
+edebileceğimizebakalım.
 
 [the-tuple-type]: ch03-02-data-types.html#the-tuple-type
 [app-c]: appendix-03-derivable-traits.md
