@@ -1,46 +1,32 @@
-## Packages and Crates
+## Paketler ve Kasalar
 
-The first parts of the module system we’ll cover are packages and crates.
+Modül sisteminin ele alacağımız ilk kısımları paketler ve kasalardır.
 
-A *crate* is the smallest amount of code that the Rust compiler considers at a
-time. Even if you run `rustc` rather than `cargo` and pass a single source code
-file (as we did all the way back in the “Writing and Running a Rust Program”
-section of Chapter 1), the compiler considers that file to be a crate. Crates
-can contain modules, and the modules may be defined in other files that get
-compiled with the crate, as we’ll see in the coming sections.
+*Kasa*, Rust derleyicisinin bir seferde dikkate aldığı en küçük kod miktarıdır. 
+`cargo` yerine `rustc` çalıştırsanız ve tek bir kaynak kod dosyası iletseniz bile (1. Bölüm'ün “Bir Rust Programı Yazma ve Çalıştırma” bölümünde yaptığımız gibi), derleyici bu dosyayı bir kasa olarak kabul eder. Kasalar modüller içerebilir ve modüller, 
+sonraki bölümlerde göreceğimiz gibi, kasa ile derlenen diğer dosyalarda tanımlanabilir.
 
-A crate can come in one of two forms: a binary crate or a library crate.
-*Binary crates* are programs you can compile to an executable that you can run,
-such as a command-line program or a server. Each must have a function called
-`main` that defines what happens when the executable runs. All the crates we’ve
-created so far have been binary crates.
+Bir kasa iki biçimde olabilir: ikili kasa veya kütüphane kasası. İkili kasalar, bir komut satırı programı veya bir sunucu gibi 
+çalıştırabileceğiniz bir yürütülebilir dosyaya derleyebileceğiniz programlardır. Her birinin, yürütülebilir dosya çalıştığında ne olacağını 
+tanımlayan `main` adlı fonksiyonu olmalıdır. Şimdiye kadar yarattığımız tüm kasalar ikili kasalardı.
 
-*Library crates* don’t have a `main` function, and they don’t compile to an
-executable. Instead, they define functionality intended to be shared with
-multiple projects. For example, the `rand` crate we used in [Chapter
-2][rand]<!-- ignore --> provides functionality that generates random numbers.
-Most of the time when Rustaceans say “crate”, they mean library crate, and they
-use “crate” interchangeably with the general programming concept of a “library".
+*Kütüphane kasalarının* `main` fonksiyonu yoktur ve yürütülebilir bir dosyaya derlenmezler. Bunun yerine, birden çok projeyle paylaşılması amaçlanan
+fonksiyonları tanımlarlar. Örneğin, Bölüm 2'de kullandığımız `rand` kasası, *sözde rastgele* sayılar üreten işlevsellik sağlar. 
+Rustseverler çoğu zaman “kasa” derken, kütüphane kasası demek isterler ve “kasa” sözcüğünü genel programlama kavramı olan 
+“kütüphane” ile birbirinin yerine kullanırlar.
 
-The *crate root* is a source file that the Rust compiler starts from and makes
-up the root module of your crate (we’ll explain modules in depth in the
-[“Defining Modules to Control Scope and Privacy”][modules]<!-- ignore -->
-section).
+Kasa kökü, Rust derleyicisinin başlattığı ve kasanızın kök modülünü oluşturan bir kaynak dosyadır 
+([“Kapsam ve Gizliliği Kontrol Etmek için Modüller Tanımlamak”][modules]<!-- ignore --> bölümünde modülleri ayrıntılı olarak açıklayacağız).
 
-A *package* is a bundle of one or more crates that provides a set of
-functionality. A package contains a *Cargo.toml* file that describes how to
-build those crates. Cargo is actually a package that contains the binary crate
-for the command-line tool you’ve been using to build your code. The Cargo
-package also contains a library crate that the binary crate depends on. Other
-projects can depend on the Cargo library crate to use the same logic the Cargo
-command-line tool uses.
+Paket, bir dizi işlevsellik sağlayan bir veya daha fazla kasadan oluşan bir pakettir. 
+Bir paket, bu kasaların nasıl oluşturulacağını açıklayan bir *Cargo.toml* dosyası içerir. Cargo aslında kodunuzu oluşturmak için kullandığınız 
+komut satırı aracı için ikili kasayı içeren bir pakettir. Cargo paketi ayrıca ikili kasanın bağlı olduğu bir kütüphane kasası içerir. 
+Diğer projeler, Cargo komut satırı aracının kullandığı mantığı kullanmak için Cargo kütüphane kasasını kullanabilir.
 
-A package can contain as many binary crates as you like, but at most only one
-library crate. A package must contain at least one crate, whether that’s a
-library or binary crate.
+Bir paket, istediğiniz kadar ikili kasa içerebilir, ancak en fazla yalnızca bir kütüphane kasası olabilir. 
+Bir paket, ister kitaplık ister ikili kasa olsun, en az bir kasa içermelidir.
 
-Let’s walk through what happens when we create a package. First, we enter the
-command `cargo new`:
+Bir paket oluşturduğumuzda neler olduğunu gözden geçirelim. İlk olarak, `cargo new` komutunu giriyoruz:
 
 ```console
 $ cargo new my-project
@@ -52,21 +38,18 @@ $ ls my-project/src
 main.rs
 ```
 
-After we run `cargo new`, we use `ls` to see what Cargo creates. In the project
-directory, there’s a *Cargo.toml* file, giving us a package. There’s also a
-*src* directory that contains *main.rs*. Open *Cargo.toml* in your text editor,
-and note there’s no mention of *src/main.rs*. Cargo follows a convention that
-*src/main.rs* is the crate root of a binary crate with the same name as the
-package. Likewise, Cargo knows that if the package directory contains
-*src/lib.rs*, the package contains a library crate with the same name as the
-package, and *src/lib.rs* is its crate root. Cargo passes the crate root files
-to `rustc` to build the library or binary.
+`cargo new`'i çalıştırdıktan sonra, `cargo`'nun ne oluşturduğunu görmek için `ls` kullanırız. 
+Proje dizininde bize bir paket veren bir *Cargo.toml* dosyası var. Ayrıca *main.rs*'i içeren bir *src* dizini vardır. 
+Metin düzenleyicinizde *Cargo.toml*'yi açın ve burada *src/main.rs*'den bahsedilmediğini unutmayın. 
+Cargo, *src/main.rs* öğesinin, paketle aynı ada sahip bir ikili kasanın kasa kökü olduğu kuralına uyar. 
+Benzer şekilde, Cargo, paket dizini *src/lib.rs* içeriyorsa, paketin paketle aynı ada sahip bir kütüphane kasası içerdiğini ve 
+*src/lib.rs*'nin bunun kasa kökü olduğunu bilir. Cargo, kütüphaneyi veya ikili dosyayı oluşturmak için 
+sandık kök dosyalarını `rustc`'ye iletir.
 
-Here, we have a package that only contains *src/main.rs*, meaning it only
-contains a binary crate named `my-project`. If a package contains *src/main.rs*
-and *src/lib.rs*, it has two crates: a binary and a library, both with the same
-name as the package. A package can have multiple binary crates by placing files
-in the *src/bin* directory: each file will be a separate binary crate.
+Burada, yalnızca *src/main.rs* içeren bir paketimiz var, yani yalnızca *my-project* adında bir ikili sandık içeriyor. 
+Bir paket *src/main.rs* ve *src/lib.rs* içeriyorsa, iki kasası vardır: ikisi de paketle aynı ada sahip ikili dosya ve kütüphane. 
+Bir paket, dosyaları *src/bin* dizinine yerleştirerek birden çok ikili kasaya sahip olabilir: 
+her dosya ayrı bir ikili kasa olacaktır.
 
 [modules]: ch07-02-defining-modules-to-control-scope-and-privacy.html
 [rand]: ch02-00-guessing-game-tutorial.html#generating-a-random-number
