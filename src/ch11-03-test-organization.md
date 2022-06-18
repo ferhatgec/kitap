@@ -1,235 +1,173 @@
-## Test Organization
+## Test Organizasyonu
 
-As mentioned at the start of the chapter, testing is a complex discipline, and
-different people use different terminology and organization. The Rust community
-thinks about tests in terms of two main categories: unit tests and integration
-tests. *Unit tests* are small and more focused, testing one module in isolation
-at a time, and can test private interfaces. *Integration tests* are entirely
-external to your library and use your code in the same way any other external
-code would, using only the public interface and potentially exercising multiple
-modules per test.
+Bölümün başında da belirtildiği gibi, test karmaşık bir disiplindir ve farklı kişiler farklı terminoloji ve organizasyon kullanmaktadır. 
+Rust topluluğu testleri iki ana kategoride ele alır: birim testleri ve entegrasyon testleri. Birim testleri küçük ve daha odaklıdır, 
+her seferinde tek bir modülü izole olarak test eder ve özel arayüzleri test edebilir. Entegrasyon testleri kütüphanenizin tamamen dışındadır 
+ve kodunuzu diğer harici kodlarla aynı şekilde kullanır, yalnızca genel arayüzü kullanır ve potansiyel olarak test başına birden fazla modülü test eder.
 
-Writing both kinds of tests is important to ensure that the pieces of your
-library are doing what you expect them to, separately and together.
+Her iki tür testin de yazılması, kütüphanenizin parçalarının ayrı ayrı ve birlikte beklediğiniz şeyi yaptığından emin olmak için önemlidir.
 
-### Unit Tests
+### Birim Testleri
 
-The purpose of unit tests is to test each unit of code in isolation from the
-rest of the code to quickly pinpoint where code is and isn’t working as
-expected. You’ll put unit tests in the *src* directory in each file with the
-code that they’re testing. The convention is to create a module named `tests`
-in each file to contain the test functions and to annotate the module with
-`cfg(test)`.
+Birim testlerinin amacı, kodun nerede beklendiği gibi çalışıp çalışmadığını hızlı bir şekilde belirlemek için her bir kod birimini 
+kodun geri kalanından ayrı olarak test etmektir. Birim testlerini, test ettikleri kodun bulunduğu her dosyanın *src* dizinine koyarsınız. 
+Alışılagelmiş yöntem, her dosyada test işlevlerini içerecek `tests` adında bir modül oluşturmak ve modüle `cfg(test)` ile açıklama eklemektir.
 
-#### The Tests Module and `#[cfg(test)]`
+#### Testler Modülü ve `#[cfg(test)]`
 
-The `#[cfg(test)]` annotation on the tests module tells Rust to compile and run
-the test code only when you run `cargo test`, not when you run `cargo build`.
-This saves compile time when you only want to build the library and saves space
-in the resulting compiled artifact because the tests are not included. You’ll
-see that because integration tests go in a different directory, they don’t need
-the `#[cfg(test)]` annotation. However, because unit tests go in the same files
-as the code, you’ll use `#[cfg(test)]` to specify that they shouldn’t be
-included in the compiled result.
+`tests` modülündeki `#[cfg(test)]` ek açıklaması, Rust'a test kodunu yalnızca `cargo test`'i çalıştırdığınızda derlemesini ve 
+çalıştırmasını söyler, `cargo build`'i çalıştırdığınızda değil. Bu, yalnızca kütüphaneyi derlemek istediğinizde derleme süresinden 
+tasarruf sağlar ve testler dahil edilmediği için sonuçta derlenen yapıda yer tasarrufu sağlar. Entegrasyon testleri farklı bir dizine 
+gittiği için `#[cfg(test)]` ek açıklamasına ihtiyaç duymadıklarını göreceksiniz. Ancak, birim testleri kodla aynı dosyalara girdiği için, 
+derlenen sonuca dahil edilmemeleri gerektiğini belirtmek için `#[cfg(test)]` kullanacaksınız.
 
-Recall that when we generated the new `adder` project in the first section of
-this chapter, Cargo generated this code for us:
+Bu bölümün ilk kısmında yeni `adder` projesini oluşturduğumuzda, Cargo'nun bu kodu bizim için oluşturduğunu hatırlayın:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}
 ```
 
-This code is the automatically generated test module. The attribute `cfg`
-stands for *configuration* and tells Rust that the following item should only
-be included given a certain configuration option. In this case, the
-configuration option is `test`, which is provided by Rust for compiling and
-running tests. By using the `cfg` attribute, Cargo compiles our test code only
-if we actively run the tests with `cargo test`. This includes any helper
-functions that might be within this module, in addition to the functions
-annotated with `#[test]`.
+Bu kod otomatik olarak oluşturulan test modülüdür. `cfg` niteliği *yapılandırma* anlamına gelir ve 
+Rust'a aşağıdaki öğenin yalnızca belirli bir yapılandırma seçeneği verildiğinde dahil edilmesi gerektiğini söyler. 
+Bu durumda, *yapılandırma* seçeneği, testlerin derlenmesi ve çalıştırılması için Rust tarafından sağlanan `test`'tir. 
+`cfg` niteliğini kullanarak, `cargo test` kodumuzu yalnızca testleri `cargo test` ile aktif olarak çalıştırırsak derler. 
+Bu, `#[test]` ile açıklanan fonksiyonlara ek olarak, bu modül içinde olabilecek tüm yardımcı fonksiyonları içerir.
 
-#### Testing Private Functions
+#### Özel Fonksiyonları Test Etme
 
-There’s debate within the testing community about whether or not private
-functions should be tested directly, and other languages make it difficult or
-impossible to test private functions. Regardless of which testing ideology you
-adhere to, Rust’s privacy rules do allow you to test private functions.
-Consider the code in Listing 11-12 with the private function `internal_adder`.
+Test topluluğu içinde gizli fonksiyonların doğrudan test edilip edilmemesi gerektiği konusunda tartışmalar vardır ve 
+diğer diller gizli fonksiyonları test etmeyi zorlaştırır veya imkansız hale getirir. Hangi test ideolojisine bağlı olursanız olun, 
+Rust'ın gizlilik kuralları gizli fonksiyonları test etmenize izin verir. Liste 11-12'deki kodu gizli fonksiyon `internal_adder` ile 
+birlikte düşünün.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs}}
 ```
 
-<span class="caption">Listing 11-12: Testing a private function</span>
+<span class="caption">Liste 11-12: Özel bir fonksiyonu test etme</span>
 
-Note that the `internal_adder` function is not marked as `pub`. Tests are just
-Rust code, and the `tests` module is just another module. As we discussed in
-the [“Paths for Referring to an Item in the Module Tree”][paths]<!-- ignore -->
-section, items in child modules can use the items in their ancestor modules. In
-this test, we bring all of the `test` module’s parent’s items into scope with
-`use super::*`, and then the test can call `internal_adder`. If you don’t think
-private functions should be tested, there’s nothing in Rust that will compel
-you to do so.
+`internal_adder` fonksiyonunun `pub` olarak işaretlenmediğine dikkat edin. Testler sadece Rust kodudur ve `test` modülü sadece başka bir modüldür. 
+[“Modül Ağacında Bir Öğeye Başvurma Yolları”][paths]<!-- ignore --> bölümünde tartıştığımız gibi, alt modüllerdeki öğeler ata 
+modüllerindeki öğeleri kullanabilir. Bu testte, `test` modülünün ebeveyninin tüm öğelerini `use super::*` ile kapsama alırız ve 
+ardından test `internal_adder`'ı çağırabilir. Gizli fonksiyonların test edilmemesi gerektiğini düşünüyorsanız, 
+Rust'ta sizi bunu yapmaya zorlayacak hiçbir şey yoktur.
 
-### Integration Tests
+### Entegrasyon Testleri
 
-In Rust, integration tests are entirely external to your library. They use your
-library in the same way any other code would, which means they can only call
-functions that are part of your library’s public API. Their purpose is to test
-whether many parts of your library work together correctly. Units of code that
-work correctly on their own could have problems when integrated, so test
-coverage of the integrated code is important as well. To create integration
-tests, you first need a *tests* directory.
+Rust'ta entegrasyon testleri kütüphanenizin tamamen dışındadır. Kütüphanenizi diğer kodlarla aynı şekilde kullanırlar, 
+yani yalnızca kütüphanenizin genel API'sinin bir parçası olan fonksiyonları çağırabilirler. Amaçları, kütüphanenizin birçok parçasının 
+birlikte doğru çalışıp çalışmadığını test etmektir. Kendi başlarına doğru çalışan kod birimleri entegre edildiğinde sorun yaşayabilir, 
+bu nedenle entegre kodun test kapsamı da önemlidir. Entegrasyon testleri oluşturmak için öncelikle bir test dizinine ihtiyacınız vardır.
 
-#### The *tests* Directory
+#### *tests* Dizini
 
-We create a *tests* directory at the top level of our project directory, next
-to *src*. Cargo knows to look for integration test files in this directory. We
-can then make as many test files as we want, and Cargo will compile each of the
-files as an individual crate.
+*tests* dizinindeki her dosya ayrı bir kasadır, bu nedenle kütüphanemizi her test kasasının kapsamına getirmemiz gerekir. 
+Bu nedenle, birim testlerinde ihtiyaç duymadığımız `use adder`'ı kodun en üstüne ekliyoruz.
 
-Let’s create an integration test. With the code in Listing 11-12 still in the
-*src/lib.rs* file, make a *tests* directory, create a new file named
-*tests/integration_test.rs*, and enter the code in Listing 11-13.
+*tests/integration_test.rs* içindeki herhangi bir koda `#[cfg(test)]` ile açıklama eklememize gerek yok.
+Cargo, *tests* dizinini özel olarak ele alır ve bu dizindeki dosyaları yalnızca `cargo test`'i çalıştırdığımızda derler.
+Şimdi `cargo test`'i çalıştırın:
 
-<span class="filename">Filename: tests/integration_test.rs</span>
+<span class="filename">Dosya adı: tests/integration_test.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-13/tests/integration_test.rs}}
 ```
 
-<span class="caption">Listing 11-13: An integration test of a function in the
-`adder` crate</span>
+<span class="caption">Liste 11-13: `adder` kasasındaki bir fonksiyonun 
+entegrasyon testi</span>
 
-Each file in the `tests` directory is a separate crate, so we need to bring our
-library into each test crate’s scope. For that reason we add `use adder` at the
-top of the code, which we didn’t need in the unit tests.
+Çıktının üç bölümü birim testlerini, entegrasyon testini ve dokümantasyon testlerini içerir. 
+Birim testleri için ilk bölüm gördüğümüzle aynıdır: her birim testi için bir satır (Liste 11-12'de eklediğimiz `internal` adlı bir satır) 
+ve ardından birim testleri için bir özet satırı.
 
-We don’t need to annotate any code in *tests/integration_test.rs* with
-`#[cfg(test)]`. Cargo treats the `tests` directory specially and compiles files
-in this directory only when we run `cargo test`. Run `cargo test` now:
+Entegrasyon testleri bölümü `Running tests/integration_test.rs` satırıyla başlar. Ardından, bu entegrasyon testindeki her bir test 
+fonksiyonu için bir satır ve `Doc-tests adder` bölümü başlamadan hemen önce entegrasyon testinin sonuçları için bir özet satırı vardır.
 
-```console
-{{#include ../listings/ch11-writing-automated-tests/listing-11-13/output.txt}}
-```
+Her entegrasyon testi dosyasının kendi bölümü vardır, bu nedenle *tests* dizinine daha fazla dosya eklersek, 
+daha fazla entegrasyon testi bölümü olacaktır.
 
-The three sections of output include the unit tests, the integration test, and
-the doc tests. The first section for the unit tests is the same as we’ve been
-seeing: one line for each unit test (one named `internal` that we added in
-Listing 11-12) and then a summary line for the unit tests.
-
-The integration tests section starts with the line `Running
-tests/integration_test.rs`. Next, there is a line for each test function in
-that integration test and a summary line for the results of the integration
-test just before the `Doc-tests adder` section starts.
-
-Each integration test file has its own section, so if we add more files in the
-*tests* directory, there will be more integration test sections.
-
-We can still run a particular integration test function by specifying the test
-function’s name as an argument to `cargo test`. To run all the tests in a
-particular integration test file, use the `--test` argument of `cargo test`
-followed by the name of the file:
+Test fonksiyonunun adını `cargo test`'e argüman olarak belirterek belirli bir entegrasyon testi fonksiyonunu çalıştırabiliriz. 
+Belirli bir entegrasyon testi dosyasındaki tüm testleri çalıştırmak için, `cargo test`'in `--test` argümanını ve ardından dosyanın adını kullanın:
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/output-only-05-single-integration/output.txt}}
 ```
 
-This command runs only the tests in the *tests/integration_test.rs* file.
+Bu komut yalnızca *tests/integration_test.rs* dosyasındaki testleri çalıştırır.
 
-#### Submodules in Integration Tests
+#### Entegrasyon Testlerinde Alt Modüller
 
-As you add more integration tests, you might want to make more files in the
-*tests* directory to help organize them; for example, you can group the test
-functions by the functionality they’re testing. As mentioned earlier, each file
-in the *tests* directory is compiled as its own separate crate, which is useful
-for creating separate scopes to more closely imitate the way end users will be
-using your crate. However, this means files in the *tests* directory don’t
-share the same behavior as files in *src* do, as you learned in Chapter 7
-regarding how to separate code into modules and files.
+Daha fazla entegrasyon testi ekledikçe, bunları düzenlemeye yardımcı olmak için *tests* dizininde daha fazla dosya oluşturmak isteyebilirsiniz; 
+örneğin, test fonksiyonlarını test ettikleri işlevselliğe göre gruplayabilirsiniz. Daha önce de belirtildiği gibi, 
+*tests* dizinindeki her dosya kendi içinde ayrı kasa olarak derlenir, bu da son kullanıcıların kasanızı kullanma şeklini daha yakından 
+taklit etmek için ayrı kapsamlar oluşturmak için kullanışlıdır. Ancak bu, Bölüm 7'de kodu modüllere ve dosyalara nasıl ayıracağınızı 
+öğrendiğiniz gibi, *tests* dizinindeki dosyaların *src*'deki dosyalarla aynı davranışı paylaşmadığı anlamına gelir.
 
-The different behavior of *tests* directory files is most noticeable when you
-have a set of helper functions to use in multiple integration test files and
-you try to follow the steps in the [“Separating Modules into Different
-Files”][separating-modules-into-files]<!-- ignore --> section of Chapter 7 to
-extract them into a common module. For example, if we create *tests/common.rs*
-and place a function named `setup` in it, we can add some code to `setup` that
-we want to call from multiple test functions in multiple test files:
+*tests* dizini dosyalarının farklı davranışı en çok, birden fazla entegrasyon test dosyasında kullanılacak bir dizi yardımcı 
+fonksiyonunuz olduğunda ve bunları ortak bir modüle çıkarmak için 
+Bölüm 7'deki [“Modülleri Farklı Dosyalara Ayırma”][separating-modules-into-files]<!-- ignore --> bölümündeki adımları izlemeye 
+çalıştığınızda fark edilir. Örneğin, *tests/common.rs* dosyasını oluşturur ve içine `setup` adında bir fonksiyon yerleştirirsek, 
+`setup` dosyasına test dosyalarındaki test fonksiyonlarından çağırmak istediğimiz bazı kodlar ekleyebiliriz:
 
-<span class="filename">Filename: tests/common.rs</span>
+<span class="filename">Dosya adı: tests/common.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/tests/common.rs}}
 ```
 
-When we run the tests again, we’ll see a new section in the test output for the
-*common.rs* file, even though this file doesn’t contain any test functions nor
-did we call the `setup` function from anywhere:
+Testleri tekrar çalıştırdığımızda, *common.rs* dosyası için test çıktısında yeni bir bölüm göreceğiz, 
+ancak bu dosya herhangi bir test fonksiyonu içermiyor ve `setup` fonksiyonunu herhangi bir yerden çağırmadık:
 
 ```console
 {{#include ../listings/ch11-writing-automated-tests/no-listing-12-shared-test-code-problem/output.txt}}
 ```
 
-Having `common` appear in the test results with `running 0 tests` displayed for
-it is not what we wanted. We just wanted to share some code with the other
-integration test files.
+Test sonuçlarında yaygın olarak `running 0 tests`'in görüntülenmesi istediğimiz şey değildi. 
+Sadece bazı kodları diğer entegrasyon test dosyalarıyla paylaşmak istedik.
 
-To avoid having `common` appear in the test output, instead of creating
-*tests/common.rs*, we’ll create *tests/common/mod.rs*. This is an alternate
-naming convention that Rust also understands. Naming the file this way tells
-Rust not to treat the `common` module as an integration test file. When we move
-the `setup` function code into *tests/common/mod.rs* and delete the
-*tests/common.rs* file, the section in the test output will no longer appear.
-Files in subdirectories of the *tests* directory don’t get compiled as separate
-crates or have sections in the test output.
+`common`'ın test çıktısında görünmesini önlemek için *tests/common.rs* oluşturmak yerine *tests/common/mod.rs* oluşturacağız. 
+Bu, Rust'ın da anladığı alternatif bir adlandırma kuralıdır. Dosyayı bu şekilde adlandırmak, Rust'a `common` modülünü bir entegrasyon test 
+dosyası olarak ele almamasını söyler. `setup` fonksiyonu kodunu *tests/common/mod.rs* dosyasına taşıdığımızda ve *tests/common.rs* dosyasını sildiğimizde, test çıktısındaki bölüm artık görünmeyecektir. *tests* dizininin alt dizinlerinde yer alan dosyalar ayrı kasalar olarak derlenmez 
+veya test çıktısında bölümlere sahip olmaz.
 
-After we’ve created *tests/common/mod.rs*, we can use it from any of the
-integration test files as a module. Here’s an example of calling the `setup`
-function from the `it_adds_two` test in *tests/integration_test.rs*:
+*tests/common/mod.rs* dosyasını oluşturduktan sonra, bunu entegrasyon test dosyalarından herhangi birinde modül olarak kullanabiliriz. 
+Aşağıda, *tests/integration_test.rs* dosyasındaki `it_adds_two` testinden `setup` fonksiyonunun çağrılmasına bir örnek verilmiştir:
 
-<span class="filename">Filename: tests/integration_test.rs</span>
+<span class="filename">Dosya adı: tests/integration_test.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-13-fix-shared-test-code-problem/tests/integration_test.rs}}
 ```
 
-Note that the `mod common;` declaration is the same as the module declaration
-we demonstrated in Listing 7-21. Then in the test function, we can call the
-`common::setup()` function.
+`mod common;` bildiriminin Liste 7-21'de gösterdiğimiz modül bildirimiyle aynı olduğuna dikkat edin. 
+Daha sonra test fonksiyonunda `common::setup()` fonksiyonunu çağırabiliriz.
 
-#### Integration Tests for Binary Crates
+#### İkili Kasalar için Entegrasyon Testleri
 
-If our project is a binary crate that only contains a *src/main.rs* file and
-doesn’t have a *src/lib.rs* file, we can’t create integration tests in the
-*tests* directory and bring functions defined in the *src/main.rs* file into
-scope with a `use` statement. Only library crates expose functions that other
-crates can use; binary crates are meant to be run on their own.
+Projemiz yalnızca bir *src/main.rs* dosyası içeren ve bir *src/lib.rs* dosyasına sahip olmayan ikili bir kasaysa, 
+*tests* dizininde entegrasyon testleri oluşturamaz ve *src/main.rs* dosyasında tanımlanan fonksiyonları bir `use` ifade yapısı ile kapsama alamayız. 
+Yalnızca kütüphane kasaları diğer kasaların kullanabileceği fonksiyonları açığa çıkarır; ikili kasalar kendi başlarına çalıştırılmak üzere tasarlanmıştır.
 
-This is one of the reasons Rust projects that provide a binary have a
-straightforward *src/main.rs* file that calls logic that lives in the
-*src/lib.rs* file. Using that structure, integration tests *can* test the
-library crate with `use` to make the important functionality available.
-If the important functionality works, the small amount of code in the
-*src/main.rs* file will work as well, and that small amount of code doesn’t
-need to be tested.
+Bu, bir ikili dosya sağlayan Rust projelerinin *src/lib.rs* dosyasında bulunan mantığı çağıran basit bir 
+*src/main.rs* dosyasına sahip olmasının nedenlerinden biridir. Bu yapıyı kullanarak entegrasyon testleri, 
+önemli fonksiyonları kullanılabilir hale getirmek için kütüphane kasasını kullanarak test edebilir. 
+Önemli işlevsellik çalışırsa, *src/main.rs* dosyasındaki az miktarda kod da çalışacaktır ve bu az miktarda kodun test edilmesi gerekmez.
 
-## Summary
+## Özet
 
-Rust’s testing features provide a way to specify how code should function to
-ensure it continues to work as you expect, even as you make changes. Unit tests
-exercise different parts of a library separately and can test private
-implementation details. Integration tests check that many parts of the library
-work together correctly, and they use the library’s public API to test the code
-in the same way external code will use it. Even though Rust’s type system and
-ownership rules help prevent some kinds of bugs, tests are still important to
-reduce logic bugs having to do with how your code is expected to behave.
+Rust'ın test özellikleri, siz değişiklik yapsanız bile kodun beklediğiniz gibi çalışmaya devam etmesini sağlamak 
+için kodun nasıl çalışması gerektiğini belirtmenin bir yolunu sunar. Birim testleri, bir kütüphanenin farklı bölümlerini 
+ayrı ayrı çalıştırır ve özel uygulama ayrıntılarını test edebilir. Entegrasyon testleri, kütüphanenin birçok parçasının 
+birlikte doğru çalışıp çalışmadığını kontrol eder ve kodu harici kodun kullanacağı şekilde test etmek için kütüphanenin 
+genel API'sini kullanır. Rust'ın tür sistemi ve sahiplik kuralları bazı hata türlerini önlemeye yardımcı olsa da,
+kodunuzun nasıl davranması beklendiğiyle ilgili mantık hatalarını azaltmak için testler hala önemlidir.
 
-Let’s combine the knowledge you learned in this chapter and in previous
-chapters to work on a project!
+Bu bölümde ve önceki bölümlerde öğrendiğiniz bilgileri bir proje üzerinde çalışmak için birleştirelim!
 
 [paths]: ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html
 [separating-modules-into-files]:
