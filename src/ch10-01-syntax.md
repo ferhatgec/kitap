@@ -1,4 +1,4 @@
-## Yaygin Veri Türleri
+## Yaygın Veri Türleri
 
 Fonksiyon imzaları veya yapılar gibi öğeler için tanımlar oluşturmak için yaygınları kullanırız ve bunları daha sonra birçok farklı 
 somut veri türüyle kullanabiliriz. İlk olarak yaygınları kullanarak fonksiyonları, yapıları, `enum`'ları ve metodları nasıl tanımlayacağımıza 
