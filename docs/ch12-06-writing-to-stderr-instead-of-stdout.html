@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,48 +147,37 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="writing-error-messages-to-standard-error-instead-of-standard-output"><a class="header" href="#writing-error-messages-to-standard-error-instead-of-standard-output">Writing Error Messages to Standard Error Instead of Standard Output</a></h2>
-<p>At the moment, we’re writing all of our output to the terminal using the
-<code>println!</code> macro. In most terminals, there are two kinds of output: <em>standard
-output</em> (<code>stdout</code>) for general information and <em>standard error</em> (<code>stderr</code>) for
-error messages. This distinction enables users to choose to direct the
-successful output of a program to a file but still print error messages to the
-screen.</p>
-<p>The <code>println!</code> macro is only capable of printing to standard output, so we
-have to use something else to print to standard error.</p>
-<h3 id="checking-where-errors-are-written"><a class="header" href="#checking-where-errors-are-written">Checking Where Errors Are Written</a></h3>
-<p>First, let’s observe how the content printed by <code>minigrep</code> is currently being
-written to standard output, including any error messages we want to write to
-standard error instead. We’ll do that by redirecting the standard output stream
-to a file while intentionally causing an error. We won’t redirect the standard
-error stream, so any content sent to standard error will continue to display on
-the screen.</p>
-<p>Command line programs are expected to send error messages to the standard error
-stream so we can still see error messages on the screen even if we redirect the
-standard output stream to a file. Our program is not currently well-behaved:
-we’re about to see that it saves the error message output to a file instead!</p>
-<p>To demonstrate this behavior, we’ll run the program with <code>&gt;</code> and the filename,
-<em>output.txt</em>, that we want to redirect the standard output stream to. We won’t
-pass any arguments, which should cause an error:</p>
+                        <h2 id="standart-Çıktı-yerine-standart-hataya-hata-mesajları-yazma"><a class="header" href="#standart-Çıktı-yerine-standart-hataya-hata-mesajları-yazma">Standart Çıktı Yerine Standart Hataya Hata Mesajları Yazma</a></h2>
+<p>Şu anda çıktımızın tamamını <code>println!</code> makrosunu kullanarak uçbirime yazıyoruz. 
+Çoğu uçbirimde iki tür çıktı vardır: genel bilgiler için standart çıktı (<code>stdout</code>) ve hata mesajları için standart hata (<code>stderr</code>). 
+Bu ayrım, kullanıcıların bir programın başarılı çıktısını bir dosyaya yönlendirmeyi, 
+ancak yine de ekrana hata mesajlarını yazdırmayı seçmelerini sağlar.</p>
+<p><code>prıntln!</code> makrosu yalnızca standart çıktıya yazdırabilir, bu nedenle standart hataya yazdırmak 
+için başka bir şey kullanmamız gerekir.</p>
+<h3 id="hataların-nerede-yazıldığını-kontrol-etme"><a class="header" href="#hataların-nerede-yazıldığını-kontrol-etme">Hataların Nerede Yazıldığını Kontrol Etme</a></h3>
+<p>Öncelikle <code>minigrep</code> tarafından yazdırılan içeriğin şu anda standart çıktıya nasıl yazıldığını gözlemleyelim, 
+bunun yerine standart hataya yazmak istediğimiz herhangi bir hata mesajı dahil. Bunu, kasıtlı olarak bir hataya 
+neden olurken standart çıktı akışını bir dosyaya yeniden yönlendirerek yapacağız. Standart hata akışını yeniden 
+yönlendirmeyeceğiz, bu nedenle standart hataya gönderilen herhangi bir içerik ekranda görüntülenmeye devam edecektir.</p>
+<p>Komut satırı programlarının standart hata akışına hata mesajları göndermesi beklenir, böylece standart çıktı akışını 
+bir dosyaya yönlendirsek bile ekranda hata mesajlarını görebiliriz.</p>
+<p>Bu davranışı göstermek için programı <code>&gt;</code> ve standart çıktı akışını yönlendirmek istediğimiz 
+<em>output.txt</em> dosya adıyla çalıştıracağız. Hataya neden olacak herhangi bir argüman iletmiyoruz:</p>
 <pre><code class="language-console">$ cargo run &gt; output.txt
 </code></pre>
-<p>The <code>&gt;</code> syntax tells the shell to write the contents of standard output to
-<em>output.txt</em> instead of the screen. We didn’t see the error message we were
-expecting printed to the screen, so that means it must have ended up in the
-file. This is what <em>output.txt</em> contains:</p>
+<p><code>&gt;</code> söz dizimi, kabuğa standart çıktının içeriğini ekrana değil de <em>output.txt</em> dosyasına yazmasını söyler. 
+Ekrana yazdırılmasını beklediğimiz hata mesajını görmedik, bu da dosyada bittiği anlamına geliyor. <em>output.txt</em> şunları içerir:</p>
 <pre><code class="language-text">Problem parsing arguments: not enough arguments
 </code></pre>
-<p>Yup, our error message is being printed to standard output. It’s much more
-useful for error messages like this to be printed to standard error so only
-data from a successful run ends up in the file. We’ll change that.</p>
-<h3 id="printing-errors-to-standard-error"><a class="header" href="#printing-errors-to-standard-error">Printing Errors to Standard Error</a></h3>
-<p>We’ll use the code in Listing 12-24 to change how error messages are printed.
-Because of the refactoring we did earlier in this chapter, all the code that
-prints error messages is in one function, <code>main</code>. The standard library provides
-the <code>eprintln!</code> macro that prints to the standard error stream, so let’s change
-the two places we were calling <code>println!</code> to print errors to use <code>eprintln!</code>
-instead.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Evet, hata mesajımız standart çıktıya yazdırılıyor. Bunun gibi hata mesajlarının standart hataya 
+yazdırılması çok daha kullanışlıdır, bu nedenle dosyada yalnızca başarılı bir çalıştırmadan 
+elde edilen veriler biter. Bunu değiştireceğiz.</p>
+<h3 id="hataları-standart-hataya-yazdırma"><a class="header" href="#hataları-standart-hataya-yazdırma">Hataları Standart Hataya Yazdırma</a></h3>
+<p>Hata mesajlarının nasıl yazdırılacağını değiştirmek için Liste 12-24'teki kodu kullanacağız. 
+Bu bölümde daha önce yaptığımız yeniden düzenleme nedeniyle, hata mesajlarını yazdıran tüm kodlar tek bir fonksiyondadır. 
+Standart kütüphane, standart hata akışına yazdıran <code>eprintln!</code> makrosunu sağlar, bu yüzden hataları yazdırmak için <code>println!</code> 
+dediğimiz iki yeri değiştirelim ve bunun yerine <code>eprintln!</code> kullanalım.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::process;
 </span><span class="boring">
@@ -209,37 +198,29 @@ instead.</p>
     }
 }
 </code></pre>
-<p><span class="caption">Listing 12-24: Writing error messages to standard error
-instead of standard output using <code>eprintln!</code></span></p>
-<p>Let’s now run the program again in the same way, without any arguments and
-redirecting standard output with <code>&gt;</code>:</p>
+<p><span class="caption">Liste 12-24: <code>eprintln!</code> kullanarak standart çıktı yerine 
+hata mesajlarını standart hataya yazma</span></p>
+<p>Şimdi programı aynı şekilde, herhangi bir argüman olmadan ve standart çıktıyı <code>&gt;</code> ile yeniden 
+yönlendirerek tekrar çalıştıralım:</p>
 <pre><code class="language-console">$ cargo run &gt; output.txt
 Problem parsing arguments: not enough arguments
 </code></pre>
-<p>Now we see the error onscreen and <em>output.txt</em> contains nothing, which is the
-behavior we expect of command line programs.</p>
-<p>Let’s run the program again with arguments that don’t cause an error but still
-redirect standard output to a file, like so:</p>
+<p>Şimdi ekranda hatayı görüyoruz ve <em>output.txt</em> hiçbir şey içermiyor, bu da komut satırı programlarından beklediğimiz davranış.</p>
+<p>Programı, hataya neden olmayan ancak yine de standart çıktıyı bir dosyaya yönlendiren argümanlarla tekrar çalıştıralım, şöyle:</p>
 <pre><code class="language-console">$ cargo run to poem.txt &gt; output.txt
 </code></pre>
-<p>We won’t see any output to the terminal, and <em>output.txt</em> will contain our
-results:</p>
-<p><span class="filename">Filename: output.txt</span></p>
+<p>Uçbirimde herhangi bir çıktı görmeyeceğiz ve <em>output.txt</em> sonuçlarımızı içerecektir:</p>
+<p><span class="filename">Dosya adı: output.txt</span></p>
 <pre><code class="language-text">Are you nobody, too?
 How dreary to be somebody!
 </code></pre>
-<p>This demonstrates that we’re now using standard output for successful output
-and standard error for error output as appropriate.</p>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<p>This chapter recapped some of the major concepts you’ve learned so far and
-covered how to perform common I/O operations in Rust. By using command line
-arguments, files, environment variables, and the <code>eprintln!</code> macro for printing
-errors, you’re now prepared to write command line applications. Combined with
-the concepts in previous chapters, your code will be well organized, store data
-effectively in the appropriate data structures, handle errors nicely, and be
-well tested.</p>
-<p>Next, we’ll explore some Rust features that were influenced by functional
-languages: closures and iterators.</p>
+<p>Bu, başarılı çıktı için standart çıktıyı ve uygun olduğu şekilde hata çıktısı için standart hatayı kullandığımızı gösterir.</p>
+<h2 id="Özet"><a class="header" href="#Özet">Özet</a></h2>
+<p>Bu bölüm, şimdiye kadar öğrendiğiniz bazı temel kavramları özetledi ve Rust'ta genel *G/Ç/ işlemlerinin nasıl gerçekleştirileceğini ele aldı. 
+Komut satırı bağımsız değişkenlerini, dosyaları, ortam değişkenlerini ve <code>eprintln!</code> makrosunu kullanmaya ve komut 
+satırı uygulamaları yazmaya hazırsınız. Önceki bölümlerdeki kavramlarla birleştiğinde, kodunuz iyi organize edilecek, 
+verileri uygun veri yapılarında etkin bir şekilde depolayacak, hataları güzel bir şekilde ele alacak ve iyi test edilecektir.</p>
+<p>Ardından, fonksiyonel dillerden etkilenen bazı Rust özelliklerini keşfedeceğiz: kapanış ifadeleri ve yineleyiciler.</p>
 
                     </main>
 

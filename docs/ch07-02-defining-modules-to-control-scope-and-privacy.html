@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,61 +147,49 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="defining-modules-to-control-scope-and-privacy"><a class="header" href="#defining-modules-to-control-scope-and-privacy">Defining Modules to Control Scope and Privacy</a></h2>
-<p>In this section, we’ll talk about modules and other parts of the module system,
-namely <em>paths</em> that allow you to name items; the <code>use</code> keyword that brings a
-path into scope; and the <code>pub</code> keyword to make items public. We’ll also discuss
-the <code>as</code> keyword, external packages, and the glob operator.</p>
-<p>First, we’re going to start with a list of rules for easy reference when you’re
-organizing your code in the future. Then we’ll explain each of the rules in
-detail.</p>
-<h3 id="modules-cheat-sheet"><a class="header" href="#modules-cheat-sheet">Modules Cheat Sheet</a></h3>
-<p>Here we provide a quick reference on how modules, paths, the <code>use</code> keyword, and
-the <code>pub</code> keyword work in the compiler, and how most developers organize their
-code. We’ll be going through examples of each of these rules throughout this
-chapter, but this is a great place to refer to as a reminder of how modules
-work.</p>
+                        <h2 id="kapsam-ve-gizliliği-kontrol-etmek-İçin-modüllerin-tanımlanması"><a class="header" href="#kapsam-ve-gizliliği-kontrol-etmek-İçin-modüllerin-tanımlanması">Kapsam ve Gizliliği Kontrol Etmek İçin Modüllerin Tanımlanması</a></h2>
+<p>Bu bölümde, modüller ve modül sisteminin diğer bölümlerinden, yani öğeleri adlandırmanıza izin veren yollardan bahsedeceğiz; 
+kapsam içine bir yol getiren <code>use</code> anahtar sözcüğü; ve öğeleri herkese açık hale getirmek için <code>pub</code> anahtar sözcüğü. 
+Ayrıca <code>as</code> anahtar sözcüğünü, harici paketleri ve <code>glob</code> operatörünü tartışacağız.</p>
+<p>İlk olarak, kodunuzu düzenlerken kolay referans için bir kurallar listesiyle başlayacağız. 
+Ardından, kuralların her birini ayrıntılı olarak açıklayacağız.</p>
+<h3 id="modüllerin-ana-hatları"><a class="header" href="#modüllerin-ana-hatları">Modüllerin Ana Hatları</a></h3>
+<p>Burada modüllerin, yolların, <code>use</code> anahtar sözcüğünün ve <code>pub</code> anahtar sözcüğünün derleyicide nasıl çalıştığı ve 
+çoğu geliştiricinin kodlarını nasıl düzenlediği hakkında hızlı bir referans sağlıyoruz. 
+Bu bölüm boyunca bu kuralların her birinin örneklerini inceleyeceğiz, ancak şu an, 
+modüllerin nasıl çalıştığını hatırlatmak için harika bir zamandır.</p>
 <ul>
-<li><strong>Start from the crate root</strong>: When compiling a crate, the compiler first
-looks in the crate root file (usually <em>src/lib.rs</em> for a library crate or
-<em>src/main.rs</em> for a binary crate).</li>
-<li><strong>Declaring modules</strong>: In the crate root file, you can declare new modules;
-say, you declare a “garden” module with <code>mod garden;</code>. The compiler will look
-for the module’s code in these places:
+<li><strong>Sandık kökünden başlamak</strong>: Bir kasayı derlerken, derleyici ilk olarak kasa 
+kök dosyasına bakar (genellikle bir kütüphane kasası için <em>src/lib.rs</em> veya bir ikili kasa için <em>src/main.rs</em>).</li>
+<li><strong>Modüller tanımlamak</strong>: Sandık kök dosyasında yeni modüller tanımlayabilirsiniz;
+diyelim ki <code>mod garden</code> ile bir “garden” modülü tanımladınız; Derleyici, modülün kodunu şu yerlerde arayacaktır:
 <ul>
-<li>Inline, directly following <code>mod garden</code>, within curly brackets instead of
-the semicolon</li>
-<li>In the file <em>src/garden.rs</em></li>
-<li>In the file <em>src/garden/mod.rs</em></li>
+<li>Noktalı virgül yerine süslü parantez içinde <code>mod garden</code>'ı doğrudan takip eden satır içi</li>
+<li><em>src/garden.rs</em> dosyasında</li>
+<li><em>src/garden/mod.rs</em> dosyasında</li>
 </ul>
 </li>
-<li><strong>Declaring submodules</strong>: In any file other than the crate root, you can
-declare submodules. For example, you might declare <code>mod vegetables;</code> in
-<em>src/garden.rs</em>. The compiler will look for the submodule’s code within the
-directory named for the parent module in these places:
+<li><strong>Alt modül tanımlamak</strong>: Sandık kökü dışındaki herhangi bir dosyada alt modüller bildirebilirsiniz. 
+Örneğin, <code>mod vegetables</code> tanımlayabilirsiniz; <em>src/garden.rs</em>'de olacak şekilde. Derleyici, aşağıdaki yerlerde ana modül 
+için adlandırılan dizinde alt modülün kodunu arayacaktır:
 <ul>
-<li>Inline, directly following <code>mod vegetables</code>, within curly brackets instead
-of the semicolon</li>
-<li>In the file <em>src/garden/vegetables.rs</em></li>
-<li>In the file <em>src/garden/vegetables/mod.rs</em></li>
+<li>Satır içi, noktalı virgül yerine süslü parantezler içinde; <code>mod vegetables</code>'ın hemen ardından</li>
+<li><em>src/garden/vegetables.rs</em> dosyasında</li>
+<li><em>src/garden/vegetables/mod.rs</em> dosyasında</li>
 </ul>
 </li>
-<li><strong>Paths to code in modules</strong>: Once a module is part of your crate, you can
-refer to code in that module from anywhere else in that same crate, as long
-as the privacy rules allow, using the path to the code. For example, an
-<code>Asparagus</code> type in the garden vegetables module would be found at
-<code>crate::garden::vegetables::Asparagus</code>.</li>
-<li><strong>Private vs public</strong>: Code within a module is private from its parent
-modules by default. To make a module public, declare it with <code>pub mod</code>
-instead of <code>mod</code>. To make items within a public module public as well, use
-<code>pub</code> before their declarations.</li>
-<li><strong>The <code>use</code> keyword</strong>: Within a scope, the <code>use</code> keyword creates shortcuts to
-items to reduce repetition of long paths. In any scope that can refer to
-<code>crate::garden::vegetables::Asparagus</code>, you can create a shortcut with <code>use crate::garden::vegetables::Asparagus;</code> and from then on you only need to
-write <code>Asparagus</code> to make use of that type in the scope.</li>
+<li><strong>Modüllerde kodlama yolları</strong>: Bir modül kasanızın bir parçası olduğunda, gizlilik kurallarının izin verdiği sürece, 
+kodun yolunu kullanarak aynı kasadaki herhangi bir yerden o modüldeki koda başvurabilirsiniz. 
+Örneğin, <em>vegetables</em> modülündeki bir <code>Asparagus</code> türü <code>crate::garden::vegetables::Asparagus</code>'ta bulunur.</li>
+<li><strong>Özel vs genel</strong>: Bir modül içindeki kod, varsayılan olarak üst modüllerinden özeldir. 
+Bir modülü herkese açık hale getirmek için <code>mod</code> yerine <code>pub mod</code> ile bildirin. 
+Bir genel modül içindeki öğeleri de herkese açık hale getirmek için, bildirimlerinden önce <code>pub</code>'ı kullanın.</li>
+<li><strong><code>use</code> anahtar sözcüğü</strong>: Bir kapsam içinde, <code>use</code> anahtar sözcüğü, uzun yolların tekrarını azaltmak için öğelere kısayollar oluşturur.
+<code>crate::garden::vegetables::Asparagus</code> ile ilgili olabilecek herhangi bir kapsamda, <code>use crate::garden::vegetables::Asparagus</code> 
+kullanarak bir kısayol oluşturabilirsiniz; ve o andan itibaren bu türden kapsamda faydalanmak için sadece <code>Asparagus</code> yazmanız yeterlidir.</li>
 </ul>
-<p>Here we create a binary crate named <code>backyard</code> that illustrates these rules. The
-crate’s directory, also named <code>backyard</code>, contains these files and directories:</p>
+<p>Burada, bu kuralları gösteren <code>backyard</code> adında bir ikili sandık oluşturuyoruz. Kasanın <code>backyard</code> olarak da adlandırılan dizini 
+şu dosyaları ve dizinleri içerir:</p>
 <pre><code class="language-text">backyard
 ├── Cargo.lock
 ├── Cargo.toml
@@ -211,8 +199,8 @@ crate’s directory, also named <code>backyard</code>, contains these files and 
     ├── garden.rs
     └── main.rs
 </code></pre>
-<p>The crate root file in this case is <em>src/main.rs</em>, and it contains:</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Bu durumda sandık kök dosyası <em>src/main.rs</em> şeklindedir ve şunları içerir:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust noplayground ignore">use crate::garden::vegetables::Asparagus;
 
 pub mod garden;
@@ -222,38 +210,32 @@ fn main() {
     println!(&quot;I'm growing {:?}!&quot;, plant);
 }
 </code></pre>
-<p>The <code>pub mod garden;</code> line tells the compiler to include the code it finds in
-<em>src/garden.rs</em>, which is:</p>
-<p><span class="filename">Filename: src/garden.rs</span></p>
+<p><code>pub mod garden;</code> satırı, derleyiciye <em>src/garden.rs</em> içinde bulduğu kodu eklemesini söyler;</p>
+<p><span class="filename">Dosya adı: src/garden.rs</span></p>
 <pre><code class="language-rust noplayground ignore">pub mod vegetables;
 </code></pre>
-<p>Here, <code>pub mod vegetables;</code> means the code in <em>src/garden/vegetables.rs</em> is
-included too. That code is:</p>
+<p>Burada <code>pub mod vegetables</code>, <em>src/garden/vegetables.rs</em> içindeki kodun da dahil olduğu anlamına gelir. Bu kod:</p>
 <pre><code class="language-rust noplayground ignore">#[derive(Debug)]
 pub struct Asparagus {}
 </code></pre>
-<p>Now let’s get into the details of these rules and demonstrate them in action!</p>
-<h3 id="grouping-related-code-in-modules"><a class="header" href="#grouping-related-code-in-modules">Grouping Related Code in Modules</a></h3>
-<p><em>Modules</em> let us organize code within a crate for readability and easy reuse.
-Modules also allow us to control the <em>privacy</em> of items, because code within a
-module is private by default. Private items are internal implementation details
-not available for outside use. We can choose to make modules and the items
-within them public, which exposes them to allow external code to use and depend
-on them.</p>
-<p>As an example, let’s write a library crate that provides the functionality of a
-restaurant. We’ll define the signatures of functions but leave their bodies
-empty to concentrate on the organization of the code, rather than the
-implementation of a restaurant.</p>
-<p>In the restaurant industry, some parts of a restaurant are referred to as
-<em>front of house</em> and others as <em>back of house</em>. Front of house is where
-customers are; this encompasses where the hosts seat customers, servers take
-orders and payment, and bartenders make drinks. Back of house is where the
-chefs and cooks work in the kitchen, dishwashers clean up, and managers do
-administrative work.</p>
-<p>To structure our crate in this way, we can organize its functions into nested
-modules. Create a new library named <code>restaurant</code> by running <code>cargo new --lib restaurant</code>; then enter the code in Listing 7-1 into <em>src/lib.rs</em> to define
-some modules and function signatures. Here’s the front of house section:</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Şimdi bu kuralların ayrıntılarına girelim ve bunları uygulamada gösterelim!</p>
+<h3 id="İlgili-kodu-modüllerde-gruplama"><a class="header" href="#İlgili-kodu-modüllerde-gruplama">İlgili Kodu Modüllerde Gruplama</a></h3>
+<p><em>Modüller</em>, okunabilirlik ve kolay yeniden kullanım için kodu bir kasa içinde düzenlememize izin verir. 
+Modüller ayrıca, bir modül içindeki kod varsayılan olarak özel olduğundan, <em>öğelerin gizliliğini</em> kontrol etmemizi sağlar. 
+Özel öğeler, harici kullanım için mevcut olmayan dahili uygulama ayrıntılarıdır.
+Modülleri ve içlerindeki öğeleri herkese açık hale getirmeyi seçebiliriz, 
+bu da onları harici kodun kullanmasına ve bunlara bağımlı olmasına izin verecek şekilde ortaya çıkarır.</p>
+<p>Örnek olarak bir restoranın fonksiyonelliğini sağlayan bir kütüphane kasası yazalım. 
+Fonksiyonların imzalarını tanımlayacağız, ancak bir restoranın süreklenmesinden ziyade kodun organizasyonuna konsantre 
+olmak için fonksiyon içlerini boş bırakacağız.</p>
+<p>Restoran endüstrisinde, bir restoranın bazı bölümleri <em>evin önü</em>, diğerleri ise <em>evin arkası</em> olarak adlandırılır. 
+Evin önü müşterilerin bulunduğu yerdir; bu, ev sahiplerinin müşterileri oturduğu, sunucuların siparişleri ve ödemeleri aldığı ve 
+barmenlerin içecek verdiği yerleri kapsar. Evin arkası, mutfakta şeflerin ve aşçıların çalıştığı, 
+bulaşık makinelerinin temizlik yaptığı ve yöneticilerin idari işleri yaptığı yerdir.</p>
+<p>Kasamızı bu şekilde yapılandırmak için işlevlerini iç içe modüller halinde düzenleyebiliriz.
+<code>cargo new --lib restaurant</code> komutunu kullanarak <code>restaurant</code> adında yeni kütüphane oluşturun, daha sonra bazı 
+modülleri ve fonksiyon imzalarını tanımlamak için Liste 7-1'deki kodu <em>src/lib.rs</em> içine girin. İşte evin ön cephesi:</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">mod front_of_house {
     mod hosting {
         fn add_to_waitlist() {}
@@ -270,24 +252,21 @@ some modules and function signatures. Here’s the front of house section:</p>
     }
 }
 </code></pre>
-<p><span class="caption">Listing 7-1: A <code>front_of_house</code> module containing other
-modules that then contain functions</span></p>
-<p>We define a module with the <code>mod</code> keyword followed by the name of the module
-(in this case, <code>front_of_house</code>). The body of the module then goes inside curly
-brackets. Inside modules, we can place other modules, as in this case with the
-modules <code>hosting</code> and <code>serving</code>. Modules can also hold definitions for other
-items, such as structs, enums, constants, traits, and—as in Listing
-7-1—functions.</p>
-<p>By using modules, we can group related definitions together and name why
-they’re related. Programmers using this code can navigate the code based on the
-groups rather than having to read through all the definitions, making it easier
-to find the definitions relevant to them. Programmers adding new functionality
-to this code would know where to place the code to keep the program organized.</p>
-<p>Earlier, we mentioned that <em>src/main.rs</em> and <em>src/lib.rs</em> are called crate
-roots. The reason for their name is that the contents of either of these two
-files form a module named <code>crate</code> at the root of the crate’s module structure,
-known as the <em>module tree</em>.</p>
-<p>Listing 7-2 shows the module tree for the structure in Listing 7-1.</p>
+<p><span class="caption">Liste 7-1: Fonksiyonları içeren ve diğer modülleri içeren bir <code>front_of_house</code> 
+modülü</span></p>
+<p><code>mod</code> anahtar sözcüğünü ve ardından modülün adını (bu durumda, <code>front_of_house</code>) 
+takip eden bir modül tanımlarız. Modülün gövdesi süslü parantezlerin içine girer. 
+Modüllerin içine, diğer modülleri de yerleştirebiliriz, bu durumda modüllerin barındırılması ve 
+sunulmasında olduğu gibi. Modüller ayrıca yapılar, numaralandırmalar, sabitler, özellikler ve -Liste 7-1'de olduğu gibi- 
+fonksiyonlar gibi diğer öğeler için tanımları da içerebilir.</p>
+<p>Modülleri kullanarak ilgili tanımları birlikte gruplayabilir ve neden ilişkili olduklarını adlandırabiliriz. 
+Bu kodu kullanan programcılar, tüm tanımları okumak zorunda kalmadan gruplara göre kodda gezinebilir, 
+bu da kendileriyle ilgili tanımları bulmayı kolaylaştırır. Bu koda yeni fonksiyonlar ekleyen programcılar, 
+programı düzenli tutmak için kodu nereye yerleştireceklerini bilirler.</p>
+<p>Daha önce, <em>src/main.rs</em> ve <em>src/lib.rs</em>'nin kasa kökleri olarak adlandırıldığından bahsetmiştik. 
+Adlarının nedeni, bu iki dosyadan herhangi birinin içeriğinin, kasanın modül yapısının kökünde, 
+modül ağacı olarak bilinen <code>crate</code> adlı bir modül oluşturmasıdır.</p>
+<p>Liste 7-2, Liste 7-1'deki yapı için modül ağacını gösterir.</p>
 <pre><code class="language-text">crate
  └── front_of_house
      ├── hosting
@@ -298,19 +277,15 @@ known as the <em>module tree</em>.</p>
          ├── serve_order
          └── take_payment
 </code></pre>
-<p><span class="caption">Listing 7-2: The module tree for the code in Listing
-7-1</span></p>
-<p>This tree shows how some of the modules nest inside one another; for example,
-<code>hosting</code> nests inside <code>front_of_house</code>. The tree also shows that some modules
-are <em>siblings</em> to each other, meaning they’re defined in the same module;
-<code>hosting</code> and <code>serving</code> are siblings defined within <code>front_of_house</code>. If module
-A is contained inside module B, we say that module A is the <em>child</em> of module B
-and that module B is the <em>parent</em> of module A. Notice that the entire module
-tree is rooted under the implicit module named <code>crate</code>.</p>
-<p>The module tree might remind you of the filesystem’s directory tree on your
-computer; this is a very apt comparison! Just like directories in a filesystem,
-you use modules to organize your code. And just like files in a directory, we
-need a way to find our modules.</p>
+<p><span class="caption">Liste 7-2: Liste 7-1'deki kod için modül ağacı</span></p>
+<p>Bu ağaç, bazı modüllerin birbirinin içine nasıl yuvalandığını gösterir; örneğin, <code>front_of_house</code> içinde <code>hosting</code>'i barındırır. 
+Ağaç ayrıca bazı modüllerin birbiriyle kardeş olduğunu, yani aynı modülde tanımlandıklarını gösterir; 
+<code>hosting</code> ve <code>serving</code>, <code>front_of_house</code> içinde tanımlanan kardeşlerdir. 
+A modülü B modülünün içindeyse, A modülünün B modülünün <em>çocuğu</em> olduğunu ve B modülünün A modülünün <em>ebeveyni</em> olduğunu söyleriz. 
+Tüm modül ağacının <code>crate</code> adlı örtük modül altında köklendiğine dikkat edin.</p>
+<p>Modül ağacı size bilgisayarınızdaki dosya sisteminin dizin ağacını hatırlatabilir; 
+bu çok uygun bir karşılaştırma! Tıpkı bir dosya sistemindeki dizinler gibi, kodunuzu düzenlemek için modülleri kullanırsınız. 
+Ve tıpkı bir dizindeki dosyalar gibi, modüllerimizi bulmanın da kolay bir yoluna ihtiyacımız vardır.</p>
 
                     </main>
 

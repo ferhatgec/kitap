@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,54 +147,42 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="controlling-how-tests-are-run"><a class="header" href="#controlling-how-tests-are-run">Controlling How Tests Are Run</a></h2>
-<p>Just as <code>cargo run</code> compiles your code and then runs the resulting binary,
-<code>cargo test</code> compiles your code in test mode and runs the resulting test
-binary. The default behavior of the binary produced by <code>cargo test</code> is to run
-all the tests in parallel and capture output generated during test runs,
-preventing the output from being displayed and making it easier to read the
-output related to the test results. You can, however, specify command line
-options to change this default behavior.</p>
-<p>Some command line options go to <code>cargo test</code>, and some go to the resulting test
-binary. To separate these two types of arguments, you list the arguments that
-go to <code>cargo test</code> followed by the separator <code>--</code> and then the ones that go to
-the test binary. Running <code>cargo test --help</code> displays the options you can use
-with <code>cargo test</code>, and running <code>cargo test -- --help</code> displays the options you
-can use after the separator.</p>
-<h3 id="running-tests-in-parallel-or-consecutively"><a class="header" href="#running-tests-in-parallel-or-consecutively">Running Tests in Parallel or Consecutively</a></h3>
-<p>When you run multiple tests, by default they run in parallel using threads,
-meaning they finish running faster and you get feedback quicker. Because the
-tests are running at the same time, you must make sure your tests don’t depend
-on each other or on any shared state, including a shared environment, such as
-the current working directory or environment variables.</p>
-<p>For example, say each of your tests runs some code that creates a file on disk
-named <em>test-output.txt</em> and writes some data to that file. Then each test reads
-the data in that file and asserts that the file contains a particular value,
-which is different in each test. Because the tests run at the same time, one
-test might overwrite the file in the time between another test writing and
-reading the file. The second test will then fail, not because the code is
-incorrect but because the tests have interfered with each other while running
-in parallel. One solution is to make sure each test writes to a different file;
-another solution is to run the tests one at a time.</p>
-<p>If you don’t want to run the tests in parallel or if you want more fine-grained
-control over the number of threads used, you can send the <code>--test-threads</code> flag
-and the number of threads you want to use to the test binary. Take a look at
-the following example:</p>
+                        <h2 id="testlerin-nasıl-Çalıştırıldığını-kontrol-etme"><a class="header" href="#testlerin-nasıl-Çalıştırıldığını-kontrol-etme">Testlerin Nasıl Çalıştırıldığını Kontrol Etme</a></h2>
+<p>Tıpkı <code>cargo run</code>'un kodunuzu derlemesi ve ardından ortaya çıkan ikili dosyayı çalıştırması gibi, 
+<code>cargo test</code> de kodunuzu test modunda derler ve ortaya çıkan test ikili dosyasını çalıştırır. 
+<code>cargo test</code> tarafından üretilen ikilinin varsayılan davranışı, tüm testleri paralel olarak çalıştırmak ve test çalıştırmaları 
+sırasında üretilen çıktıyı yakalamak, çıktının görüntülenmesini önlemek ve test sonuçlarıyla ilgili çıktıyı okumayı kolaylaştırmaktır. 
+Bununla birlikte, bu varsayılan davranışı değiştirmek için komut satırı seçenekleri belirleyebilirsiniz.</p>
+<p>Bazı komut satırı seçenekleri <code>cargo test</code>'e, bazıları ise elde edilen test ikilisine gider. 
+Bu iki tür argümanı ayırmak için, <code>cargo test</code>'e giden argümanları ve ardından ayırıcıyı <code>--</code> ve ardından test ikilisine gidenleri 
+listelersiniz. <code>cargo test --help</code> komutunu çalıştırdığınızda <code>cargo test</code> ile kullanabileceğiniz seçenekler görüntülenir 
+ve <code>cargo test -- --help</code> komutunu çalıştırdığınızda ayırıcıdan sonra kullanabileceğiniz seçenekler görüntülenir.</p>
+<h3 id="testleri-paralel-veya-ardışık-olarak-Çalıştırma"><a class="header" href="#testleri-paralel-veya-ardışık-olarak-Çalıştırma">Testleri Paralel veya Ardışık Olarak Çalıştırma</a></h3>
+<p>Birden fazla test çalıştırdığınızda, varsayılan olarak iş parçacıkları kullanılarak paralel olarak çalışırlar, 
+yani daha hızlı çalışırlar ve daha hızlı geri bildirim alırsınız. Testler aynı anda çalıştığından, 
+testlerinizin birbirlerine veya geçerli çalışma dizini veya ortam değişkenleri gibi paylaşılan bir ortam da dahil 
+olmak üzere herhangi bir paylaşılan duruma bağlı olmadığından emin olmalısınız.</p>
+<p>Örneğin, testlerinizin her birinin diskte <em>test-output.txt</em> adında bir dosya oluşturan ve bu dosyaya bazı veriler yazan bir 
+kod çalıştırdığını varsayalım. Ardından her test bu dosyadaki verileri okur ve dosyanın her testte farklı olan belirli bir değer 
+içerdiğini iddia eder. Testler aynı anda çalıştığından, bir testin dosyayı yazması ve okuması arasında geçen sürede bir test dosyanın 
+üzerine yazabilir. Bu durumda ikinci test, kod hatalı olduğu için değil, testler paralel olarak çalışırken birbirine karıştığı 
+için başarısız olacaktır. Bir çözüm, her testin farklı bir dosyaya yazdığından emin olmaktır; başka bir çözüm ise testleri teker teker çalıştırmaktır.</p>
+<p>Testleri paralel olarak çalıştırmak istemiyorsanız veya kullanılan iş parçacığı sayısı üzerinde daha ayrıntılı kontrol istiyorsanız, 
+<code>--test-threads</code> bayrağını ve kullanmak istediğiniz iş parçacığı sayısını test ikilisine gönderebilirsiniz. </p>
+<p>Aşağıdaki örneğe bir göz atın:</p>
 <pre><code class="language-console">$ cargo test -- --test-threads=1
 </code></pre>
-<p>We set the number of test threads to <code>1</code>, telling the program not to use any
-parallelism. Running the tests using one thread will take longer than running
-them in parallel, but the tests won’t interfere with each other if they share
-state.</p>
-<h3 id="showing-function-output"><a class="header" href="#showing-function-output">Showing Function Output</a></h3>
-<p>By default, if a test passes, Rust’s test library captures anything printed to
-standard output. For example, if we call <code>println!</code> in a test and the test
-passes, we won’t see the <code>println!</code> output in the terminal; we’ll see only the
-line that indicates the test passed. If a test fails, we’ll see whatever was
-printed to standard output with the rest of the failure message.</p>
-<p>As an example, Listing 11-10 has a silly function that prints the value of its
-parameter and returns 10, as well as a test that passes and a test that fails.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Test iş parçacığı sayısını <code>1</code> olarak ayarladık ve programa herhangi bir paralellik kullanmamasını söyledik. 
+Testleri tek bir iş parçacığı kullanarak çalıştırmak, paralel olarak çalıştırmaktan daha uzun sürecektir, 
+ancak testler durumu paylaşırlarsa birbirlerini etkilemeyeceklerdir.</p>
+<h3 id="fonksiyon-Çıktısını-gösterme"><a class="header" href="#fonksiyon-Çıktısını-gösterme">Fonksiyon Çıktısını Gösterme</a></h3>
+<p>Varsayılan olarak, bir test geçerse, Rust'ın test kütüphanesi standart çıktıya yazdırılan her şeyi yakalar. 
+Örneğin, bir testte <code>println!</code> komutunu çağırırsak ve test geçerse, uçbirimde <code>println!</code> çıktısını görmeyiz; yalnızca testin 
+geçtiğini gösteren satırı görürüz. Bir test başarısız olursa, <em>başarısız</em> mesajının geri kalanıyla birlikte 
+standart çıktıya ne yazdırıldıysa onu görürüz.</p>
+<p>Örnek olarak, Liste 11-10'da parametresinin değerini yazdıran ve <code>10</code> döndüren saçma bir fonksiyonun yanı sıra başarılı 
+olan bir test ve başarısız olan bir test vardır.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust panics noplayground">fn prints_and_returns_10(a: i32) -&gt; i32 {
     println!(&quot;I got the value {}&quot;, a);
     10
@@ -217,9 +205,8 @@ mod tests {
     }
 }
 </code></pre>
-<p><span class="caption">Listing 11-10: Tests for a function that calls
-<code>println!</code></span></p>
-<p>When we run these tests with <code>cargo test</code>, we’ll see the following output:</p>
+<p><span class="caption">Liste 11-10: <code>println!</code> çağrısı yapan bir fonksiyon için testler</span></p>
+<p>Bu testleri <code>cargo test</code> ile çalıştırdığımızda aşağıdaki çıktıyı göreceğiz:</p>
 <pre><code class="language-console">$ cargo test
    Compiling silly-function v0.1.0 (file:///projects/silly-function)
     Finished test [unoptimized + debuginfo] target(s) in 0.58s
@@ -246,16 +233,14 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 
 error: test failed, to rerun pass '--lib'
 </code></pre>
-<p>Note that nowhere in this output do we see <code>I got the value 4</code>, which is what
-is printed when the test that passes runs. That output has been captured. The
-output from the test that failed, <code>I got the value 8</code>, appears in the section
-of the test summary output, which also shows the cause of the test failure.</p>
-<p>If we want to see printed values for passing tests as well, we can tell Rust
-to also show the output of successful tests at the end with <code>--show-output</code>.</p>
+<p>Bu çıktının hiçbir yerinde <code>I got the value 4</code> ifadesini görmediğimize dikkat edin; 
+bu, geçen test çalıştırıldığında yazdırılan değerdir. Bu çıktı yakalanmıştır. Başarısız olan testin çıktısı, 
+<code>I got the value 8</code>, test özeti çıktısının test başarısızlığının nedenini de gösteren bölümünde görünür.</p>
+<p>Geçen testler için de yazdırılan değerleri görmek istiyorsak, Rust'a <code>--show-output</code> ile başarılı testlerin 
+çıktısını da en sonunda göstermesini söyleyebiliriz.</p>
 <pre><code class="language-console">$ cargo test -- --show-output
 </code></pre>
-<p>When we run the tests in Listing 11-10 again with the <code>--show-output</code> flag, we
-see the following output:</p>
+<p>Liste 11-10'daki testleri <code>--show-output</code> bayrağı ile tekrar çalıştırdığımızda aşağıdaki çıktıyı görüyoruz:</p>
 <pre><code class="language-console">$ cargo test -- --show-output
    Compiling silly-function v0.1.0 (file:///projects/silly-function)
     Finished test [unoptimized + debuginfo] target(s) in 0.60s
@@ -291,14 +276,13 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 
 error: test failed, to rerun pass '--lib'
 </code></pre>
-<h3 id="running-a-subset-of-tests-by-name"><a class="header" href="#running-a-subset-of-tests-by-name">Running a Subset of Tests by Name</a></h3>
-<p>Sometimes, running a full test suite can take a long time. If you’re working on
-code in a particular area, you might want to run only the tests pertaining to
-that code. You can choose which tests to run by passing <code>cargo test</code> the name
-or names of the test(s) you want to run as an argument.</p>
-<p>To demonstrate how to run a subset of tests, we’ll first create three tests for
-our <code>add_two</code> function, as shown in Listing 11-11, and choose which ones to run.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<h3 id="bir-test-alt-kümesini-ada-göre-Çalıştırma"><a class="header" href="#bir-test-alt-kümesini-ada-göre-Çalıştırma">Bir Test Alt Kümesini Ada Göre Çalıştırma</a></h3>
+<p>Bazen tam bir test paketi çalıştırmak uzun zaman alabilir. Belirli bir alandaki kod üzerinde çalışıyorsanız, 
+yalnızca o kodla ilgili testleri çalıştırmak isteyebilirsiniz. Çalıştırmak istediğiniz test(ler)in adını veya adlarını 
+<code>cargo test</code>'e argüman olarak ileterek hangi testlerin çalıştırılacağını seçebilirsiniz.</p>
+<p>Testlerin bir alt kümesinin nasıl çalıştırılacağını göstermek için, önce Liste 11-11'de gösterildiği gibi <code>add_two</code> 
+fonksiyonumuz için üç test oluşturacağız ve hangilerinin çalıştırılacağını seçeceğiz.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">pub fn add_two(a: i32) -&gt; i32 {
     a + 2
 }
@@ -323,10 +307,8 @@ mod tests {
     }
 }
 </code></pre>
-<p><span class="caption">Listing 11-11: Three tests with three different
-names</span></p>
-<p>If we run the tests without passing any arguments, as we saw earlier, all the
-tests will run in parallel:</p>
+<p><span class="caption">Liste 11-11: Üç farklı isimle üç test</span></p>
+<p>Testleri daha önce gördüğümüz gibi herhangi bir argüman geçmeden çalıştırırsak, tüm testler paralel olarak çalışacaktır:</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.62s
@@ -346,8 +328,8 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<h4 id="running-single-tests"><a class="header" href="#running-single-tests">Running Single Tests</a></h4>
-<p>We can pass the name of any test function to <code>cargo test</code> to run only that test:</p>
+<h4 id="tekdüze-testleri-Çalıştırma"><a class="header" href="#tekdüze-testleri-Çalıştırma">Tekdüze Testleri Çalıştırma</a></h4>
+<p>Yalnızca bu testi çalıştırmak için herhangi bir test fonksiyonunun adını <code>cargo test</code>'e geçirebiliriz:</p>
 <pre><code class="language-console">$ cargo test one_hundred
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.69s
@@ -359,15 +341,13 @@ test tests::one_hundred ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
 
 </code></pre>
-<p>Only the test with the name <code>one_hundred</code> ran; the other two tests didn’t match
-that name. The test output lets us know we had more tests that didn't run by
-displaying <code>2 filtered out</code> at the end.</p>
-<p>We can’t specify the names of multiple tests in this way; only the first value
-given to <code>cargo test</code> will be used. But there is a way to run multiple tests.</p>
-<h4 id="filtering-to-run-multiple-tests"><a class="header" href="#filtering-to-run-multiple-tests">Filtering to Run Multiple Tests</a></h4>
-<p>We can specify part of a test name, and any test whose name matches that value
-will be run. For example, because two of our tests’ names contain <code>add</code>, we can
-run those two by running <code>cargo test add</code>:</p>
+<p>Sadece <code>one_hundred</code> isimli test çalıştı; diğer iki test bu isimle eşleşmedi. 
+Test çıktısı, sonunda filtrelenen <code>2</code>'yi görüntüleyerek çalışmayan daha fazla testimiz olduğunu bilmemizi sağlar.</p>
+<p>Bu şekilde birden fazla testin adını belirtemeyiz; yalnızca <code>cargo test</code>'e verilen ilk değer kullanılır. 
+Ancak birden fazla test çalıştırmanın bir yolu var.</p>
+<h4 id="birden-fazla-test-Çalıştırmak-için-filtreleme"><a class="header" href="#birden-fazla-test-Çalıştırmak-için-filtreleme">Birden Fazla Test Çalıştırmak için Filtreleme</a></h4>
+<p>Bir test adının bir kısmını belirtebiliriz ve adı bu değerle eşleşen herhangi bir test çalıştırılır. 
+Örneğin,testlerimizden ikisinin adı <code>add</code> içerdiğinden, bu ikisini <code>cargo test add</code> komutuyla çalıştırabiliriz:</p>
 <pre><code class="language-console">$ cargo test add
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.61s
@@ -380,17 +360,14 @@ test tests::add_two_and_two ... ok
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
 
 </code></pre>
-<p>This command ran all tests with <code>add</code> in the name and filtered out the test
-named <code>one_hundred</code>. Also note that the module in which a test appears becomes
-part of the test’s name, so we can run all the tests in a module by filtering
-on the module’s name.</p>
-<h3 id="ignoring-some-tests-unless-specifically-requested"><a class="header" href="#ignoring-some-tests-unless-specifically-requested">Ignoring Some Tests Unless Specifically Requested</a></h3>
-<p>Sometimes a few specific tests can be very time-consuming to execute, so you
-might want to exclude them during most runs of <code>cargo test</code>. Rather than
-listing as arguments all tests you do want to run, you can instead annotate the
-time-consuming tests using the <code>ignore</code> attribute to exclude them, as shown
-here:</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Bu komut, adında add olan tüm testleri çalıştırır ve <code>one_hundred</code> adlı testi filtreler. 
+Ayrıca, bir testin göründüğü modülün testin adının bir parçası haline geldiğini unutmayın, 
+bu nedenle modülün adına göre filtreleme yaparak bir modüldeki tüm testleri çalıştırabiliriz.</p>
+<h3 id="Özel-olarak-İstenmedikçe-bazı-testleri-yok-sayma"><a class="header" href="#Özel-olarak-İstenmedikçe-bazı-testleri-yok-sayma">Özel Olarak İstenmedikçe Bazı Testleri Yok Sayma</a></h3>
+<p>Bazen belirli birkaç testin yürütülmesi çok zaman alıcı olabilir, bu nedenle <code>cargo test</code>'in çoğu çalıştırması 
+sırasında bunları hariç tutmak isteyebilirsiniz. Çalıştırmak istediğiniz tüm testleri argüman olarak listelemek yerine, 
+zaman alan testleri burada gösterildiği gibi dışlamak için <code>ignore</code> niteliğini kullanarak açıklama ekleyebilirsiniz:</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">#[test]
 fn it_works() {
     assert_eq!(2 + 2, 4);
@@ -402,8 +379,8 @@ fn expensive_test() {
     // code that takes an hour to run
 }
 </code></pre>
-<p>After <code>#[test]</code> we add the <code>#[ignore]</code> line to the test we want to exclude. Now
-when we run our tests, <code>it_works</code> runs, but <code>expensive_test</code> doesn’t:</p>
+<p><code>#[test]</code>'ten sonra, hariç tutmak istediğimiz teste <code>#[ignore]</code> satırını ekliyoruz. 
+Testlerimizi çalıştırdığımızda <code>it_works</code> çalışıyor, ancak <code>expensive_test</code> çalışmıyor:</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.60s
@@ -422,8 +399,8 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>The <code>expensive_test</code> function is listed as <code>ignored</code>. If we want to run only
-the ignored tests, we can use <code>cargo test -- --ignored</code>:</p>
+<p><code>expensive_test</code> fonksiyonu <code>ignored</code> olarak listeleniyor. Yalnızca göz ardı edilen testleri çalıştırmak istiyorsak, 
+<code>cargo test -- --ignored</code>'u kullanabiliriz:</p>
 <pre><code class="language-console">$ cargo test -- --ignored
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.61s
@@ -441,11 +418,10 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>By controlling which tests run, you can make sure your <code>cargo test</code> results
-will be fast. When you’re at a point where it makes sense to check the results
-of the <code>ignored</code> tests and you have time to wait for the results, you can run
-<code>cargo test -- --ignored</code> instead. If you want to run all tests whether they’re
-ignored or not, you can run <code>cargo test -- --include-ignored</code>.</p>
+<p>Hangi testlerin çalışacağını kontrol ederek, <code>cargo test</code> sonuçlarınızın hızlı olmasını sağlayabilirsiniz. 
+Yok sayılan testlerin sonuçlarını kontrol etmenin mantıklı olduğu bir noktaya geldiğinizde ve sonuçları beklemek için zamanınız 
+olduğunda, bunun yerine <code>cargo test -- --ignored</code> komutunu çalıştırabilirsiniz. 
+Yok sayılsın ya da sayılmasın tüm testleri çalıştırmak istiyorsanız, <code>cargo test -- --include-ignored</code> komutunu çalıştırabilirsiniz.</p>
 
                     </main>
 

@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,36 +147,24 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="test-organization"><a class="header" href="#test-organization">Test Organization</a></h2>
-<p>As mentioned at the start of the chapter, testing is a complex discipline, and
-different people use different terminology and organization. The Rust community
-thinks about tests in terms of two main categories: unit tests and integration
-tests. <em>Unit tests</em> are small and more focused, testing one module in isolation
-at a time, and can test private interfaces. <em>Integration tests</em> are entirely
-external to your library and use your code in the same way any other external
-code would, using only the public interface and potentially exercising multiple
-modules per test.</p>
-<p>Writing both kinds of tests is important to ensure that the pieces of your
-library are doing what you expect them to, separately and together.</p>
-<h3 id="unit-tests"><a class="header" href="#unit-tests">Unit Tests</a></h3>
-<p>The purpose of unit tests is to test each unit of code in isolation from the
-rest of the code to quickly pinpoint where code is and isn’t working as
-expected. You’ll put unit tests in the <em>src</em> directory in each file with the
-code that they’re testing. The convention is to create a module named <code>tests</code>
-in each file to contain the test functions and to annotate the module with
-<code>cfg(test)</code>.</p>
-<h4 id="the-tests-module-and-cfgtest"><a class="header" href="#the-tests-module-and-cfgtest">The Tests Module and <code>#[cfg(test)]</code></a></h4>
-<p>The <code>#[cfg(test)]</code> annotation on the tests module tells Rust to compile and run
-the test code only when you run <code>cargo test</code>, not when you run <code>cargo build</code>.
-This saves compile time when you only want to build the library and saves space
-in the resulting compiled artifact because the tests are not included. You’ll
-see that because integration tests go in a different directory, they don’t need
-the <code>#[cfg(test)]</code> annotation. However, because unit tests go in the same files
-as the code, you’ll use <code>#[cfg(test)]</code> to specify that they shouldn’t be
-included in the compiled result.</p>
-<p>Recall that when we generated the new <code>adder</code> project in the first section of
-this chapter, Cargo generated this code for us:</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+                        <h2 id="test-organizasyonu"><a class="header" href="#test-organizasyonu">Test Organizasyonu</a></h2>
+<p>Bölümün başında da belirtildiği gibi, test karmaşık bir disiplindir ve farklı kişiler farklı terminoloji ve organizasyon kullanmaktadır. 
+Rust topluluğu testleri iki ana kategoride ele alır: birim testleri ve entegrasyon testleri. Birim testleri küçük ve daha odaklıdır, 
+her seferinde tek bir modülü izole olarak test eder ve özel arayüzleri test edebilir. Entegrasyon testleri kütüphanenizin tamamen dışındadır 
+ve kodunuzu diğer harici kodlarla aynı şekilde kullanır, yalnızca genel arayüzü kullanır ve potansiyel olarak test başına birden fazla modülü test eder.</p>
+<p>Her iki tür testin de yazılması, kütüphanenizin parçalarının ayrı ayrı ve birlikte beklediğiniz şeyi yaptığından emin olmak için önemlidir.</p>
+<h3 id="birim-testleri"><a class="header" href="#birim-testleri">Birim Testleri</a></h3>
+<p>Birim testlerinin amacı, kodun nerede beklendiği gibi çalışıp çalışmadığını hızlı bir şekilde belirlemek için her bir kod birimini 
+kodun geri kalanından ayrı olarak test etmektir. Birim testlerini, test ettikleri kodun bulunduğu her dosyanın <em>src</em> dizinine koyarsınız. 
+Alışılagelmiş yöntem, her dosyada test işlevlerini içerecek <code>tests</code> adında bir modül oluşturmak ve modüle <code>cfg(test)</code> ile açıklama eklemektir.</p>
+<h4 id="testler-modülü-ve-cfgtest"><a class="header" href="#testler-modülü-ve-cfgtest">Testler Modülü ve <code>#[cfg(test)]</code></a></h4>
+<p><code>tests</code> modülündeki <code>#[cfg(test)]</code> ek açıklaması, Rust'a test kodunu yalnızca <code>cargo test</code>'i çalıştırdığınızda derlemesini ve 
+çalıştırmasını söyler, <code>cargo build</code>'i çalıştırdığınızda değil. Bu, yalnızca kütüphaneyi derlemek istediğinizde derleme süresinden 
+tasarruf sağlar ve testler dahil edilmediği için sonuçta derlenen yapıda yer tasarrufu sağlar. Entegrasyon testleri farklı bir dizine 
+gittiği için <code>#[cfg(test)]</code> ek açıklamasına ihtiyaç duymadıklarını göreceksiniz. Ancak, birim testleri kodla aynı dosyalara girdiği için, 
+derlenen sonuca dahil edilmemeleri gerektiğini belirtmek için <code>#[cfg(test)]</code> kullanacaksınız.</p>
+<p>Bu bölümün ilk kısmında yeni <code>adder</code> projesini oluşturduğumuzda, Cargo'nun bu kodu bizim için oluşturduğunu hatırlayın:</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">#[cfg(test)]
 mod tests {
     #[test]
@@ -186,21 +174,17 @@ mod tests {
     }
 }
 </code></pre>
-<p>This code is the automatically generated test module. The attribute <code>cfg</code>
-stands for <em>configuration</em> and tells Rust that the following item should only
-be included given a certain configuration option. In this case, the
-configuration option is <code>test</code>, which is provided by Rust for compiling and
-running tests. By using the <code>cfg</code> attribute, Cargo compiles our test code only
-if we actively run the tests with <code>cargo test</code>. This includes any helper
-functions that might be within this module, in addition to the functions
-annotated with <code>#[test]</code>.</p>
-<h4 id="testing-private-functions"><a class="header" href="#testing-private-functions">Testing Private Functions</a></h4>
-<p>There’s debate within the testing community about whether or not private
-functions should be tested directly, and other languages make it difficult or
-impossible to test private functions. Regardless of which testing ideology you
-adhere to, Rust’s privacy rules do allow you to test private functions.
-Consider the code in Listing 11-12 with the private function <code>internal_adder</code>.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Bu kod otomatik olarak oluşturulan test modülüdür. <code>cfg</code> niteliği <em>yapılandırma</em> anlamına gelir ve 
+Rust'a aşağıdaki öğenin yalnızca belirli bir yapılandırma seçeneği verildiğinde dahil edilmesi gerektiğini söyler. 
+Bu durumda, <em>yapılandırma</em> seçeneği, testlerin derlenmesi ve çalıştırılması için Rust tarafından sağlanan <code>test</code>'tir. 
+<code>cfg</code> niteliğini kullanarak, <code>cargo test</code> kodumuzu yalnızca testleri <code>cargo test</code> ile aktif olarak çalıştırırsak derler. 
+Bu, <code>#[test]</code> ile açıklanan fonksiyonlara ek olarak, bu modül içinde olabilecek tüm yardımcı fonksiyonları içerir.</p>
+<h4 id="Özel-fonksiyonları-test-etme"><a class="header" href="#Özel-fonksiyonları-test-etme">Özel Fonksiyonları Test Etme</a></h4>
+<p>Test topluluğu içinde gizli fonksiyonların doğrudan test edilip edilmemesi gerektiği konusunda tartışmalar vardır ve 
+diğer diller gizli fonksiyonları test etmeyi zorlaştırır veya imkansız hale getirir. Hangi test ideolojisine bağlı olursanız olun, 
+Rust'ın gizlilik kuralları gizli fonksiyonları test etmenize izin verir. Liste 11-12'deki kodu gizli fonksiyon <code>internal_adder</code> ile 
+birlikte düşünün.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">pub fn add_two(a: i32) -&gt; i32 {
     internal_adder(a, 2)
 }
@@ -219,32 +203,24 @@ mod tests {
     }
 }
 </code></pre>
-<p><span class="caption">Listing 11-12: Testing a private function</span></p>
-<p>Note that the <code>internal_adder</code> function is not marked as <code>pub</code>. Tests are just
-Rust code, and the <code>tests</code> module is just another module. As we discussed in
-the <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Paths for Referring to an Item in the Module Tree”</a><!-- ignore -->
-section, items in child modules can use the items in their ancestor modules. In
-this test, we bring all of the <code>test</code> module’s parent’s items into scope with
-<code>use super::*</code>, and then the test can call <code>internal_adder</code>. If you don’t think
-private functions should be tested, there’s nothing in Rust that will compel
-you to do so.</p>
-<h3 id="integration-tests"><a class="header" href="#integration-tests">Integration Tests</a></h3>
-<p>In Rust, integration tests are entirely external to your library. They use your
-library in the same way any other code would, which means they can only call
-functions that are part of your library’s public API. Their purpose is to test
-whether many parts of your library work together correctly. Units of code that
-work correctly on their own could have problems when integrated, so test
-coverage of the integrated code is important as well. To create integration
-tests, you first need a <em>tests</em> directory.</p>
-<h4 id="the-tests-directory"><a class="header" href="#the-tests-directory">The <em>tests</em> Directory</a></h4>
-<p>We create a <em>tests</em> directory at the top level of our project directory, next
-to <em>src</em>. Cargo knows to look for integration test files in this directory. We
-can then make as many test files as we want, and Cargo will compile each of the
-files as an individual crate.</p>
-<p>Let’s create an integration test. With the code in Listing 11-12 still in the
-<em>src/lib.rs</em> file, make a <em>tests</em> directory, create a new file named
-<em>tests/integration_test.rs</em>, and enter the code in Listing 11-13.</p>
-<p><span class="filename">Filename: tests/integration_test.rs</span></p>
+<p><span class="caption">Liste 11-12: Özel bir fonksiyonu test etme</span></p>
+<p><code>internal_adder</code> fonksiyonunun <code>pub</code> olarak işaretlenmediğine dikkat edin. Testler sadece Rust kodudur ve <code>test</code> modülü sadece başka bir modüldür. 
+<a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Modül Ağacında Bir Öğeye Başvurma Yolları”</a><!-- ignore --> bölümünde tartıştığımız gibi, alt modüllerdeki öğeler ata 
+modüllerindeki öğeleri kullanabilir. Bu testte, <code>test</code> modülünün ebeveyninin tüm öğelerini <code>use super::*</code> ile kapsama alırız ve 
+ardından test <code>internal_adder</code>'ı çağırabilir. Gizli fonksiyonların test edilmemesi gerektiğini düşünüyorsanız, 
+Rust'ta sizi bunu yapmaya zorlayacak hiçbir şey yoktur.</p>
+<h3 id="entegrasyon-testleri"><a class="header" href="#entegrasyon-testleri">Entegrasyon Testleri</a></h3>
+<p>Rust'ta entegrasyon testleri kütüphanenizin tamamen dışındadır. Kütüphanenizi diğer kodlarla aynı şekilde kullanırlar, 
+yani yalnızca kütüphanenizin genel API'sinin bir parçası olan fonksiyonları çağırabilirler. Amaçları, kütüphanenizin birçok parçasının 
+birlikte doğru çalışıp çalışmadığını test etmektir. Kendi başlarına doğru çalışan kod birimleri entegre edildiğinde sorun yaşayabilir, 
+bu nedenle entegre kodun test kapsamı da önemlidir. Entegrasyon testleri oluşturmak için öncelikle bir test dizinine ihtiyacınız vardır.</p>
+<h4 id="tests-dizini"><a class="header" href="#tests-dizini"><em>tests</em> Dizini</a></h4>
+<p><em>tests</em> dizinindeki her dosya ayrı bir kasadır, bu nedenle kütüphanemizi her test kasasının kapsamına getirmemiz gerekir. 
+Bu nedenle, birim testlerinde ihtiyaç duymadığımız <code>use adder</code>'ı kodun en üstüne ekliyoruz.</p>
+<p><em>tests/integration_test.rs</em> içindeki herhangi bir koda <code>#[cfg(test)]</code> ile açıklama eklememize gerek yok.
+Cargo, <em>tests</em> dizinini özel olarak ele alır ve bu dizindeki dosyaları yalnızca <code>cargo test</code>'i çalıştırdığımızda derler.
+Şimdi <code>cargo test</code>'i çalıştırın:</p>
+<p><span class="filename">Dosya adı: tests/integration_test.rs</span></p>
 <pre><code class="language-rust ignore">use adder;
 
 #[test]
@@ -252,51 +228,17 @@ fn it_adds_two() {
     assert_eq!(4, adder::add_two(2));
 }
 </code></pre>
-<p><span class="caption">Listing 11-13: An integration test of a function in the
-<code>adder</code> crate</span></p>
-<p>Each file in the <code>tests</code> directory is a separate crate, so we need to bring our
-library into each test crate’s scope. For that reason we add <code>use adder</code> at the
-top of the code, which we didn’t need in the unit tests.</p>
-<p>We don’t need to annotate any code in <em>tests/integration_test.rs</em> with
-<code>#[cfg(test)]</code>. Cargo treats the <code>tests</code> directory specially and compiles files
-in this directory only when we run <code>cargo test</code>. Run <code>cargo test</code> now:</p>
-<pre><code class="language-console">$ cargo test
-   Compiling adder v0.1.0 (file:///projects/adder)
-    Finished test [unoptimized + debuginfo] target(s) in 1.31s
-     Running unittests (target/debug/deps/adder-1082c4b063a8fbe6)
-
-running 1 test
-test tests::internal ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-     Running tests/integration_test.rs (target/debug/deps/integration_test-1082c4b063a8fbe6)
-
-running 1 test
-test it_adds_two ... ok
-
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-   Doc-tests adder
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-</code></pre>
-<p>The three sections of output include the unit tests, the integration test, and
-the doc tests. The first section for the unit tests is the same as we’ve been
-seeing: one line for each unit test (one named <code>internal</code> that we added in
-Listing 11-12) and then a summary line for the unit tests.</p>
-<p>The integration tests section starts with the line <code>Running tests/integration_test.rs</code>. Next, there is a line for each test function in
-that integration test and a summary line for the results of the integration
-test just before the <code>Doc-tests adder</code> section starts.</p>
-<p>Each integration test file has its own section, so if we add more files in the
-<em>tests</em> directory, there will be more integration test sections.</p>
-<p>We can still run a particular integration test function by specifying the test
-function’s name as an argument to <code>cargo test</code>. To run all the tests in a
-particular integration test file, use the <code>--test</code> argument of <code>cargo test</code>
-followed by the name of the file:</p>
+<p><span class="caption">Liste 11-13: <code>adder</code> kasasındaki bir fonksiyonun 
+entegrasyon testi</span></p>
+<p>Çıktının üç bölümü birim testlerini, entegrasyon testini ve dokümantasyon testlerini içerir. 
+Birim testleri için ilk bölüm gördüğümüzle aynıdır: her birim testi için bir satır (Liste 11-12'de eklediğimiz <code>internal</code> adlı bir satır) 
+ve ardından birim testleri için bir özet satırı.</p>
+<p>Entegrasyon testleri bölümü <code>Running tests/integration_test.rs</code> satırıyla başlar. Ardından, bu entegrasyon testindeki her bir test 
+fonksiyonu için bir satır ve <code>Doc-tests adder</code> bölümü başlamadan hemen önce entegrasyon testinin sonuçları için bir özet satırı vardır.</p>
+<p>Her entegrasyon testi dosyasının kendi bölümü vardır, bu nedenle <em>tests</em> dizinine daha fazla dosya eklersek, 
+daha fazla entegrasyon testi bölümü olacaktır.</p>
+<p>Test fonksiyonunun adını <code>cargo test</code>'e argüman olarak belirterek belirli bir entegrasyon testi fonksiyonunu çalıştırabiliriz. 
+Belirli bir entegrasyon testi dosyasındaki tüm testleri çalıştırmak için, <code>cargo test</code>'in <code>--test</code> argümanını ve ardından dosyanın adını kullanın:</p>
 <pre><code class="language-console">$ cargo test --test integration_test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.64s
@@ -308,31 +250,25 @@ test it_adds_two ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>This command runs only the tests in the <em>tests/integration_test.rs</em> file.</p>
-<h4 id="submodules-in-integration-tests"><a class="header" href="#submodules-in-integration-tests">Submodules in Integration Tests</a></h4>
-<p>As you add more integration tests, you might want to make more files in the
-<em>tests</em> directory to help organize them; for example, you can group the test
-functions by the functionality they’re testing. As mentioned earlier, each file
-in the <em>tests</em> directory is compiled as its own separate crate, which is useful
-for creating separate scopes to more closely imitate the way end users will be
-using your crate. However, this means files in the <em>tests</em> directory don’t
-share the same behavior as files in <em>src</em> do, as you learned in Chapter 7
-regarding how to separate code into modules and files.</p>
-<p>The different behavior of <em>tests</em> directory files is most noticeable when you
-have a set of helper functions to use in multiple integration test files and
-you try to follow the steps in the <a href="ch07-05-separating-modules-into-different-files.html">“Separating Modules into Different
-Files”</a><!-- ignore --> section of Chapter 7 to
-extract them into a common module. For example, if we create <em>tests/common.rs</em>
-and place a function named <code>setup</code> in it, we can add some code to <code>setup</code> that
-we want to call from multiple test functions in multiple test files:</p>
-<p><span class="filename">Filename: tests/common.rs</span></p>
+<p>Bu komut yalnızca <em>tests/integration_test.rs</em> dosyasındaki testleri çalıştırır.</p>
+<h4 id="entegrasyon-testlerinde-alt-modüller"><a class="header" href="#entegrasyon-testlerinde-alt-modüller">Entegrasyon Testlerinde Alt Modüller</a></h4>
+<p>Daha fazla entegrasyon testi ekledikçe, bunları düzenlemeye yardımcı olmak için <em>tests</em> dizininde daha fazla dosya oluşturmak isteyebilirsiniz; 
+örneğin, test fonksiyonlarını test ettikleri işlevselliğe göre gruplayabilirsiniz. Daha önce de belirtildiği gibi, 
+<em>tests</em> dizinindeki her dosya kendi içinde ayrı kasa olarak derlenir, bu da son kullanıcıların kasanızı kullanma şeklini daha yakından 
+taklit etmek için ayrı kapsamlar oluşturmak için kullanışlıdır. Ancak bu, Bölüm 7'de kodu modüllere ve dosyalara nasıl ayıracağınızı 
+öğrendiğiniz gibi, <em>tests</em> dizinindeki dosyaların <em>src</em>'deki dosyalarla aynı davranışı paylaşmadığı anlamına gelir.</p>
+<p><em>tests</em> dizini dosyalarının farklı davranışı en çok, birden fazla entegrasyon test dosyasında kullanılacak bir dizi yardımcı 
+fonksiyonunuz olduğunda ve bunları ortak bir modüle çıkarmak için 
+Bölüm 7'deki <a href="ch07-05-separating-modules-into-different-files.html">“Modülleri Farklı Dosyalara Ayırma”</a><!-- ignore --> bölümündeki adımları izlemeye 
+çalıştığınızda fark edilir. Örneğin, <em>tests/common.rs</em> dosyasını oluşturur ve içine <code>setup</code> adında bir fonksiyon yerleştirirsek, 
+<code>setup</code> dosyasına test dosyalarındaki test fonksiyonlarından çağırmak istediğimiz bazı kodlar ekleyebiliriz:</p>
+<p><span class="filename">Dosya adı: tests/common.rs</span></p>
 <pre><code class="language-rust noplayground">pub fn setup() {
     // setup code specific to your library's tests would go here
 }
 </code></pre>
-<p>When we run the tests again, we’ll see a new section in the test output for the
-<em>common.rs</em> file, even though this file doesn’t contain any test functions nor
-did we call the <code>setup</code> function from anywhere:</p>
+<p>Testleri tekrar çalıştırdığımızda, <em>common.rs</em> dosyası için test çıktısında yeni bir bölüm göreceğiz, 
+ancak bu dosya herhangi bir test fonksiyonu içermiyor ve <code>setup</code> fonksiyonunu herhangi bir yerden çağırmadık:</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished test [unoptimized + debuginfo] target(s) in 0.89s
@@ -363,21 +299,15 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>Having <code>common</code> appear in the test results with <code>running 0 tests</code> displayed for
-it is not what we wanted. We just wanted to share some code with the other
-integration test files.</p>
-<p>To avoid having <code>common</code> appear in the test output, instead of creating
-<em>tests/common.rs</em>, we’ll create <em>tests/common/mod.rs</em>. This is an alternate
-naming convention that Rust also understands. Naming the file this way tells
-Rust not to treat the <code>common</code> module as an integration test file. When we move
-the <code>setup</code> function code into <em>tests/common/mod.rs</em> and delete the
-<em>tests/common.rs</em> file, the section in the test output will no longer appear.
-Files in subdirectories of the <em>tests</em> directory don’t get compiled as separate
-crates or have sections in the test output.</p>
-<p>After we’ve created <em>tests/common/mod.rs</em>, we can use it from any of the
-integration test files as a module. Here’s an example of calling the <code>setup</code>
-function from the <code>it_adds_two</code> test in <em>tests/integration_test.rs</em>:</p>
-<p><span class="filename">Filename: tests/integration_test.rs</span></p>
+<p>Test sonuçlarında yaygın olarak <code>running 0 tests</code>'in görüntülenmesi istediğimiz şey değildi. 
+Sadece bazı kodları diğer entegrasyon test dosyalarıyla paylaşmak istedik.</p>
+<p><code>common</code>'ın test çıktısında görünmesini önlemek için <em>tests/common.rs</em> oluşturmak yerine <em>tests/common/mod.rs</em> oluşturacağız. 
+Bu, Rust'ın da anladığı alternatif bir adlandırma kuralıdır. Dosyayı bu şekilde adlandırmak, Rust'a <code>common</code> modülünü bir entegrasyon test 
+dosyası olarak ele almamasını söyler. <code>setup</code> fonksiyonu kodunu <em>tests/common/mod.rs</em> dosyasına taşıdığımızda ve <em>tests/common.rs</em> dosyasını sildiğimizde, test çıktısındaki bölüm artık görünmeyecektir. <em>tests</em> dizininin alt dizinlerinde yer alan dosyalar ayrı kasalar olarak derlenmez 
+veya test çıktısında bölümlere sahip olmaz.</p>
+<p><em>tests/common/mod.rs</em> dosyasını oluşturduktan sonra, bunu entegrasyon test dosyalarından herhangi birinde modül olarak kullanabiliriz. 
+Aşağıda, <em>tests/integration_test.rs</em> dosyasındaki <code>it_adds_two</code> testinden <code>setup</code> fonksiyonunun çağrılmasına bir örnek verilmiştir:</p>
+<p><span class="filename">Dosya adı: tests/integration_test.rs</span></p>
 <pre><code class="language-rust ignore">use adder;
 
 mod common;
@@ -388,33 +318,24 @@ fn it_adds_two() {
     assert_eq!(4, adder::add_two(2));
 }
 </code></pre>
-<p>Note that the <code>mod common;</code> declaration is the same as the module declaration
-we demonstrated in Listing 7-21. Then in the test function, we can call the
-<code>common::setup()</code> function.</p>
-<h4 id="integration-tests-for-binary-crates"><a class="header" href="#integration-tests-for-binary-crates">Integration Tests for Binary Crates</a></h4>
-<p>If our project is a binary crate that only contains a <em>src/main.rs</em> file and
-doesn’t have a <em>src/lib.rs</em> file, we can’t create integration tests in the
-<em>tests</em> directory and bring functions defined in the <em>src/main.rs</em> file into
-scope with a <code>use</code> statement. Only library crates expose functions that other
-crates can use; binary crates are meant to be run on their own.</p>
-<p>This is one of the reasons Rust projects that provide a binary have a
-straightforward <em>src/main.rs</em> file that calls logic that lives in the
-<em>src/lib.rs</em> file. Using that structure, integration tests <em>can</em> test the
-library crate with <code>use</code> to make the important functionality available.
-If the important functionality works, the small amount of code in the
-<em>src/main.rs</em> file will work as well, and that small amount of code doesn’t
-need to be tested.</p>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<p>Rust’s testing features provide a way to specify how code should function to
-ensure it continues to work as you expect, even as you make changes. Unit tests
-exercise different parts of a library separately and can test private
-implementation details. Integration tests check that many parts of the library
-work together correctly, and they use the library’s public API to test the code
-in the same way external code will use it. Even though Rust’s type system and
-ownership rules help prevent some kinds of bugs, tests are still important to
-reduce logic bugs having to do with how your code is expected to behave.</p>
-<p>Let’s combine the knowledge you learned in this chapter and in previous
-chapters to work on a project!</p>
+<p><code>mod common;</code> bildiriminin Liste 7-21'de gösterdiğimiz modül bildirimiyle aynı olduğuna dikkat edin. 
+Daha sonra test fonksiyonunda <code>common::setup()</code> fonksiyonunu çağırabiliriz.</p>
+<h4 id="İkili-kasalar-için-entegrasyon-testleri"><a class="header" href="#İkili-kasalar-için-entegrasyon-testleri">İkili Kasalar için Entegrasyon Testleri</a></h4>
+<p>Projemiz yalnızca bir <em>src/main.rs</em> dosyası içeren ve bir <em>src/lib.rs</em> dosyasına sahip olmayan ikili bir kasaysa, 
+<em>tests</em> dizininde entegrasyon testleri oluşturamaz ve <em>src/main.rs</em> dosyasında tanımlanan fonksiyonları bir <code>use</code> ifade yapısı ile kapsama alamayız. 
+Yalnızca kütüphane kasaları diğer kasaların kullanabileceği fonksiyonları açığa çıkarır; ikili kasalar kendi başlarına çalıştırılmak üzere tasarlanmıştır.</p>
+<p>Bu, bir ikili dosya sağlayan Rust projelerinin <em>src/lib.rs</em> dosyasında bulunan mantığı çağıran basit bir 
+<em>src/main.rs</em> dosyasına sahip olmasının nedenlerinden biridir. Bu yapıyı kullanarak entegrasyon testleri, 
+önemli fonksiyonları kullanılabilir hale getirmek için kütüphane kasasını kullanarak test edebilir. 
+Önemli işlevsellik çalışırsa, <em>src/main.rs</em> dosyasındaki az miktarda kod da çalışacaktır ve bu az miktarda kodun test edilmesi gerekmez.</p>
+<h2 id="Özet"><a class="header" href="#Özet">Özet</a></h2>
+<p>Rust'ın test özellikleri, siz değişiklik yapsanız bile kodun beklediğiniz gibi çalışmaya devam etmesini sağlamak 
+için kodun nasıl çalışması gerektiğini belirtmenin bir yolunu sunar. Birim testleri, bir kütüphanenin farklı bölümlerini 
+ayrı ayrı çalıştırır ve özel uygulama ayrıntılarını test edebilir. Entegrasyon testleri, kütüphanenin birçok parçasının 
+birlikte doğru çalışıp çalışmadığını kontrol eder ve kodu harici kodun kullanacağı şekilde test etmek için kütüphanenin 
+genel API'sini kullanır. Rust'ın tür sistemi ve sahiplik kuralları bazı hata türlerini önlemeye yardımcı olsa da,
+kodunuzun nasıl davranması beklendiğiyle ilgili mantık hatalarını azaltmak için testler hala önemlidir.</p>
+<p>Bu bölümde ve önceki bölümlerde öğrendiğiniz bilgileri bir proje üzerinde çalışmak için birleştirelim!</p>
 
                     </main>
 

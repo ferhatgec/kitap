@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,59 +147,45 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="traits-defining-shared-behavior"><a class="header" href="#traits-defining-shared-behavior">Traits: Defining Shared Behavior</a></h2>
-<p>A <em>trait</em> defines functionality a particular type has and can share with other
-types. We can use traits to define shared behavior in an abstract way. We can
-use <em>trait bounds</em> to specify that a generic type can be any type that has
-certain behavior.</p>
+                        <h2 id="tanımlar-paylaşılan-davranışı-tanımlama"><a class="header" href="#tanımlar-paylaşılan-davranışı-tanımlama">Tanımlar: Paylaşılan Davranışı Tanımlama</a></h2>
+<p>Bir <em>tanım</em>, belirli bir türün sahip olduğu ve diğer türlerle paylaşabileceği işlevselliği tanımlar. 
+Paylaşılan davranışı soyut bir şekilde tanımlamak için tanımları kullanabiliriz. Genel bir türün belirli davranışlara sahip herhangi 
+bir tür olabileceğini belirtmek için tanım sınırlarını kullanabiliriz.</p>
 <blockquote>
-<p>Note: Traits are similar to a feature often called <em>interfaces</em> in other
-languages, although with some differences.</p>
+<p>Not: Tanımlar, bazı farklılıklara rağmen diğer dillerde genellikle <em>arayüz</em> olarak adlandırılan 
+bir özelliğe benzer.</p>
 </blockquote>
-<h3 id="defining-a-trait"><a class="header" href="#defining-a-trait">Defining a Trait</a></h3>
-<p>A type’s behavior consists of the methods we can call on that type. Different
-types share the same behavior if we can call the same methods on all of those
-types. Trait definitions are a way to group method signatures together to
-define a set of behaviors necessary to accomplish some purpose.</p>
-<p>For example, let’s say we have multiple structs that hold various kinds and
-amounts of text: a <code>NewsArticle</code> struct that holds a news story filed in a
-particular location and a <code>Tweet</code> that can have at most 280 characters along
-with metadata that indicates whether it was a new tweet, a retweet, or a reply
-to another tweet.</p>
-<p>We want to make a media aggregator library crate named <code>aggregator</code> that can
-display summaries of data that might be stored in a <code>NewsArticle</code> or <code>Tweet</code>
-instance. To do this, we need a summary from each type, and we’ll request
-that summary by calling a <code>summarize</code> method on an instance. Listing 10-12
-shows the definition of a public <code>Summary</code> trait that expresses this behavior.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<h3 id="tanım-tanımlama"><a class="header" href="#tanım-tanımlama"><em>Tanım</em> Tanımlama</a></h3>
+<p>Bir türün davranışı, o tür üzerinde çağırabileceğimiz metodlardan oluşur. 
+Tüm türler üzerinde aynı metodları çağırabiliyorsak, farklı tipler aynı davranışı paylaşır. 
+Tanım tanımları, bir amacı gerçekleştirmek için gerekli olan bir dizi davranışı tanımlamak üzere metod imzalarını 
+bir araya getirmenin bir yoludur.</p>
+<p>Örneğin, çeşitli tür ve miktarlarda metin tutan birden fazla yapımız olduğunu varsayalım: 
+belirli bir konumda dosyalanmış bir haberi tutan bir NewsArticle yapısı ve yeni bir tweet mi, retweet mi yoksa başka bir tweet'e yanıt mı olduğunu gösteren meta verilerle birlikte en fazla 280 karaktere sahip olabilen bir Tweet.</p>
+<p>Bir <code>NewsArticle</code> veya <code>Tweet</code> örneğinde saklanabilecek verilerin özetlerini görüntüleyebilen <code>aggregator</code> adlı bir 
+medya toplayıcı kütüphane kasası yapmak istiyoruz. Bunu yapmak için, her türden bir özete ihtiyacımız var ve bir 
+örnek üzerinde bir summarize yöntemi çağırarak bu özeti talep edeceğiz. Liste 10-12, bu davranışı ifade eden bir genel
+<code>Summary</code> tanımının tanımlanmasını göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">pub trait Summary {
     fn summarize(&amp;self) -&gt; String;
 }
 </code></pre>
-<p><span class="caption">Listing 10-12: A <code>Summary</code> trait that consists of the
-behavior provided by a <code>summarize</code> method</span></p>
-<p>Here, we declare a trait using the <code>trait</code> keyword and then the trait’s name,
-which is <code>Summary</code> in this case. We’ve also declared the trait as <code>pub</code> so that
-crates depending on this crate can make use of this trait too, as we’ll see in
-a few examples. Inside the curly brackets, we declare the method signatures
-that describe the behaviors of the types that implement this trait, which in
-this case is <code>fn summarize(&amp;self) -&gt; String</code>.</p>
-<p>After the method signature, instead of providing an implementation within curly
-brackets, we use a semicolon. Each type implementing this trait must provide
-its own custom behavior for the body of the method. The compiler will enforce
-that any type that has the <code>Summary</code> trait will have the method <code>summarize</code>
-defined with this signature exactly.</p>
-<p>A trait can have multiple methods in its body: the method signatures are listed
-one per line and each line ends in a semicolon.</p>
-<h3 id="implementing-a-trait-on-a-type"><a class="header" href="#implementing-a-trait-on-a-type">Implementing a Trait on a Type</a></h3>
-<p>Now that we’ve defined the desired signatures of the <code>Summary</code> trait’s methods,
-we can implement it on the types in our media aggregator. Listing 10-13 shows
-an implementation of the <code>Summary</code> trait on the <code>NewsArticle</code> struct that uses
-the headline, the author, and the location to create the return value of
-<code>summarize</code>. For the <code>Tweet</code> struct, we define <code>summarize</code> as the username
-followed by the entire text of the tweet, assuming that tweet content is
-already limited to 280 characters.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 10-12: <code>summarize</code> metoduyla sağlanan davranıştan oluşan bir <code>Summary</code> tanımı</span></p>
+<p>Burada, <code>trait</code> anahtar sözcüğünü ve ardından bu durumda <code>Summary</code> olan <code>trait</code>'in adını kullanarak bir <code>trait</code> bildiriyoruz. 
+Ayrıca, birkaç örnekte göreceğimiz gibi, bu kasaya bağlı kasaların da bu tanımı kullanabilmesi için tanımı <code>pub</code> olarak bildirdik. 
+Süslü parantezlerin içinde, bu tanımı uygulayan türlerin davranışlarını tanımlayan metod imzalarını bildiriyoruz; 
+bu durumda <code>fn summarize(&amp;self) -&gt; String</code> olacaktır.</p>
+<p>Metod imzasından sonra, süslü parantezler içinde bir sürekleme sağlamak yerine noktalı virgül kullanırız. 
+Bu tanımı uygulayan her tür, metodun gövdesi için kendi özel davranışını sağlamalıdır. Derleyici, <code>Summary</code> tanımına sahip 
+herhangi bir türün <code>summarize</code> metodunun tam olarak bu imza ile tanımlanmasını zorunlu kılacaktır.</p>
+<p>Bir tanımın gövdesinde birden fazla metod olabilir: metod imzaları her satırda bir tane listelenir ve her satır noktalı virgülle biter.</p>
+<h3 id="tür-Üzerinde-tanım-uygulama"><a class="header" href="#tür-Üzerinde-tanım-uygulama">Tür Üzerinde Tanım Uygulama</a></h3>
+<p><code>Summary</code> tanımının metodlarının istenen imzalarını tanımladığımıza göre, bunu medya toplayıcımızdaki türlere uygulayabiliriz. 
+Liste 10-13, <code>Summary</code> tanımının <code>NewsArticle</code> yapısı üzerinde, <code>summarize</code>'ın dönüş değerini oluşturmak için başlığı, 
+yazarı ve konumu kullanan bir süreklemesini göstermektedir. Tweet yapısı için, tweet içeriğinin zaten 280 karakterle sınırlı olduğunu 
+varsayarak, <code>summarize</code> özelliğini kullanıcı adı ve ardından tweet metninin tamamı olarak tanımlarız.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground"><span class="boring">pub trait Summary {
 </span><span class="boring">    fn summarize(&amp;self) -&gt; String;
 </span><span class="boring">}
@@ -230,21 +216,16 @@ impl Summary for Tweet {
     }
 }
 </code></pre>
-<p><span class="caption">Listing 10-13: Implementing the <code>Summary</code> trait on the
-<code>NewsArticle</code> and <code>Tweet</code> types</span></p>
-<p>Implementing a trait on a type is similar to implementing regular methods. The
-difference is that after <code>impl</code>, we put the trait name we want to implement,
-then use the <code>for</code> keyword, and then specify the name of the type we want to
-implement the trait for. Within the <code>impl</code> block, we put the method signatures
-that the trait definition has defined. Instead of adding a semicolon after each
-signature, we use curly brackets and fill in the method body with the specific
-behavior that we want the methods of the trait to have for the particular type.</p>
-<p>Now that the library has implemented the <code>Summary</code> trait on <code>NewsArticle</code> and
-<code>Tweet</code>, users of the crate can call the trait methods on instances of
-<code>NewsArticle</code> and <code>Tweet</code> in the same way we call regular methods. The only
-difference is that the user must bring the trait into scope as well as the
-types. Here’s an example of how a binary crate could use our <code>aggregator</code>
-library crate:</p>
+<p><span class="caption">Liste 10-13: <code>NewsArticle</code> ve <code>Tweet</code> türlerine <code>Summary</code> tanımının süreklenmesi</span></p>
+<p>Bir tür üzerinde bir tanım süreklemek, normal metodları süreklemeye benzer. Aradaki fark, <code>impl</code>'den sonra süreklemek istediğimiz 
+özellik adını koymamız, ardından <code>for</code> anahtar sözcüğünü kullanmamız ve ardından tanımı uygulamak istediğimiz türün adını belirtmemizdir. 
+<code>impl</code> bloğunun içine, <em>tanım</em> tanımının <strong>tanımladığı</strong> metod imzalarını koyarız. Her imzadan sonra noktalı virgül eklemek yerine, 
+süslü parantezler kullanırız ve metod gövdesini, tanımın metodlarının belirli bir tür için sahip olmasını istediğimiz belirli 
+davranışla doldururuz.</p>
+<p>Artık kütüphane <code>NewsArticle</code> ve <code>Tweet</code> üzerinde <code>Summary</code> tanımını süreklediğine göre, kasa kullanıcıları <code>NewsArticle</code> ve 
+<code>Tweet</code> örnekleri üzerindeki tanım metodlarını normal metodları çağırdığımız şekilde çağırabilir. Tek fark, kullanıcının türlerin 
+yanı sıra tanımı da kapsam içine alması gerektiğidir. İşte ikili bir kasanın <code>aggregator</code> kütüphane kasamızı nasıl kullanabileceğine dair 
+bir örnek:</p>
 <pre><code class="language-rust ignore">use aggregator::{Summary, Tweet};
 
 fn main() {
@@ -260,34 +241,24 @@ fn main() {
     println!(&quot;1 new tweet: {}&quot;, tweet.summarize());
 }
 </code></pre>
-<p>This code prints <code>1 new tweet: horse_ebooks: of course, as you probably already know, people</code>.</p>
-<p>Other crates that depend on the <code>aggregator</code> crate can also bring the <code>Summary</code>
-trait into scope to implement <code>Summary</code> on their own types. One restriction to
-note is that we can implement a trait on a type only if at least one of the
-trait or the type is local to our crate. For example, we can implement standard
-library traits like <code>Display</code> on a custom type like <code>Tweet</code> as part of our
-<code>aggregator</code> crate functionality, because the type <code>Tweet</code> is local to our
-<code>aggregator</code> crate. We can also implement <code>Summary</code> on <code>Vec&lt;T&gt;</code> in our
-<code>aggregator</code> crate, because the trait <code>Summary</code> is local to our <code>aggregator</code>
-crate.</p>
-<p>But we can’t implement external traits on external types. For example, we can’t
-implement the <code>Display</code> trait on <code>Vec&lt;T&gt;</code> within our <code>aggregator</code> crate,
-because <code>Display</code> and <code>Vec&lt;T&gt;</code> are both defined in the standard library and
-aren’t local to our <code>aggregator</code> crate. This restriction is part of a property
-called <em>coherence</em>, and more specifically the <em>orphan rule</em>, so named because
-the parent type is not present. This rule ensures that other people’s code
-can’t break your code and vice versa. Without the rule, two crates could
-implement the same trait for the same type, and Rust wouldn’t know which
-implementation to use.</p>
-<h3 id="default-implementations"><a class="header" href="#default-implementations">Default Implementations</a></h3>
-<p>Sometimes it’s useful to have default behavior for some or all of the methods
-in a trait instead of requiring implementations for all methods on every type.
-Then, as we implement the trait on a particular type, we can keep or override
-each method’s default behavior.</p>
-<p>In Listing 10-14 we specify a default string for the <code>summarize</code> method of the
-<code>Summary</code> trait instead of only defining the method signature, as we did in
-Listing 10-12.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Bu kod <code>1 new tweet: horse_ebooks: of course, as you probably already know, people</code> yazdırır.</p>
+<p><code>aggregator</code> kasamıza bağımlı olan diğer kasalar da <code>Summary</code> tanımını kendi türlerinde süreklemek için kapsam içine alabilir. 
+Unutulmaması gereken bir kısıtlama, bir özelliği bir tür üzerinde yalnızca tanım veya türden en az birinin kasamız için yerel olması 
+durumunda uygulayabileceğimizdir. Örneğin, <code>Tweet</code> türü <code>aggregator</code> kasamız için yerel olduğundan, <code>Display</code> gibi standart kütüphane 
+özelliklerini <code>Tweet</code> gibi gizli bir tür üzerinde kasa işlevselliğimizin bir parçası olarak sürekleyebiliriz. 
+Ayrıca <code>Summary</code> tanımını <code>Vec&lt;T&gt;</code> üzerinde de sürekleyebiliriz, çünkü <code>Summary</code> tanımı kasamız için yereldir.</p>
+<p>Ancak harici tanımları harici türler üzerinde uygulayamayız. Örneğin, <code>Display</code> tanımını <code>Vec&lt;T&gt;</code> üzerinde; kasamızda sürekleyemeyiz, 
+çünkü <code>Display</code> ve <code>Vec&lt;T&gt;</code> standart kütüphanede tanımlanmıştır ve kasamız için yerel değildir. Bu kısıtlama, <em>tutarlılık</em> adı verilen bir 
+özelliğin ve daha spesifik olarak, ana tür mevcut olmadığı için bu şekilde adlandırılan <em>yetim kuralının</em> bir parçasıdır. 
+Bu kural, başkalarının kodunun sizin kodunuzu bozamamasını ve bunun tersinin de geçerli olmamasını sağlar. 
+Bu kural olmasaydı, iki kasa aynı tür için aynı tanımı sürekleyebilirdi ve Rust hangi süreklemeyi kullanacağını bilemezdi.</p>
+<h3 id="varsayılan-süreklemeler"><a class="header" href="#varsayılan-süreklemeler">Varsayılan Süreklemeler</a></h3>
+<p>Bazen, her türdeki tüm metodlar için sürekleme gerektirmek yerine, bir tanımdaki metodlardan bazıları veya 
+tümü için varsayılan davranışa sahip olmak yararlıdır. Daha sonra, tanımı belirli bir tür üzerinde süreklerken, 
+her bir metodun varsayılan davranışını koruyabilir veya geçersiz kılabiliriz.</p>
+<p>Liste 10-14'te, Liste 10-12'de yaptığımız gibi yalnızca metod imzasını tanımlamak yerine <code>Summary</code> tanımının <code>summarize</code> metodu için 
+varsayılan bir dizgi belirtiyoruz.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">pub trait Summary {
     fn summarize(&amp;self) -&gt; String {
         String::from(&quot;(Read more...)&quot;)
@@ -316,14 +287,12 @@ Listing 10-12.</p>
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 10-14: Defining a <code>Summary</code> trait with a default
-implementation of the <code>summarize</code> method</span></p>
-<p>To use a default implementation to summarize instances of <code>NewsArticle</code>, we
-specify an empty <code>impl</code> block with <code>impl Summary for NewsArticle {}</code>.</p>
-<p>Even though we’re no longer defining the <code>summarize</code> method on <code>NewsArticle</code>
-directly, we’ve provided a default implementation and specified that
-<code>NewsArticle</code> implements the <code>Summary</code> trait. As a result, we can still call
-the <code>summarize</code> method on an instance of <code>NewsArticle</code>, like this:</p>
+<p><span class="caption">Liste 10-14: <code>Summarize</code> metodunun varsayılan süreklemesiyle bir <code>Summary</code> tanımının yazılması</span></p>
+<p><code>NewsArticle</code> örneklerini özetlemek üzere varsayılan bir sürekleme kullanmak istediğimiz için, 
+<code>impl Summary for NewsArticle {}</code> ile boş bir <code>impl</code> bloğu belirtiriz.</p>
+<p>Artık <code>NewsArticle</code> üzerinde <code>summarize</code> metodunu doğrudan tanımlamıyor olsak da, 
+varsayılan bir sürekleme sağladık ve <code>NewsArticle</code>'ın <code>Summary</code> tanımını süreklediğini belirttik. 
+Sonuç olarak, bir <code>NewsArticle</code> örneği üzerinde <code>summarize</code> metodunu aşağıdaki gibi çağırabiliriz:</p>
 <pre><code class="language-rust ignore"><span class="boring">use chapter10::{self, NewsArticle, Summary};
 </span><span class="boring">
 </span><span class="boring">fn main() {
@@ -340,18 +309,14 @@ the <code>summarize</code> method on an instance of <code>NewsArticle</code>, li
     println!(&quot;New article available! {}&quot;, article.summarize());
 <span class="boring">}
 </span></code></pre>
-<p>This code prints <code>New article available! (Read more...)</code>.</p>
-<p>Creating a default implementation doesn’t require us to change anything about
-the implementation of <code>Summary</code> on <code>Tweet</code> in Listing 10-13. The reason is that
-the syntax for overriding a default implementation is the same as the syntax
-for implementing a trait method that doesn’t have a default implementation.</p>
-<p>Default implementations can call other methods in the same trait, even if those
-other methods don’t have a default implementation. In this way, a trait can
-provide a lot of useful functionality and only require implementors to specify
-a small part of it. For example, we could define the <code>Summary</code> trait to have a
-<code>summarize_author</code> method whose implementation is required, and then define a
-<code>summarize</code> method that has a default implementation that calls the
-<code>summarize_author</code> method:</p>
+<p>Bu kod <code>New article available! (Read more...)</code> çıktısını verir.</p>
+<p>Varsayılan bir sürekleme oluşturmak, Liste 10-13'teki <code>Tweet</code>'deki <code>Summary</code> süreklemesinde herhangi bir değişiklik yapmamızı 
+gerektirmez. Bunun nedeni, varsayılan bir süreklemeyi geçersiz kılma söz diziminin, varsayılan bir süreklemeye sahip olmayan 
+bir tanım metodunu sürekleme söz dizimiyle aynı olmasıdır.</p>
+<p>Varsayılan süreklemeler, diğer metodların varsayılan bir süreklemesi olmasa bile aynı tanımdaki diğer metodları çağırabilir. 
+Bu şekilde, bir özellik çok sayıda yararlı işlevsellik sağlayabilir ve uygulayıcıların bunun yalnızca küçük bir bölümünü 
+belirtmesini gerektirebilir. Örneğin, <code>Summary</code> tanımını, süreklenmesi gerekli olan bir <code>summarize_author</code> metoduna sahip olacak 
+şekilde tanımlayabilir ve ardından <code>summarize_author</code> metodunu çağıran varsayılan bir süreklemeye sahip bir <code>summarize</code> metodu tanımlayabiliriz:</p>
 <pre><code class="language-rust noplayground">pub trait Summary {
     fn summarize_author(&amp;self) -&gt; String;
 
@@ -373,8 +338,7 @@ a small part of it. For example, we could define the <code>Summary</code> trait 
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p>To use this version of <code>Summary</code>, we only need to define <code>summarize_author</code>
-when we implement the trait on a type:</p>
+<p><code>Summary</code>'in bu sürümünü kullanmak için, özelliği bir türe süreklediğimizde yalnızca <code>summary_author</code>'u tanımlamamız gerekir:</p>
 <pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
 </span><span class="boring">    fn summarize_author(&amp;self) -&gt; String;
 </span><span class="boring">
@@ -396,11 +360,10 @@ when we implement the trait on a type:</p>
     }
 }
 </code></pre>
-<p>After we define <code>summarize_author</code>, we can call <code>summarize</code> on instances of the
-<code>Tweet</code> struct, and the default implementation of <code>summarize</code> will call the
-definition of <code>summarize_author</code> that we’ve provided. Because we’ve implemented
-<code>summarize_author</code>, the <code>Summary</code> trait has given us the behavior of the
-<code>summarize</code> method without requiring us to write any more code.</p>
+<p><code>summarize_author</code>'ı tanımladıktan sonra, <code>Tweet</code> yapısının örnekleri üzerinde <code>summarize</code>'ı çağırabiliriz ve 
+<code>summarize</code>'ın varsayılan süreklemesi, sağladığımız <code>summarize_author</code> tanımını çağıracaktır. 
+<code>summarize_author</code> tanımını süreklediğimiz için, <code>Summary</code> tanımı bize daha fazla kod yazmamızı gerektirmeden 
+<code>summarize</code> metodunun davranışını vermiştir.</p>
 <pre><code class="language-rust ignore"><span class="boring">use chapter10::{self, Summary, Tweet};
 </span><span class="boring">
 </span><span class="boring">fn main() {
@@ -416,16 +379,14 @@ definition of <code>summarize_author</code> that we’ve provided. Because we’
     println!(&quot;1 new tweet: {}&quot;, tweet.summarize());
 <span class="boring">}
 </span></code></pre>
-<p>This code prints <code>1 new tweet: (Read more from @horse_ebooks...)</code>.</p>
-<p>Note that it isn’t possible to call the default implementation from an
-overriding implementation of that same method.</p>
-<h3 id="traits-as-parameters"><a class="header" href="#traits-as-parameters">Traits as Parameters</a></h3>
-<p>Now that you know how to define and implement traits, we can explore how to use
-traits to define functions that accept many different types. We'll use the
-<code>Summary</code> trait we implemented on the <code>NewsArticle</code> and <code>Tweet</code> types in
-Listing 10-13 to define a <code>notify</code> function that calls the <code>summarize</code> method
-on its <code>item</code> parameter, which is of some type that implements the <code>Summary</code>
-trait. To do this, we use the <code>impl Trait</code> syntax, like this:</p>
+<p>Bu kod <code>1 new tweet: (Read more from @horse_ebooks...)</code> çıktısını verecektir.</p>
+<p>Aynı metodun geçersiz kılınan bir süreklemesinden varsayılan süreklemeyi çağırmanın mümkün olmadığını unutmayın.</p>
+<h3 id="parametre-olarak-tanımlar"><a class="header" href="#parametre-olarak-tanımlar">Parametre olarak Tanımlar</a></h3>
+<p>Artık tanımları nasıl tanımlayacağınızı ve sürekleyeceğinizi bildiğinize göre, 
+birçok farklı türü kabul eden fonksiyonları tanımlamak için tanımları nasıl kullanacağımızı keşfedebiliriz. 
+Liste 10-13'te <code>NewsArticle</code> ve <code>Tweet</code> türleri üzerinde süreklediğimiz <code>Summary</code> tanımını, <code>Summary</code> tanımını sürekleyen bir 
+türden olan <code>item</code> parametresi üzerinde <code>summarize</code> metodunu çağıran <code>notify</code> fonksiyonunu tanımlamak için kullanacağız. 
+Bunu yapmak için, aşağıdaki gibi <code>impl Trait</code> söz dizimini kullanırız:</p>
 <pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
 </span><span class="boring">    fn summarize(&amp;self) -&gt; String;
 </span><span class="boring">}
@@ -460,71 +421,62 @@ trait. To do this, we use the <code>impl Trait</code> syntax, like this:</p>
     println!(&quot;Breaking news! {}&quot;, item.summarize());
 }
 </code></pre>
-<p>Instead of a concrete type for the <code>item</code> parameter, we specify the <code>impl</code>
-keyword and the trait name. This parameter accepts any type that implements the
-specified trait. In the body of <code>notify</code>, we can call any methods on <code>item</code>
-that come from the <code>Summary</code> trait, such as <code>summarize</code>. We can call <code>notify</code>
-and pass in any instance of <code>NewsArticle</code> or <code>Tweet</code>. Code that calls the
-function with any other type, such as a <code>String</code> or an <code>i32</code>, won’t compile
-because those types don’t implement <code>Summary</code>.</p>
-<h4 id="trait-bound-syntax"><a class="header" href="#trait-bound-syntax">Trait Bound Syntax</a></h4>
-<p>The <code>impl Trait</code> syntax works for straightforward cases but is actually syntax
-sugar for a longer form known as a <em>trait bound</em>; it looks like this:</p>
+<p>Öğe parametresi için somut bir tür yerine, 
+<code>impl</code> anahtar sözcüğünü ve tanım adını belirtiriz. Bu parametre, belirtilen tanımı uygulayan herhangi bir 
+türü kabul eder. <code>notify</code>'ın gövdesinde, <code>item</code> üzerinde <code>Summary</code> tanımından gelen <code>summarize</code> gibi herhangi bir metodu çağırabiliriz. 
+<code>notify</code>'ı çağırabilir ve <code>NewsArticle</code> veya <code>Tweet</code>'in herhangi bir örneğini aktarabiliriz. Fonksiyonu <code>String</code> veya 
+<code>i32</code> gibi başka bir türle çağıran kod derlenmez çünkü bu türler <code>Summary</code> tanımını uygulamaz.</p>
+<h4 id="tanıma-bağlılık-söz-dizimi"><a class="header" href="#tanıma-bağlılık-söz-dizimi">Tanıma Bağlılık Söz Dizimi</a></h4>
+<p><code>impl Trait</code> söz dizimi basit durumlar için çalışır, ancak aslında <em>tanıma bağlılık</em> olarak bilinen daha uzun bir form için 
+<em>söz dizimi tatlılığıdır</em>; şöyle görünür:</p>
 <pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item: &amp;T) {
     println!(&quot;Breaking news! {}&quot;, item.summarize());
 }
 </code></pre>
-<p>This longer form is equivalent to the example in the previous section but is
-more verbose. We place trait bounds with the declaration of the generic type
-parameter after a colon and inside angle brackets.</p>
-<p>The <code>impl Trait</code> syntax is convenient and makes for more concise code in simple
-cases, while the fuller trait bound syntax can express more complexity in other
-cases. For example, we can have two parameters that implement <code>Summary</code>. Doing
-so with the <code>impl Trait</code> syntax looks like this:</p>
+<p>Bu uzun form önceki bölümdeki örneğe eş değerdir ancak daha ayrıntılıdır. Tanıma bağlılık, iki nokta üst üste 
+işaretinden sonra ve köşeli parantezler içinde yaygın tür parametresinin bildirimiyle birlikte yerleştiririz.</p>
+<p><code>impl Trait</code> söz dizimi kullanışlıdır ve basit durumlarda daha özlü bir kod sağlarken, tanıma bağlılık söz dizimi 
+karmaşık durumlarda daha farklı bir şekilde kendini ifade edebilir. Örneğin, <code>Summary</code> öğesini uygulayan iki parametreye sahip olabiliriz. 
+Bunu <code>impl Trait</code> sö zdizimi ile yapmak şu şekilde görünür:</p>
 <pre><code class="language-rust ignore">pub fn notify(item1: &amp;impl Summary, item2: &amp;impl Summary) {
 </code></pre>
-<p>Using <code>impl Trait</code> is appropriate if we want this function to allow <code>item1</code> and
-<code>item2</code> to have different types (as long as both types implement <code>Summary</code>). If
-we want to force both parameters to have the same type, however, we must use a
-trait bound, like this:</p>
+<p>Bu fonksiyonun <code>item1</code> ve <code>item2</code>'nin farklı türlere sahip olmasına izin vermesini istiyorsak 
+(her iki tür de <code>Summary</code>'yi süreklediği sürece) <code>impl Trait</code> kullanmak uygundur. 
+Ancak her iki parametrenin de aynı türde olmasını istiyorsak, aşağıdaki gibi, tanıma bağlılığı kullanmalıyız:</p>
 <pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item1: &amp;T, item2: &amp;T) {
 </code></pre>
-<p>The generic type <code>T</code> specified as the type of the <code>item1</code> and <code>item2</code>
-parameters constrains the function such that the concrete type of the value
-passed as an argument for <code>item1</code> and <code>item2</code> must be the same.</p>
-<h4 id="specifying-multiple-trait-bounds-with-the--syntax"><a class="header" href="#specifying-multiple-trait-bounds-with-the--syntax">Specifying Multiple Trait Bounds with the <code>+</code> Syntax</a></h4>
-<p>We can also specify more than one trait bound. Say we wanted <code>notify</code> to use
-display formatting as well as <code>summarize</code> on <code>item</code>: we specify in the <code>notify</code>
-definition that <code>item</code> must implement both <code>Display</code> and <code>Summary</code>. We can do
-so using the <code>+</code> syntax:</p>
+<p><code>item1</code> ve <code>item2</code> parametrelerinin türü olarak belirtilen <code>T</code> yaygın türü; fonksiyonu, <code>item1</code> ve <code>item2</code> için argüman olarak 
+aktarılan değerin somut türünün aynı olması gerektiği şekilde kısıtlar.</p>
+<h4 id="-söz-dizimi-ile-birden-fazla-tanıma-bağlılığın-belirtilmesi"><a class="header" href="#-söz-dizimi-ile-birden-fazla-tanıma-bağlılığın-belirtilmesi"><code>+</code> Söz Dizimi ile Birden Fazla Tanıma Bağlılığın Belirtilmesi</a></h4>
+<p>Birden fazla tanıma bağlılığı da belirleyebiliriz. Diyelim ki <code>notify</code>'ın öğe üzerinde özetlemenin yanı sıra görüntüleme 
+biçimlendirmesini de kullanmasını istedik: <code>notify</code> tanımında öğenin hem <code>Display</code> hem de <code>Summary</code>'i süreklemesi gerektiğini belirtiriz. 
+Bunu <code>+</code> söz dizimini kullanarak da yapabiliriz:</p>
 <pre><code class="language-rust ignore">pub fn notify(item: &amp;(impl Summary + Display)) {
 </code></pre>
-<p>The <code>+</code> syntax is also valid with trait bounds on generic types:</p>
+<p><code>+</code> söz dizimi, yaygın türlerdeki tanıma bağlılıkta da geçerlidir:</p>
 <pre><code class="language-rust ignore">pub fn notify&lt;T: Summary + Display&gt;(item: &amp;T) {
 </code></pre>
-<p>With the two trait bounds specified, the body of <code>notify</code> can call <code>summarize</code>
-and use <code>{}</code> to format <code>item</code>.</p>
-<h4 id="clearer-trait-bounds-with-where-clauses"><a class="header" href="#clearer-trait-bounds-with-where-clauses">Clearer Trait Bounds with <code>where</code> Clauses</a></h4>
-<p>Using too many trait bounds has its downsides. Each generic has its own trait
-bounds, so functions with multiple generic type parameters can contain lots of
-trait bound information between the function’s name and its parameter list,
-making the function signature hard to read. For this reason, Rust has alternate
-syntax for specifying trait bounds inside a <code>where</code> clause after the function
-signature. So instead of writing this:</p>
+<p>Belirtilen iki tanıma bağlılık ile, <code>notify</code> öğesinin gövdesi <code>summarize</code>'ı çağırabilir ve <code>item</code>'ı 
+biçimlendirmek için <code>{}</code> kullanabilir.</p>
+<h4 id="where-ile-daha-net-tanıma-bağlılık"><a class="header" href="#where-ile-daha-net-tanıma-bağlılık"><code>where</code> ile Daha Net Tanıma Bağlılık</a></h4>
+<p>Çok fazla tanıma bağlılık kullanmanın dezavantajları vardır. Her yaygın kendine özgü tanıma bağlılığa sahiptir, 
+bu nedenle birden fazla yaygın tür parametresi olan fonksiyonlar, fonksiyonun adı ve parametre listesi arasında 
+çok sayıda tanıma bağlılık bilgisi içerebilir ve bu da fonksiyon imzasının okunmasını zorlaştırır. 
+Bu nedenle Rust, fonksiyon imzasından sonra <code>where</code> içinde tanıma bağlılığı belirtmek için alternatif bir söz dizime sahiptir. </p>
+<p>Yani bunu yazmak yerine:</p>
 <pre><code class="language-rust ignore">fn some_function&lt;T: Display + Clone, U: Clone + Debug&gt;(t: &amp;T, u: &amp;U) -&gt; i32 {
 </code></pre>
-<p>we can use a <code>where</code> clause, like this:</p>
+<p><code>where</code> kullanabiliriz:</p>
 <pre><code class="language-rust ignore">fn some_function&lt;T, U&gt;(t: &amp;T, u: &amp;U) -&gt; i32
     where T: Display + Clone,
           U: Clone + Debug
 {
 </code></pre>
-<p>This function’s signature is less cluttered: the function name, parameter list,
-and return type are close together, similar to a function without lots of trait
-bounds.</p>
-<h3 id="returning-types-that-implement-traits"><a class="header" href="#returning-types-that-implement-traits">Returning Types that Implement Traits</a></h3>
-<p>We can also use the <code>impl Trait</code> syntax in the return position to return a
-value of some type that implements a trait, as shown here:</p>
+<p>Bu fonksiyonun imzası daha az karmaşıktır: fonksiyon adı, parametre listesi ve dönüş türü birbirine yakındır, 
+çok sayıda tamıma bağlılığı olmayan bir fonksiyona benzer.</p>
+<h3 id="tanımları-sürekleyen-dönüş-türleri"><a class="header" href="#tanımları-sürekleyen-dönüş-türleri">Tanımları Sürekleyen Dönüş Türleri</a></h3>
+<p>Burada gösterildiği gibi, bir tanımı sürekleyen bir türden bir değer döndürmek için <code>return</code> konumunda
+<code>impl Trait</code> söz dizimini de kullanabiliriz:</p>
 <pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
 </span><span class="boring">    fn summarize(&amp;self) -&gt; String;
 </span><span class="boring">}
@@ -566,19 +518,15 @@ value of some type that implements a trait, as shown here:</p>
     }
 }
 </code></pre>
-<p>By using <code>impl Summary</code> for the return type, we specify that the
-<code>returns_summarizable</code> function returns some type that implements the <code>Summary</code>
-trait without naming the concrete type. In this case, <code>returns_summarizable</code>
-returns a <code>Tweet</code>, but the code calling this function doesn’t need to know that.</p>
-<p>The ability to specify a return type only by the trait it implements is
-especially useful in the context of closures and iterators, which we cover in
-Chapter 13. Closures and iterators create types that only the compiler knows or
-types that are very long to specify. The <code>impl Trait</code> syntax lets you concisely
-specify that a function returns some type that implements the <code>Iterator</code> trait
-without needing to write out a very long type.</p>
-<p>However, you can only use <code>impl Trait</code> if you’re returning a single type. For
-example, this code that returns either a <code>NewsArticle</code> or a <code>Tweet</code> with the
-return type specified as <code>impl Summary</code> wouldn’t work:</p>
+<p>Dönüş türü için <code>impl Summary</code> kullanarak, <code>returns_summarizable</code> fonksiyonunun somut türü belirtmeden <code>Summary</code> 
+tanımını sürekleyen bir türü döndürdüğünü belirtiyoruz. Bu durumda, <code>returns_summarizable</code> <code>Tweet</code> döndürür, 
+ancak bu fonksiyonu çağıran kodun bunu bilmesine gerek yoktur.</p>
+<p>Bir geri dönüş türünü yalnızca uyguladığı özelliğe göre belirtme yeteneği, özellikle Bölüm 13'te ele aldığımız kapanış ifadeleri ve 
+yineleyiciler bağlamında kullanışlıdır. Kapanış ifadeleri ve yineleyiciler yalnızca derleyicinin bildiği türler veya 
+belirtilmesi çok uzun olan türler oluşturur. <code>impl Trait</code> söz dizimi, çok uzun bir tür yazmanıza gerek kalmadan bir fonksiyonun 
+<code>Iterator</code> tanımını sürekleyen bir tür döndürdüğünü kısaca belirtmenizi sağlar.</p>
+<p>Ancak, <code>impl Trait</code>'i yalnızca tek bir tür döndürüyorsanız kullanabilirsiniz. Örneğin, dönüş türü <code>impl Summary</code> olarak belirtilen 
+bir <code>NewsArticle</code> veya <code>Tweet</code> döndüren bu kod çalışmaz:</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Summary {
 </span><span class="boring">    fn summarize(&amp;self) -&gt; String;
 </span><span class="boring">}
@@ -634,17 +582,14 @@ return type specified as <code>impl Summary</code> wouldn’t work:</p>
     }
 }
 </code></pre>
-<p>Returning either a <code>NewsArticle</code> or a <code>Tweet</code> isn’t allowed due to restrictions
-around how the <code>impl Trait</code> syntax is implemented in the compiler. We’ll cover
-how to write a function with this behavior in the <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Using Trait Objects That
-Allow for Values of Different
-Types”</a><!--
-ignore --> section of Chapter 17.</p>
-<h3 id="fixing-the-largest-function-with-trait-bounds"><a class="header" href="#fixing-the-largest-function-with-trait-bounds">Fixing the <code>largest</code> Function with Trait Bounds</a></h3>
-<p>Now that you know how to specify the behavior you want using the generic type
-parameter’s bounds, let’s return to Listing 10-5 to fix the definition of the
-<code>largest</code> function that uses a generic type parameter! Last time we tried to
-run that code, we received this error:</p>
+<p>Derleyicide <code>impl Trait</code> söz diziminin nasıl süreklendiğine ilişkin kısıtlamalar nedeniyle <code>NewsArticle</code> veya <code>Tweet</code> döndürülmesine 
+izin verilmez. Bu davranışa sahip bir fonksiyonun nasıl yazılacağını Bölüm 17'deki 
+<a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Farklı Türlerde Değerlere İzin Veren Tanım Nesnelerini Kullanma”</a><!-- ignore --> 
+kısmında ele alacağız.</p>
+<h3 id="tanıma-bağlılık-ile-largest-fonksiyonunu-düzeltme"><a class="header" href="#tanıma-bağlılık-ile-largest-fonksiyonunu-düzeltme">Tanıma Bağlılık ile <code>largest</code> Fonksiyonunu Düzeltme</a></h3>
+<p>Artık yaygın tür parametresinin bağlılıklarını kullanarak istediğiniz davranışı nasıl belirleyeceğinizi bildiğinize göre, 
+yaygın tür parametresi kullanan <code>largest</code> fonksiyonunun tanımını düzeltmek için Liste 10-5'e dönelim! Bu kodu en son çalıştırmayı 
+denediğimizde bu hatayı almıştık:</p>
 <pre><code class="language-console">$ cargo run
    Compiling chapter10 v0.1.0 (file:///projects/chapter10)
 error[E0369]: binary operation `&gt;` cannot be applied to type `T`
@@ -663,13 +608,11 @@ help: consider restricting type parameter `T`
 For more information about this error, try `rustc --explain E0369`.
 error: could not compile `chapter10` due to previous error
 </code></pre>
-<p>In the body of <code>largest</code> we wanted to compare two values of type <code>T</code> using the
-greater than (<code>&gt;</code>) operator. Because that operator is defined as a default
-method on the standard library trait <code>std::cmp::PartialOrd</code>, we need to specify
-<code>PartialOrd</code> in the trait bounds for <code>T</code> so the <code>largest</code> function can work on
-slices of any type that we can compare. We don’t need to bring <code>PartialOrd</code>
-into scope because it’s in the prelude. Change the signature of <code>largest</code> to
-look like this:</p>
+<p><code>largest</code>'in gövdesinde, daha büyük (<code>&gt;</code>) operatörünü kullanarak <code>T</code> türündeki iki değeri karşılaştırmak istedik. 
+Bu operatör standart kütüphane özelliği <code>std::cmp::PartialOrd</code> üzerinde varsayılan bir metod olarak tanımlandığından, 
+<code>T</code>'ye tanıma bağlılıktan dolayı <code>PartialOrd</code>'u süreklememiz gerekir, böylece <code>largest</code> fonksiyonu karşılaştırabileceğimiz 
+herhangi bir türden dilimler üzerinde çalışabilir. <code>PartialOrd</code>'u kapsam içine almamıza gerek yok çünkü o zaten kapsama otomatik
+olarak dahildir... Yani, <code>largest</code>'in imzasını aşağıdaki gibi değiştirin:</p>
 <pre><code class="language-rust ignore">fn largest&lt;T: PartialOrd&gt;(list: &amp;[T]) -&gt; T {
 <span class="boring">    let mut largest = list[0];
 </span><span class="boring">
@@ -694,7 +637,7 @@ look like this:</p>
 </span><span class="boring">    println!(&quot;The largest char is {}&quot;, result);
 </span><span class="boring">}
 </span></code></pre>
-<p>This time when we compile the code, we get a different set of errors:</p>
+<p>Bu sefer kodu derlediğimizde farklı hatalar alıyoruz:</p>
 <pre><code class="language-console">$ cargo run
    Compiling chapter10 v0.1.0 (file:///projects/chapter10)
 error[E0508]: cannot move out of type `[T]`, a non-copy slice
@@ -721,21 +664,16 @@ Some errors have detailed explanations: E0507, E0508.
 For more information about an error, try `rustc --explain E0507`.
 error: could not compile `chapter10` due to 2 previous errors
 </code></pre>
-<p>The key line in this error is <code>cannot move out of type [T], a non-copy slice</code>.
-With our non-generic versions of the <code>largest</code> function, we were only trying to
-find the largest <code>i32</code> or <code>char</code>. As discussed in the <a href="ch04-01-what-is-ownership.html#stack-only-data-copy">“Stack-Only Data:
-Copy”</a><!-- ignore --> section in Chapter 4, types like
-<code>i32</code> and <code>char</code> that have a known size can be stored on the stack, so they
-implement the <code>Copy</code> trait. But when we made the <code>largest</code> function generic, it
-became possible for the <code>list</code> parameter to have types in it that don’t
-implement the <code>Copy</code> trait. Consequently, we wouldn’t be able to move the value
-out of <code>list[0]</code> and into the <code>largest</code> variable, resulting in this error.</p>
-<p>To call this code with only those types that implement the <code>Copy</code> trait, we can
-add <code>Copy</code> to the trait bounds of <code>T</code>! Listing 10-15 shows the complete code of
-a generic <code>largest</code> function that will compile as long as the types of the
-values in the slice that we pass into the function implement the <code>PartialOrd</code>
-<em>and</em> <code>Copy</code> traits, like <code>i32</code> and <code>char</code> do.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Buranın en önemli noktası, <code>kopyalanmamış bir dilim olan [T] türünün dışına çıkamaz</code> (<code>cannot move out of type [T], a non-copy slice</code>) hatasıdır. 
+<code>largest</code> fonksiyonunun yaygın olmayan versiyonlarında, yalnızca en büyük <code>i32</code> veya <code>char</code>'ı bulmaya çalışıyorduk. 
+Bkz. <a href="ch04-01-what-is-ownership.html#stack-only-data-copy">“Sadece Yığıt Kullanan Veriler: Kopyalama”</a><!-- ignore --> konusuna bakın, <code>i32</code> ve <code>char</code> gibi bilinen bir 
+boyuta sahip türler yığıtta saklanabilir, böylece <code>Copy</code> tanımı süreklenebilir. Ancak, <code>largest</code> fonksiyonunu genelleştirdiğimizde, 
+<code>list</code> parametresinin içinde <code>Copy</code> tanımını süreklemeyen türler olması mümkün hale geldi. Sonuç olarak, 
+değeri <code>list[0]</code>'ten <code>largest</code> değişkenine taşıyamayız, bu da bu hataya neden olur.</p>
+<p>Bu kodu yalnızca <code>Copy</code> tanımını sürekleyen türlerle birlikte çağırmak için, <code>T</code>'nin tanıma bağlılık listesine <code>Copy</code>'i ekleyebiliriz! 
+Liste 10-15, fonksiyona aktardığımız dilimdeki değerlerin türleri <code>i32</code> ve <code>char</code> gibi <code>PartialOrd</code> <em>ve</em> <code>Copy</code> tanımlarını süreklediği sürece 
+derlenecek yaygın <code>largest</code> fonksiyonunun tam kodunu gösterir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">fn largest&lt;T: PartialOrd + Copy&gt;(list: &amp;[T]) -&gt; T {
     let mut largest = list[0];
 
@@ -760,35 +698,26 @@ fn main() {
     println!(&quot;The largest char is {}&quot;, result);
 }
 </code></pre></pre>
-<p><span class="caption">Listing 10-15: A working definition of the <code>largest</code>
-function that works on any generic type that implements the <code>PartialOrd</code> and
-<code>Copy</code> traits</span></p>
-<p>If we don’t want to restrict the <code>largest</code> function to the types that implement
-the <code>Copy</code> trait, we could specify that <code>T</code> has the trait bound <code>Clone</code> instead
-of <code>Copy</code>. Then we could clone each value in the slice when we want the
-<code>largest</code> function to have ownership. Using the <code>clone</code> function means we’re
-potentially making more heap allocations in the case of types that own heap
-data like <code>String</code>, and heap allocations can be slow if we’re working with
-large amounts of data.</p>
-<p>We could also implement <code>largest</code> by having the function return a reference to
-a <code>T</code> value in the slice. If we change the return type to <code>&amp;T</code> instead of <code>T</code>,
-thereby changing the body of the function to return a reference, we wouldn’t
-need the <code>Clone</code> or <code>Copy</code> trait bounds and we could avoid heap allocations.
-Try implementing these alternate solutions on your own! If you get stuck with
-errors having to do with lifetimes, keep reading: the “Validating References
-with Lifetimes” section coming up will explain, but lifetimes aren’t required
-to solve these challenges.</p>
-<h3 id="using-trait-bounds-to-conditionally-implement-methods"><a class="header" href="#using-trait-bounds-to-conditionally-implement-methods">Using Trait Bounds to Conditionally Implement Methods</a></h3>
-<p>By using a trait bound with an <code>impl</code> block that uses generic type parameters,
-we can implement methods conditionally for types that implement the specified
-traits. For example, the type <code>Pair&lt;T&gt;</code> in Listing 10-16 always implements the
-<code>new</code> function to return a new instance of <code>Pair&lt;T&gt;</code> (recall from the
-<a href="ch05-03-method-syntax.html#defining-methods">“Defining Methods”</a><!-- ignore --> section of Chapter 5 that <code>Self</code>
-is a type alias for the type of the <code>impl</code> block, which in this case is
-<code>Pair&lt;T&gt;</code>). But in the next <code>impl</code> block, <code>Pair&lt;T&gt;</code> only implements the
-<code>cmp_display</code> method if its inner type <code>T</code> implements the <code>PartialOrd</code> trait
-that enables comparison <em>and</em> the <code>Display</code> trait that enables printing.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 10-15: <code>PartialOrd</code> ve <code>Copy</code> tanımlarını sürekleyen herhangi bir yaygın tür 
+üzerinde çalışan <code>largest</code> fonksiyonunun düzgün çalışan versiyonu</span></p>
+<p><code>largest</code> fonksiyonunu <code>Copy</code> tanımını sürekleyen türlerle sınırlamak istemiyorsak, 
+<code>T</code>'nin <code>Copy</code> yerine <code>Clone</code> tanımına sahip olduğunu belirtebiliriz. Böylece, <code>largest</code> fonksiyonunun sahibi olmasını istediğimizde 
+dilimdeki her değeri klonlayabiliriz. <code>Clone</code> fonksiyonunu kullanmak, <code>String</code> gibi yığın verisine sahip türler söz konusu olduğunda 
+potansiyel olarak daha fazla yığın tahsisi yapacağımız anlamına gelir ve büyük miktarda veriyle çalışıyorsak yığın tahsisleri yavaş olabilir.</p>
+<p>Ayrıca, fonksiyonun dilimdeki bir <code>T</code> değerine bir referans döndürmesini sağlayarak <code>largest</code>'ı sürekleyebiliriz. 
+Dönüş türünü <code>T</code> yerine <code>&amp;T</code> olarak değiştirirsek, böylece fonksiyonun gövdesini bir referans döndürecek şekilde değiştirirsek, 
+<code>Clone</code> veya <code>Copy</code> tanıma bağlılıklarına ihtiyacımız olmaz ve yığın tahsisatlarından kaçınabiliriz. 
+Bu alternatif çözümleri kendi başınıza yazmayı deneyin! Yaşam süreleri ile ilgili hatalara takılırsanız, 
+okumaya devam edin: “Yaşam Süreleri ile Referansları Doğrulama” bölümü durumu açıklayacaktır, 
+ancak bu meydan okumaları çözmek için yaşam süreleri gerekli değildir.</p>
+<h3 id="metodları-koşullu-olarak-süreklemek-için-tanıma-bağlılığı-kullanma"><a class="header" href="#metodları-koşullu-olarak-süreklemek-için-tanıma-bağlılığı-kullanma">Metodları Koşullu Olarak Süreklemek için Tanıma Bağlılığı Kullanma</a></h3>
+<p>Yaygın tür parametreleri kullanan bir <code>impl bloğu</code> ile bağlı bir tanım kullanarak, 
+belirtilen tanımları sürekleyen türler için metodları koşullu olarak sürekleyebiliriz. Örneğin, Liste 10-16'daki <code>Pair&lt;T&gt;</code> türü her 
+zaman yeni bir <code>Pair&lt;T&gt;</code> örneği döndürmek için <code>new</code> fonksiyonunu çağırır (Bölüm 5'teki <a href="ch05-03-method-syntax.html#defining-methods">“Metodları Tanımlama”</a><!-- ignore --> 
+bölümünden <code>Self</code>'in <code>impl</code> bloğunun türü için bir tür takma ad olduğunu hatırlayın, bu durumda <code>Pair&lt;T&gt;</code>'dir). 
+Ancak bir sonraki <code>impl</code> bloğunda, <code>Pair&lt;T&gt;</code> yalnızca iç tipi <code>T</code>, karşılaştırmayı sağlayan <code>PartialOrd</code> tanımını ve 
+yazdırmayı sağlayan <code>Display</code> tanımını süreklerse <code>cmp_display</code> metodunu sürekleyebilir.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">use std::fmt::Display;
 
 struct Pair&lt;T&gt; {
@@ -812,41 +741,34 @@ impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
     }
 }
 </code></pre>
-<p><span class="caption">Listing 10-16: Conditionally implement methods on a
-generic type depending on trait bounds</span></p>
-<p>We can also conditionally implement a trait for any type that implements
-another trait. Implementations of a trait on any type that satisfies the trait
-bounds are called <em>blanket implementations</em> and are extensively used in the
-Rust standard library. For example, the standard library implements the
-<code>ToString</code> trait on any type that implements the <code>Display</code> trait. The <code>impl</code>
-block in the standard library looks similar to this code:</p>
+<p><span class="caption">Liste 10-16: <em>Tanıma bağlılığa</em> bağlı olarak metodları yaygın bir tür üzerinde koşullu ,
+olarak süreklemek</span></p>
+<p>Ayrıca, başka bir tanımı sürekleyen herhangi bir tür için bir tanımı koşullu olarak sürekleyebiliriz. 
+Bir tanımın, tanıma bağlılığı karşılayan herhangi bir tür üzerindeki süreklemelerine 
+<em>kapsamlı sürekleme</em> denir ve Rust standart kütüphanesinde yaygın olarak kullanılır. 
+Örneğin, standart kütüphane <code>Display</code> tanımını sürekleyen herhangi bir tür üzerinde <code>ToString</code> tanımını sürekler. 
+Standart kütüphanedeki <code>impl</code> bloğu bu koda benzer:</p>
 <pre><code class="language-rust ignore">impl&lt;T: Display&gt; ToString for T {
     // --snip--
 }
 </code></pre>
-<p>Because the standard library has this blanket implementation, we can call the
-<code>to_string</code> method defined by the <code>ToString</code> trait on any type that implements
-the <code>Display</code> trait. For example, we can turn integers into their corresponding
-<code>String</code> values like this because integers implement <code>Display</code>:</p>
+<p>Standart kütüphane bu <em>kapsamlı süreklemeye</em> sahip olduğundan, <code>Display</code> tanımını sürekleyen herhangi bir tür üzerinde 
+<code>ToString</code> tanımı tarafından tanımlanan <code>to_string</code> metodunu çağırabiliriz. Örneğin, tam sayılar <code>Display</code> tanımını 
+süreklediği için tam sayıları karşılık gelen <code>String</code> değerlerine dönüştürebiliriz:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let s = 3.to_string();
 <span class="boring">}
 </span></code></pre></pre>
-<p>Blanket implementations appear in the documentation for the trait in the
-“Implementors” section.</p>
-<p>Traits and trait bounds let us write code that uses generic type parameters to
-reduce duplication but also specify to the compiler that we want the generic
-type to have particular behavior. The compiler can then use the trait bound
-information to check that all the concrete types used with our code provide the
-correct behavior. In dynamically typed languages, we would get an error at
-runtime if we called a method on a type which didn’t define the method. But Rust
-moves these errors to compile time so we’re forced to fix the problems before
-our code is even able to run. Additionally, we don’t have to write code that
-checks for behavior at runtime because we’ve already checked at compile time.
-Doing so improves performance without having to give up the flexibility of
-generics.</p>
+<p><em>Kapsamlı süreklemeler</em>, tanımın dokümantasyonunun “Implementors” bölümünde görünür.</p>
+<p>Tanımlar ve tanıma bağlılık, yinelemeyi azaltmak için yaygın tür parametrelerini kullanan kod yazmamıza ve 
+aynı zamanda derleyiciye yaygın türün belirli bir davranışa sahip olmasını istediğimizi belirtmemize olanak tanır. 
+Derleyici daha sonra kodumuzla birlikte kullanılan tüm somut tiplerin doğru davranışı sağlayıp sağlamadığını kontrol etmek için 
+tanıma bağlılık bilgisini kullanabilir. Dinamik olarak yazılan dillerde, metodu tanımlamayan bir tür üzerinde bir metod çağırırsak 
+çalışma zamanında bir hata alırız. Ancak Rust bu hataları derleme zamanına taşır, böylece kodumuz daha çalışmadan önce sorunları 
+düzeltmek zorunda kalırız. Ayrıca, derleme zamanında zaten kontrol ettiğimiz için çalışma zamanında davranışı kontrol eden kod yazmak 
+zorunda kalmayız. Bunu yapmak, yaygınların esnekliğinden vazgeçmek zorunda kalmadan performansı artırır.</p>
 
                     </main>
 

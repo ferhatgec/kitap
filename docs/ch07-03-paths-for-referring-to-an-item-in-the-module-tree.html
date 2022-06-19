@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,30 +147,25 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="paths-for-referring-to-an-item-in-the-module-tree"><a class="header" href="#paths-for-referring-to-an-item-in-the-module-tree">Paths for Referring to an Item in the Module Tree</a></h2>
-<p>To show Rust where to find an item in a module tree, we use a path in the same
-way we use a path when navigating a filesystem. To call a function, we need to
-know its path.</p>
-<p>A path can take two forms:</p>
+                        <h2 id="modül-ağacındaki-bir-Öğeye-başvuru-yolları"><a class="header" href="#modül-ağacındaki-bir-Öğeye-başvuru-yolları">Modül Ağacındaki Bir Öğeye Başvuru Yolları</a></h2>
+<p>Bir modül ağacında bir öğeyi nerede bulacağını Rust'a göstermek için, bir dosya sisteminde gezinirken bir yol 
+kullandığımız gibi bir yol kullanırız. Bir fonksiyonu çağırmak için yolunu bilmemiz gerekir.</p>
+<p>Bir yol iki şekilde olabilir:</p>
 <ul>
-<li>An <em>absolute path</em> is the full path starting from a crate root; for code
-from an external crate, the absolute path begins with the crate name, and for
-code from the current crate, it starts with the literal <code>crate</code>.</li>
-<li>A <em>relative path</em> starts from the current module and uses <code>self</code>, <code>super</code>, or
-an identifier in the current module.</li>
+<li><em>Mutlak yol</em>, sandık kökünden başlayan tam yoldur; harici bir kasadan gelen kod için, 
+mutlak yol kasa adıyla başlar ve mevcut kasadan gelen kod için değişmez kasayla başlar.</li>
+<li><em>Göreli yol</em>, geçerli modülden başlar ve geçerli modülde <code>self</code>, <code>super</code> veya bir tanımlayıcı kullanır.</li>
 </ul>
-<p>Both absolute and relative paths are followed by one or more identifiers
-separated by double colons (<code>::</code>).</p>
-<p>Returning to Listing 7-1, say we want to call the <code>add_to_waitlist</code> function.
-This is the same as asking: what’s the path of the <code>add_to_waitlist</code> function?
-Listing 7-3 contains Listing 7-1 with some of the modules and functions
-removed. We’ll show two ways to call the <code>add_to_waitlist</code> function from a new
-function <code>eat_at_restaurant</code> defined in the crate root. The <code>eat_at_restaurant</code>
-function is part of our library crate’s public API, so we mark it with the
-<code>pub</code> keyword. In the <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">“Exposing Paths with the <code>pub</code> Keyword”</a><!-- ignore
---> section, we’ll go into more detail about <code>pub</code>. Note that this example
-won’t compile just yet; we’ll explain why in a bit.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Hem mutlak hem de göreli yolları, çift iki nokta (<code>::</code>) üst üste ile ayrılmış bir veya daha fazla tanımlayıcı izler.</p>
+<p>Liste 7-1'e dönersek, <code>add_to_waitlist</code> fonksiyonunu çağırmak istediğimizi varsayalım. 
+Bu, şunu sormakla aynıdır: <code>add_to_waitlist</code> fonksiyonunun yolu nedir? 
+Liste 7-3, bazı modüller ve fonksiyonlar kaldırılmış olarak Liste 7-1'i içerir. 
+Kasa kökünde tanımlanan yeni bir <code>eat_at_restaurant</code> fonksiyonundan sonra <code>add_to_waitlist</code> fonksiyonunu çağırmanın iki yolunu göstereceğiz.
+<code>eat_at_restaurant</code> fonksiyonu, kütüphane kasamızın genel API'sinin bir parçasıdır, 
+bu yüzden onu <code>pub</code> anahtar kelimesiyle işaretliyoruz. <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">“<code>pub</code> Anahtar Sözcüğüyle Yolları Gösterme”</a><!-- ignore
+--> bölümünde, <code>pub</code> hakkında daha fazla ayrıntıya gireceğiz. Bu örneğin henüz derlenmeyeceğini unutmayın; 
+nedenini birazdan açıklayacağız.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile">mod front_of_house {
     mod hosting {
         fn add_to_waitlist() {}
@@ -185,35 +180,26 @@ pub fn eat_at_restaurant() {
     front_of_house::hosting::add_to_waitlist();
 }
 </code></pre>
-<p><span class="caption">Listing 7-3: Calling the <code>add_to_waitlist</code> function using
-absolute and relative paths</span></p>
-<p>The first time we call the <code>add_to_waitlist</code> function in <code>eat_at_restaurant</code>,
-we use an absolute path. The <code>add_to_waitlist</code> function is defined in the same
-crate as <code>eat_at_restaurant</code>, which means we can use the <code>crate</code> keyword to
-start an absolute path. We then include each of the successive modules until we
-make our way to <code>add_to_waitlist</code>. You can imagine a filesystem with the same
-structure: we’d specify the path <code>/front_of_house/hosting/add_to_waitlist</code> to
-run the <code>add_to_waitlist</code> program; using the <code>crate</code> name to start from the
-crate root is like using <code>/</code> to start from the filesystem root in your shell.</p>
-<p>The second time we call <code>add_to_waitlist</code> in <code>eat_at_restaurant</code>, we use a
-relative path. The path starts with <code>front_of_house</code>, the name of the module
-defined at the same level of the module tree as <code>eat_at_restaurant</code>. Here the
-filesystem equivalent would be using the path
-<code>front_of_house/hosting/add_to_waitlist</code>. Starting with a module name means
-that the path is relative.</p>
-<p>Choosing whether to use a relative or absolute path is a decision you’ll make
-based on your project, and depends on whether you’re more likely to move item
-definition code separately from or together with the code that uses the item.
-For example, if we move the <code>front_of_house</code> module and the <code>eat_at_restaurant</code>
-function into a module named <code>customer_experience</code>, we’d need to update the
-absolute path to <code>add_to_waitlist</code>, but the relative path would still be valid.
-However, if we moved the <code>eat_at_restaurant</code> function separately into a module
-named <code>dining</code>, the absolute path to the <code>add_to_waitlist</code> call would stay the
-same, but the relative path would need to be updated. Our preference in general
-is to specify absolute paths because it’s more likely we’ll want to move code
-definitions and item calls independently of each other.</p>
-<p>Let’s try to compile Listing 7-3 and find out why it won’t compile yet! The
-error we get is shown in Listing 7-4.</p>
+<p><span class="caption">Liste 7-3: Mutlak ve göreli yolları kullanarak <code>add_to_waitlist</code>
+fonksiyonunu çağırma</span></p>
+<p><code>eat_at_restaurant</code>'ta <code>add_to_waitlist</code> fonksiyonunu ilk çağırdığımızda, mutlak bir yol kullanırız. 
+<code>add_to_waitlist</code> fonksiyonu, <code>eat_at_restaurant</code> ile aynı kasada tanımlanır; bu, mutlak bir yol başlatmak için <code>crate</code> anahtar sözcüğünü
+kullanabileceğimiz anlamına gelir. Ardından, <code>add_to_waitlist</code>'e gidene kadar ardışık modüllerin her birini dahil ederiz. 
+Aynı yapıya sahip bir dosya sistemi hayal edebilirsiniz: <code>add_to_waitlist</code> programını çalıştırmak için 
+<code>/front_of_house/hosting/add_to_waitlist</code> yolunu belirtirdik; kasa kökünden başlamak için <code>crate</code> adını kullanmak, 
+kabuğunuzdaki dosya sistemi kökünden başlamak için <code>/</code> kullanmaya benzer.</p>
+<p><code>eat_at_restaurant</code>'ta <code>add_to_waitlist</code>'i ikinci kez çağırdığımızda, göreceli bir yol kullanırız. 
+Yol, modül ağacının <code>eat_at_restaurant</code> ile aynı düzeyinde tanımlanan modülün adı olan <code>front_of_house</code> ile başlar. 
+Burada dosya sistemi eşdeğeri <code>front_of_house/hosting/add_to_waitlist</code> yolunu kullanıyor olacaktır. 
+Bir modül adıyla başlamak, yolun göreceli olduğu anlamına gelir.</p>
+<p>Göreceli mi yoksa mutlak yol mu kullanacağınızı seçmek, projenize göre vereceğiniz bir karardır ve 
+öğe tanım kodunu öğeyi kullanan koddan ayrı mı yoksa onunla birlikte mi taşıma olasılığınızın daha yüksek olduğuna bağlıdır. 
+Örneğin, <code>front_of_house</code> modülünü ve <code>eat_at_restaurant</code> fonksiyonunu <code>customer_experience</code> adlı bir modüle taşırsak, mutlak yolu 
+<code>add_to_waitlist</code>'e güncellememiz gerekir, ancak göreli yol yine de geçerli olur. Ancak, <code>eat_at_restaurant</code> fonksiyonunu <code>dining</code> adlı bir 
+modüle ayrı olarak taşırsak, <code>add_to_waitlist</code> çağrısının mutlak yolu aynı kalır, ancak göreli yolun güncellenmesi gerekir. 
+Genel olarak tercihimiz mutlak yollar belirtmektir, çünkü kod tanımlarını ve öğe çağrılarını birbirinden bağımsız olarak taşımak 
+isteyeceğimiz daha olasıdır.</p>
+<p>Liste 7-3'ü derlemeye çalışalım ve neden henüz derlenmediğini öğrenelim! Aldığımız hata Liste 7-4'te gösterilmektedir.</p>
 <pre><code class="language-console">$ cargo build
    Compiling restaurant v0.1.0 (file:///projects/restaurant)
 error[E0603]: module `hosting` is private
@@ -243,32 +229,26 @@ note: the module `hosting` is defined here
 For more information about this error, try `rustc --explain E0603`.
 error: could not compile `restaurant` due to 2 previous errors
 </code></pre>
-<p><span class="caption">Listing 7-4: Compiler errors from building the code in
-Listing 7-3</span></p>
-<p>The error messages say that module <code>hosting</code> is private. In other words, we
-have the correct paths for the <code>hosting</code> module and the <code>add_to_waitlist</code>
-function, but Rust won’t let us use them because it doesn’t have access to the
-private sections. In Rust, all items (functions, methods, structs, enums,
-modules, and constants) are private to parent modules by default. If you want
-to make an item like a function or struct private, you put it in a module.</p>
-<p>Items in a parent module can’t use the private items inside child modules, but
-items in child modules can use the items in their ancestor modules. This is
-because child modules wrap and hide their implementation details, but the child
-modules can see the context in which they’re defined. To continue with our
-metaphor, think of the privacy rules as being like the back office of a
-restaurant: what goes on in there is private to restaurant customers, but
-office managers can see and do everything in the restaurant they operate.</p>
-<p>Rust chose to have the module system function this way so that hiding inner
-implementation details is the default. That way, you know which parts of the
-inner code you can change without breaking outer code. However, Rust does give
-you the option to expose inner parts of child modules’ code to outer ancestor
-modules by using the <code>pub</code> keyword to make an item public.</p>
-<h3 id="exposing-paths-with-the-pub-keyword"><a class="header" href="#exposing-paths-with-the-pub-keyword">Exposing Paths with the <code>pub</code> Keyword</a></h3>
-<p>Let’s return to the error in Listing 7-4 that told us the <code>hosting</code> module is
-private. We want the <code>eat_at_restaurant</code> function in the parent module to have
-access to the <code>add_to_waitlist</code> function in the child module, so we mark the
-<code>hosting</code> module with the <code>pub</code> keyword, as shown in Listing 7-5.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 7-4: Liste 7-3'te kodun oluşturulmasından kaynaklanan 
+derleyici hataları</span></p>
+<p>Hata mesajları, modül <code>hosting</code>'in gizli olduğunu söylüyor. Başka bir deyişle, 
+<code>hosting</code> modülü ve <code>add_to_waitlist</code> fonksiyonu için doğru yollara sahibiz, ancak gizli bölümlere erişimi olmadığı 
+için Rust bunları kullanmamıza izin vermiyor. Rust'ta tüm öğeler (fonksiyonlar, yöntemler, yapılar, numaralandırmalar, 
+modüller ve sabitler) varsayılan olarak üst modüllere gizlidir. Bir fonksiyon veya yapı gibi bir öğeyi gizli yapmak istiyorsanız, 
+onu bir modüle koyarsınız.</p>
+<p>Bir üst modüldeki öğeler, alt modüllerdeki gizli öğeleri kullanamaz, ancak alt modüllerdeki öğeler, 
+üst modüllerindeki öğeleri kullanabilir. Bunun nedeni, alt modüllerin uygulama ayrıntılarını sarması ve gizlemesidir, 
+ancak alt modüller tanımlandıkları bağlamı görebilir. Metaforumuza devam etmek için, gizlilik kurallarını bir restoranın 
+arka ofisi gibi düşünün: orada olup bitenler restoran müşterilerine özeldir, ancak ofis yöneticileri işlettikleri restoranda
+her şeyi görebilir ve yapabilir.</p>
+<p>Rust, modül sisteminin bu şekilde çalışmasını seçti, böylece dahili uygulama ayrıntılarını gizlemek varsayılandır. 
+Bu şekilde, dış kodu bozmadan iç kodun hangi kısımlarını değiştirebileceğinizi bilirsiniz. Ancak Rust, bir öğeyi herkese açık 
+hale getirmek için <code>pub</code> anahtar sözcüğünü kullanarak alt modüllerin kodunun iç kısımlarını dış üst modüllere gösterme seçeneği sunar.</p>
+<h3 id="pub-anahtar-kelimesiyle-yolları-gösterme"><a class="header" href="#pub-anahtar-kelimesiyle-yolları-gösterme"><code>pub</code> Anahtar Kelimesiyle Yolları Gösterme</a></h3>
+<p><code>hosting</code> modülünün gizli olduğunu söyleyen Liste 7-4'teki hataya dönelim. 
+Ana modüldeki <code>eat_at_restaurant</code> fonksiyonunun alt modüldeki <code>add_to_waitlist</code> fonksiyonuna erişmesini istiyoruz, 
+bu nedenle <code>hosting</code> modülünü Liste 7-5'te gösterildiği gibi <code>pub</code> anahtar sözcüğüyle işaretliyoruz.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile">mod front_of_house {
     pub mod hosting {
         fn add_to_waitlist() {}
@@ -283,10 +263,9 @@ pub fn eat_at_restaurant() {
     front_of_house::hosting::add_to_waitlist();
 }
 </code></pre>
-<p><span class="caption">Listing 7-5: Declaring the <code>hosting</code> module as <code>pub</code> to
-use it from <code>eat_at_restaurant</code></span></p>
-<p>Unfortunately, the code in Listing 7-5 still results in an error, as shown in
-Listing 7-6.</p>
+<p><span class="caption">Liste 7-5: <code>eat_at_restaurant</code>'tan kullanmak için <code>hosting</code> modülünü <code>pub</code> 
+olarak bildirme</span></p>
+<p>Ne yazık ki, Liste 7-5'teki kod, Liste 7-6'da gösterildiği gibi hala bir hatayla sonuçlanıyor.</p>
 <pre><code class="language-console">$ cargo build
    Compiling restaurant v0.1.0 (file:///projects/restaurant)
 error[E0603]: function `add_to_waitlist` is private
@@ -316,22 +295,18 @@ note: the function `add_to_waitlist` is defined here
 For more information about this error, try `rustc --explain E0603`.
 error: could not compile `restaurant` due to 2 previous errors
 </code></pre>
-<p><span class="caption">Listing 7-6: Compiler errors from building the code in
-Listing 7-5</span></p>
-<p>What happened? Adding the <code>pub</code> keyword in front of <code>mod hosting</code> makes the
-module public. With this change, if we can access <code>front_of_house</code>, we can
-access <code>hosting</code>. But the <em>contents</em> of <code>hosting</code> are still private; making the
-module public doesn’t make its contents public. The <code>pub</code> keyword on a module
-only lets code in its ancestor modules refer to it, not access its inner code.
-Because modules are containers, there’s not much we can do by only making the
-module public; we need to go further and choose to make one or more of the
-items within the module public as well.</p>
-<p>The errors in Listing 7-6 say that the <code>add_to_waitlist</code> function is private.
-The privacy rules apply to structs, enums, functions, and methods as well as
-modules.</p>
-<p>Let’s also make the <code>add_to_waitlist</code> function public by adding the <code>pub</code>
-keyword before its definition, as in Listing 7-7.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 7-6: Liste 7-5'te kodun oluşturulmasından kaynaklanan 
+derleyici hataları</span></p>
+<p>Ne oldu? <code>mod hosting</code>'in önüne <code>pub</code> anahtar sözcüğünü eklemek, modülü herkese açık hale getirir. 
+Bu değişiklikle <code>front_of_house</code>'a erişebilirsek, <code>hosting</code>'e de erişebiliriz. Ancak <code>hosting</code> içeriği hala gizlidir; 
+modülü herkese açık hale getirmek, içeriğini herkese açık hale getirmez. Bir modüldeki <code>pub</code> anahtar sözcüğü, iç koduna erişmesine değil, 
+yalnızca ata modüllerindeki kodun ona başvurmasına izin verir. Modüller kapsayıcı olduğundan, yalnızca modülü herkese açık hale getirerek
+yapabileceğimiz pek bir şey yoktur; daha ileri gitmemiz ve modül içindeki bir veya daha fazla öğeyi de herkese açık hale getirmeyi 
+seçmemiz gerekiyor.</p>
+<p>Liste 7-6'daki hatalar, <code>add_to_waitlist</code> fonksiyonunun gizli olduğunu söylüyor. 
+Gizlilik kuralları yapılar, numaralandırmalar, fonksiyonlar ve yöntemler ile modüller için geçerlidir.</p>
+<p>Ayrıca Liste 7-7'deki gibi tanımından önce <code>pub</code> anahtar sözcüğünü ekleyerek <code>add_to_waitlist</code> fonksiyonunu genel yapalım.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
     pub mod hosting {
         pub fn add_to_waitlist() {}
@@ -346,66 +321,46 @@ pub fn eat_at_restaurant() {
     front_of_house::hosting::add_to_waitlist();
 }
 </code></pre>
-<p><span class="caption">Listing 7-7: Adding the <code>pub</code> keyword to <code>mod hosting</code>
-and <code>fn add_to_waitlist</code> lets us call the function from
-<code>eat_at_restaurant</code></span></p>
-<p>Now the code will compile! To see why adding the <code>pub</code> keyword lets us use
-these paths in <code>add_to_waitlist</code> with respect to the privacy rules, let’s look
-at the absolute and the relative paths.</p>
-<p>In the absolute path, we start with <code>crate</code>, the root of our crate’s module
-tree. The <code>front_of_house</code> module is defined in the crate root. While
-<code>front_of_house</code> isn’t public, because the <code>eat_at_restaurant</code> function is
-defined in the same module as <code>front_of_house</code> (that is, <code>eat_at_restaurant</code>
-and <code>front_of_house</code> are siblings), we can refer to <code>front_of_house</code> from
-<code>eat_at_restaurant</code>. Next is the <code>hosting</code> module marked with <code>pub</code>. We can
-access the parent module of <code>hosting</code>, so we can access <code>hosting</code>. Finally, the
-<code>add_to_waitlist</code> function is marked with <code>pub</code> and we can access its parent
-module, so this function call works!</p>
-<p>In the relative path, the logic is the same as the absolute path except for the
-first step: rather than starting from the crate root, the path starts from
-<code>front_of_house</code>. The <code>front_of_house</code> module is defined within the same module
-as <code>eat_at_restaurant</code>, so the relative path starting from the module in which
-<code>eat_at_restaurant</code> is defined works. Then, because <code>hosting</code> and
-<code>add_to_waitlist</code> are marked with <code>pub</code>, the rest of the path works, and this
-function call is valid!</p>
-<p>If you plan on sharing your library crate so other projects can use your code,
-your public API is your contract with users of your crate that determines how
-they can interact with your code. There are many considerations around managing
-changes to your public API to make it easier for people to depend on your
-crate. These considerations are out of the scope of this book; if you’re
-interested in this topic, see <a href="https://rust-lang.github.io/api-guidelines/">The Rust API Guidelines</a>.</p>
+<p><span class="caption">Liste 7-7: <code>mod hosting</code> ve <code>fn add_to_waitlist</code>'e <code>pub</code> eklemek, 
+fonksiyonu <code>eat_at_restaurant</code>'tan çağırabilmemizi sağlar</span></p>
+<p>Kod derlenecek! <code>pub</code> anahtar sözcüğünü eklemenin neden bu yolları <code>add_to_waitlist</code>'te gizlilik kurallarına göre kullanmamıza 
+izin verdiğini görmek için mutlak ve göreli yollara bakalım.</p>
+<p>Mutlak yolda, kasamızın modül ağacının kökü olan <code>crate</code> ile başlıyoruz. <code>front_of_house</code> modülü kasa kökünde tanımlanır. 
+<code>front_of_house</code> herkese açık olmasa da, <code>eat_at_restaurant</code> fonksiyonu <code>front_of_house</code> ile aynı modülde tanımlandığından 
+(yani, <code>eat_at_restaurant</code> ve <code>front_of_house</code> kardeştir), <code>eat_at_restaurant</code>'tan <code>front_of_house</code>'a başvurabiliriz. 
+Sonraki, <code>pub</code> ile işaretlenmiş barındırma modülüdür. Barındırma ana modülüne erişebiliriz, 
+böylece barındırmaya erişebiliriz. Son olarak, <code>add_to_waitlist</code> fonksiyonu <code>pub</code> ile işaretlenmiştir ve üst modülüne erişebiliriz, 
+böylece bu fonksiyon çağrısı çalışır!</p>
+<p>Göreceli yolda mantık, ilk adım dışında mutlak yolla aynıdır: <code>crate</code> kökünden başlamak yerine, yol <code>front_of_house</code>'dan başlar. 
+<code>front_of_house</code> modülü, <code>eat_at_restaurant</code> ile aynı modül içinde tanımlanır, bu nedenle, <code>eat_at_restaurant</code>'ın tanımlandığı modülden 
+başlayan göreli yol çalışır. Ardından, <code>hosting</code> ve <code>add_to_waitlist</code> <code>pub</code> ile işaretlendiğinden, yolun geri kalanı çalışır 
+ve bu fonksiyon çağrısı da geçerlidir ve çalışır!</p>
+<p>Diğer projelerin kodunuzu kullanabilmesi için kütüphane kasanızı paylaşmayı planlıyorsanız, 
+genel API'niz, kasanızın kullanıcılarıyla, kodunuzla nasıl etkileşim kurabileceklerini belirleyen sözleşmenizdir. 
+İnsanların kasanıza bağımlı olmasını kolaylaştırmak için genel API'nizde yapılan değişiklikleri yönetme konusunda birçok husus vardır. 
+Bu düşünceler bu kitabın kapsamı dışındadır; Bu konuyla ilgileniyorsanız, bkz. <a href="https://rust-lang.github.io/api-guidelines/">Rust API Yönergeleri</a>.</p>
 <blockquote>
-<h4 id="best-practices-for-packages-with-a-binary-and-a-library"><a class="header" href="#best-practices-for-packages-with-a-binary-and-a-library">Best Practices for Packages with a Binary and a Library</a></h4>
-<p>We mentioned a package can contain both a <em>src/main.rs</em> binary crate root as
-well as a <em>src/lib.rs</em> library crate root, and both crates will have the
-package name by default. Typically, packages with this pattern of containing
-both a library and a binary crate will have just enough code in the binary
-crate to start an executable that calls code with the library crate. This
-lets other projects benefit from the most functionality that the package
-provides, because the library crate’s code can be shared.</p>
-<p>The module tree should be defined in <em>src/lib.rs</em>. Then, any public items can
-be used in the binary crate by starting paths with the name of the package.
-The binary crate becomes a user of the library crate just like a completely
-external crate would use the library crate: it can only use the public API.
-This helps you design a good API; not only are you the author, you’re also a
-client!</p>
-<p>In <a href="ch12-00-an-io-project.html">Chapter 12</a><!-- ignore -->, we’ll demonstrate this organizational
-practice with a command-line program that will contain both a binary crate
-and a library crate.</p>
+<h4 id="İkili-program-ve-kitaplık-İçeren-paketler-için-en-İyi-uygulamalar"><a class="header" href="#İkili-program-ve-kitaplık-İçeren-paketler-için-en-İyi-uygulamalar">İkili Program ve Kitaplık İçeren Paketler için En İyi Uygulamalar</a></h4>
+<p>Bir paketin hem bir <em>src/main.rs</em> ikili kasa kökü hem de bir <em>src/lib.rs</em> kütüphane kasa kökü içerebileceğinden ve 
+her iki kasanın da varsayılan olarak paket adına sahip olacağından bahsetmiştik. Tipik olarak, 
+hem kütüphane hem de ikili kasa içeren bu modele sahip paketler, ikili kasada kütüphane kasasıyla kod çağıran bir yürütülebilir 
+dosyayı başlatmak için yeterli koda sahip olacaktır. Bu, kütüphane kasasının kodu paylaşılabildiğinden, diğer projelerin 
+paketin sağladığı en fazla işlevsellikten faydalanmasını sağlar.
+Modül ağacı <em>src/lib.rs</em> içinde tanımlanmalıdır. Ardından, paketin adıyla yolları başlatarak ikili sandıkta herhangi 
+bir genel öğe kullanılabilir. İkili kasa, tıpkı tamamen harici bir kasanın kütüphane kasasını kullanması gibi kütüphane kasasının 
+bir kullanıcısı olur: yalnızca genel API'yi kullanabilir. Bu, iyi bir API tasarlamanıza yardımcı olur; 
+sadece yazar değil, aynı zamanda bir müşterisiniz!</p>
+<p><a href="ch12-00-an-io-project.html">Bölüm 12</a><!-- ignore -->'de hem ikili kasa hem de kitaplık kasası içeren bir komut satırı programıyla bu organizasyonel uygulamayı
+göstereceğiz.</p>
 </blockquote>
-<h3 id="starting-relative-paths-with-super"><a class="header" href="#starting-relative-paths-with-super">Starting Relative Paths with <code>super</code></a></h3>
-<p>We can construct relative paths that begin in the parent module, rather than
-the current module or the crate root, by using <code>super</code> at the start of the
-path. This is like starting a filesystem path with the <code>..</code> syntax. This allows
-us to reference an item that we know is in the parent module, which can make
-rearranging the module tree easier when the module is closely related to the
-parent, but the parent might be moved elsewhere in the module tree someday.</p>
-<p>Consider the code in Listing 7-8 that models the situation in which a chef
-fixes an incorrect order and personally brings it out to the customer. The
-function <code>fix_incorrect_order</code> defined in the <code>back_of_house</code> module calls the
-function <code>deliver_order</code> defined in the parent module by specifying the path to
-<code>deliver_order</code> starting with <code>super</code>:</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<h3 id="göreli-yolları-super-ile-başlatma"><a class="header" href="#göreli-yolları-super-ile-başlatma">Göreli Yolları <code>super</code> ile Başlatma</a></h3>
+<p>Yolun başlangıcında <code>super</code> kullanarak, geçerli modül veya kasa kökü yerine ana modülde başlayan göreli yollar oluşturabiliriz. 
+Bu, <code>..</code> söz dizimi ile bir dosya sistemi yolunu başlatmak gibidir. Bu, üst modülde olduğunu bildiğimiz bir öğeye başvurmamızı sağlar; 
+bu, modül üst öğeyle yakından ilişkili olduğunda modül ağacının yeniden düzenlenmesini kolaylaştırabilir, 
+ancak üst öğe bir gün modül ağacında başka bir yere taşınabilir.</p>
+<p>Bir şefin yanlış bir siparişi düzelttiği ve bunu müşteriye kişisel olarak sunduğu durumu modelleyen Liste 7-8'deki kodu göz önünde bulundurun. <code>back_of_house</code> modülünde tanımlanan <code>fix_incorrect_order</code> fonksiyonu, <code>super</code> ile başlayan <code>deliver_order</code> yolunu belirterek üst modülde 
+tanımlanan <code>deliver_order</code> fonksiyonunu çağırır:</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground test_harness">fn deliver_order() {}
 
 mod back_of_house {
@@ -417,28 +372,23 @@ mod back_of_house {
     fn cook_order() {}
 }
 </code></pre>
-<p><span class="caption">Listing 7-8: Calling a function using a relative path
-starting with <code>super</code></span></p>
-<p>The <code>fix_incorrect_order</code> function is in the <code>back_of_house</code> module, so we can
-use <code>super</code> to go to the parent module of <code>back_of_house</code>, which in this case
-is <code>crate</code>, the root. From there, we look for <code>deliver_order</code> and find it.
-Success! We think the <code>back_of_house</code> module and the <code>deliver_order</code> function
-are likely to stay in the same relationship to each other and get moved
-together should we decide to reorganize the crate’s module tree. Therefore, we
-used <code>super</code> so we’ll have fewer places to update code in the future if this
-code gets moved to a different module.</p>
-<h3 id="making-structs-and-enums-public"><a class="header" href="#making-structs-and-enums-public">Making Structs and Enums Public</a></h3>
-<p>We can also use <code>pub</code> to designate structs and enums as public, but there are a
-few details extra to the usage of <code>pub</code> with structs and enums. If we use <code>pub</code>
-before a struct definition, we make the struct public, but the struct’s fields
-will still be private. We can make each field public or not on a case-by-case
-basis. In Listing 7-9, we’ve defined a public <code>back_of_house::Breakfast</code> struct
-with a public <code>toast</code> field but a private <code>seasonal_fruit</code> field. This models
-the case in a restaurant where the customer can pick the type of bread that
-comes with a meal, but the chef decides which fruit accompanies the meal based
-on what’s in season and in stock. The available fruit changes quickly, so
-customers can’t choose the fruit or even see which fruit they’ll get.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 7-8: <code>super</code> ile başlayan göreli bir yol kullanarak 
+bir fonksiyonu çağırma</span></p>
+<p><code>fix_incorrect_order</code> fonksiyonu <code>back_of_house</code> modülündedir, 
+bu nedenle <code>super</code>'i <code>back_of_house</code>'un üst modülüne gitmek için kullanabiliriz, 
+bu durumda kasa, köktür. Oradan <code>deliver_order</code> arar ve buluruz. Başarılı! Kasanın modül ağacını yeniden düzenlemeye karar vermemiz durumunda, 
+<code>back_of_house</code> modülünün ve <code>deliver_order</code> fonksiyonunun birbiriyle aynı ilişkide kalacağını ve birlikte hareket edeceğini düşünüyoruz. 
+Bu nedenle, gelecekte bu kod farklı bir modüle taşınırsa kodu güncellemek için daha az yerimiz olacağı için <code>super</code> kullandık.</p>
+<h3 id="yapıları-ve-numaralandırmaları-herkese-açık-yapma"><a class="header" href="#yapıları-ve-numaralandırmaları-herkese-açık-yapma">Yapıları ve Numaralandırmaları Herkese Açık Yapma</a></h3>
+<p>Yapıları ve numaralandırılmış yapıları <code>public</code> olarak atamak için <code>pub</code>'ı da kullanabiliriz, 
+ancak <code>pub</code>'ın yapılar ve numaralandırmalarla kullanımına ilişkin birkaç ayrıntı daha vardır. 
+Bir <code>struct</code> tanımından önce <code>pub</code> kullanırsak, <code>struct</code>'ı herkese açık yaparız, ancak <code>struct</code>'ın alanları yine gizli olur. 
+Her bir alanı duruma göre kamuya açık hale getirebilir veya açıklamayabiliriz. Liste 7-9'da, genel bir <code>toast</code> üyesi, 
+ancak özel bir <code>seasonal_fruit</code> üyesi olan bir genel <code>back_of_house::Breakfast</code> yapısı tanımladık. 
+Bu, müşterinin yemekle birlikte gelen ekmeğin türünü seçebildiği, ancak şefin mevsime ve stokta bulunanlara göre yemeğe hangi meyvenin 
+eşlik edeceğine karar verdiği bir restorandaki durumu modellemektedir. Mevcut meyve stoğu hızla değişir, 
+bu nedenle müşteriler meyveyi seçemez ve hatta hangi meyveyi alacaklarını göremezler.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">mod back_of_house {
     pub struct Breakfast {
         pub toast: String,
@@ -467,22 +417,18 @@ pub fn eat_at_restaurant() {
     // meal.seasonal_fruit = String::from(&quot;blueberries&quot;);
 }
 </code></pre>
-<p><span class="caption">Listing 7-9: A struct with some public fields and some
-private fields</span></p>
-<p>Because the <code>toast</code> field in the <code>back_of_house::Breakfast</code> struct is public,
-in <code>eat_at_restaurant</code> we can write and read to the <code>toast</code> field using dot
-notation. Notice that we can’t use the <code>seasonal_fruit</code> field in
-<code>eat_at_restaurant</code> because <code>seasonal_fruit</code> is private. Try uncommenting the
-line modifying the <code>seasonal_fruit</code> field value to see what error you get!</p>
-<p>Also, note that because <code>back_of_house::Breakfast</code> has a private field, the
-struct needs to provide a public associated function that constructs an
-instance of <code>Breakfast</code> (we’ve named it <code>summer</code> here). If <code>Breakfast</code> didn’t
-have such a function, we couldn’t create an instance of <code>Breakfast</code> in
-<code>eat_at_restaurant</code> because we couldn’t set the value of the private
-<code>seasonal_fruit</code> field in <code>eat_at_restaurant</code>.</p>
-<p>In contrast, if we make an enum public, all of its variants are then public. We
-only need the <code>pub</code> before the <code>enum</code> keyword, as shown in Listing 7-10.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 7-9: Bazı ortak üyeler ve bazı gizli üyeler içeren 
+bir yapı</span></p>
+<p><code>back_of_house::Breakfast</code> yapısındaki <code>toast</code> alanı genel olduğundan, 
+<code>eat_at_restaurant</code>'ta nokta gösterimini kullanarak <code>toast</code> alanına yazabilir ve okuyabiliriz. 
+<code>seasonal_fruit</code> gizli olduğu için <code>eat_at_restaurant</code>'ta <code>seasonal_fruit</code> üyesini kullanamadığımıza dikkat edin. 
+Hangi hatayı aldığınızı görmek için <code>seasonal_fruit</code> üye değerini değiştirerek satırın yorumunu kaldırmayı deneyin!</p>
+<p>Ayrıca, <code>back_of_house::Breakfast</code>'ın gizli bir alanı olduğundan, yapının bir <code>Breakfast</code> örneği oluşturan ortak bir 
+ilişkili fonksiyon sağlaması gerektiğini unutmayın (buraya <code>summer</code> adını verdik). Eğer <code>Breakfast</code>'ın böyle bir fonksiyonu olmasaydı,
+<code>eat_at_restaurant</code>'ta özel <code>seasonal_fruit</code> üyesinin değerini ayarlayamadığımız için, <code>eat_at_restaurant</code>'ta bir <code>Breakfast</code> örneği oluşturamazdık.</p>
+<p>Buna karşılık, bir numaralandırmayı herkese açık yaparsak, tüm varyantları genel olur. Liste 7-10'da gösterildiği gibi, 
+<code>pub</code>'a yalnızca <code>enum</code> anahtar sözcüğünden önce ihtiyacımız var.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">mod back_of_house {
     pub enum Appetizer {
         Soup,
@@ -495,18 +441,15 @@ pub fn eat_at_restaurant() {
     let order2 = back_of_house::Appetizer::Salad;
 }
 </code></pre>
-<p><span class="caption">Listing 7-10: Designating an enum as public makes all its
-variants public</span></p>
-<p>Because we made the <code>Appetizer</code> enum public, we can use the <code>Soup</code> and <code>Salad</code>
-variants in <code>eat_at_restaurant</code>.</p>
-<p>Enums aren’t very useful unless their variants are public; it would be annoying
-to have to annotate all enum variants with <code>pub</code> in every case, so the default
-for enum variants is to be public. Structs are often useful without their
-fields being public, so struct fields follow the general rule of everything
-being private by default unless annotated with <code>pub</code>.</p>
-<p>There’s one more situation involving <code>pub</code> that we haven’t covered, and that is
-our last module system feature: the <code>use</code> keyword. We’ll cover <code>use</code> by itself
-first, and then we’ll show how to combine <code>pub</code> and <code>use</code>.</p>
+<p><span class="caption">Liste 7-10: Bir numaralandırmanın genel olarak atanması, 
+tüm türevlerini herkese açık hale getirir</span></p>
+<p><code>Appetizer</code> <code>enum</code>'u <code>public</code> yaptığımız için, <code>eat_at_restaurant</code>'ta <code>Soup</code> ve <code>Salad</code> çeşitlerini kullanabiliriz.</p>
+<p>Değişkenleri herkese açık olmadığı sürece, numaralandırmalar pek kullanışlı değildir; her durumda tüm numaralandırma değişkenlerine 
+<code>pub</code> ile açıklama eklemek can sıkıcı olurdu, bu nedenle numaralandırma değişkenleri için varsayılan değer herkese açık olmaktır. 
+Yapılar genellikle alanları herkese açık olmadan yararlıdır, bu nedenle yapı alanları, <code>pub</code> ile açıklama yapılmadığı sürece varsayılan olarak 
+her şeyin gizli olduğu genel kuralını izler.</p>
+<p><code>pub</code> ile ilgili ele almadığımız bir durum daha var ve bu bizim son modül sistemi özelliğimiz: <code>use</code> anahtar sözcüğü. 
+İlk önce <code>use</code>'ı tek başına ele alacağız ve ardından <code>pub</code> ve <code>use</code>'ın nasıl birleştirileceğini göstereceğiz.</p>
 
                     </main>
 

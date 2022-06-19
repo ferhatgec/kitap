@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,26 +147,22 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="storing-keys-with-associated-values-in-hash-maps"><a class="header" href="#storing-keys-with-associated-values-in-hash-maps">Storing Keys with Associated Values in Hash Maps</a></h2>
-<p>The last of our common collections is the <em>hash map</em>. The type <code>HashMap&lt;K, V&gt;</code>
-stores a mapping of keys of type <code>K</code> to values of type <code>V</code> using a
-<em>hashing function</em>, which determines how it places these keys and values into
-memory. Many programming languages support this kind of data structure, but
-they often use a different name, such as hash, map, object, hash table,
-dictionary, or associative array, just to name a few.</p>
-<p>Hash maps are useful when you want to look up data not by using an index, as
-you can with vectors, but by using a key that can be of any type. For example,
-in a game, you could keep track of each team’s score in a hash map in which
-each key is a team’s name and the values are each team’s score. Given a team
-name, you can retrieve its score.</p>
-<p>We’ll go over the basic API of hash maps in this section, but many more goodies
-are hiding in the functions defined on <code>HashMap&lt;K, V&gt;</code> by the standard library.
-As always, check the standard library documentation for more information.</p>
-<h3 id="creating-a-new-hash-map"><a class="header" href="#creating-a-new-hash-map">Creating a New Hash Map</a></h3>
-<p>One way to create an empty hash map is using <code>new</code> and adding elements with
-<code>insert</code>. In Listing 8-20, we’re keeping track of the scores of two teams whose
-names are <em>Blue</em> and <em>Yellow</em>. The Blue team starts with 10 points, and the
-Yellow team starts with 50.</p>
+                        <h2 id="anahtar-kilit-koleksiyonlarında-İlişkili-değerlerle-anahtarları-saklama"><a class="header" href="#anahtar-kilit-koleksiyonlarında-İlişkili-değerlerle-anahtarları-saklama">Anahtar-Kilit Koleksiyonlarında İlişkili Değerlerle Anahtarları Saklama</a></h2>
+<p>Ortak koleksiyonlarımızın sonuncusu <em>anahtar-kilit koleksiyonudur</em>. <code>HashMap&lt;K, V&gt;</code> türü, 
+bu anahtarları ve değerleri belleğe nasıl yerleştireceğini belirleyen bir karma fonksiyonu kullanarak K türündeki anahtarların 
+V türündeki değerlerle eşlenmesini depolar. Birçok programlama dili bu tür bir veri yapısını destekler, 
+ancak genellikle hash, map, object, hash table, dictionary veya associative array gibi farklı isimler kullanırlar.</p>
+<p>Anahtar-kilit koleksiyonları, vektörlerde olduğu gibi bir indeks kullanarak değil, herhangi bir türde olabilen bir anahtar 
+kullanarak verileri aramak istediğinizde kullanışlıdır. Örneğin, bir oyunda, her anahtarın bir takımın adı ve 
+değerlerin her takımın puanı olduğu bir anahtar-kilit koleksiyonunda her takımın puanını takip edebilirsiniz. 
+Bir takım adı verildiğinde, skorunu alabilirsiniz.</p>
+<p>Bu bölümün devamında a-k.k diyerek bahsedeceğimiz şey anahtar-kilit koleksiyonu olacaktır.</p>
+<p>Bu bölümde a-k.k'nin temel API'sinin üzerinden geçeceğiz, ancak standart kütüphane tarafından <code>HashMap&lt;K, V&gt;</code> üzerinde tanımlanan 
+fonksiyonlarda çok daha fazla güzellik gizlidir. Her zaman olduğu gibi, daha fazla bilgi için standart kütüphane dokümantasyonunu 
+kontrol edin.</p>
+<h2 id="yeni-bir-a-kk-oluşturma"><a class="header" href="#yeni-bir-a-kk-oluşturma">Yeni Bir A-K.K Oluşturma</a></h2>
+<p>Boş bir a-k.k oluşturmanın bir yolu <code>new</code> kullanmak ve <code>insert</code> ile eleman eklemektir. Liste 8-20'de, isimleri 
+<em>Blue</em> ve <em>Yellow</em> olan iki takımın skorlarını takip ediyoruz. <em>Blue</em> takım 10 puanla başlar ve <em>Yellow</em> takım 50 puanla başlar.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -176,20 +172,15 @@ Yellow team starts with 50.</p>
     scores.insert(String::from(&quot;Yellow&quot;), 50);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-20: Creating a new hash map and inserting some
-keys and values</span></p>
-<p>Note that we need to first <code>use</code> the <code>HashMap</code> from the collections portion of
-the standard library. Of our three common collections, this one is the least
-often used, so it’s not included in the features brought into scope
-automatically in the prelude. Hash maps also have less support from the
-standard library; there’s no built-in macro to construct them, for example.</p>
-<p>Just like vectors, hash maps store their data on the heap. This <code>HashMap</code> has
-keys of type <code>String</code> and values of type <code>i32</code>. Like vectors, hash maps are
-homogeneous: all of the keys must have the same type as each other, and all of
-the values must have the same type.</p>
-<h3 id="accessing-values-in-a-hash-map"><a class="header" href="#accessing-values-in-a-hash-map">Accessing Values in a Hash Map</a></h3>
-<p>We can get a value out of the hash map by providing its key to the <code>get</code>
-method, as shown in Listing 8-21.</p>
+<p><span class="caption">Liste 8-20: Yeni bir a-k.k oluşturma ve bazı anahtar ve değerleri ekleme</span></p>
+<p>Öncelikle standart kütüphanenin koleksiyonlar bölümündeki <code>HashMap</code>'i kullanmamız gerektiğini unutmayın. 
+Üç yaygın koleksiyonumuz arasında bu en az kullanılanıdır, bu nedenle başlangıçta otomatik olarak kapsama alınan 
+özelliklere dahil edilmemiştir. <code>HashMap</code> standart kütüphaneden de daha az destek alır; örneğin bunları oluşturmak için 
+yerleşik bir makro yoktur.</p>
+<p>Tıpkı vektörler gibi, a-k.k da verilerini yığın üzerinde saklar. Bu <code>HashMap</code>'in <code>String</code> türünde anahtarları ve <code>i32</code> türünde değerleri 
+vardır. Vektörler gibi, a-k.k da homojendir: tüm anahtarlar birbiriyle aynı türde olmalıdır ve tüm değerler aynı türde olmalıdır.</p>
+<h3 id="ak-kda-değerlere-erişme"><a class="header" href="#ak-kda-değerlere-erişme">A.K-K'da Değerlere Erişme</a></h3>
+<p>Liste 8-21'de gösterildiği gibi, <code>get</code> metoduna anahtarı sağlayarak a.k-k'dan dönüş değerini alabiliriz.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -202,15 +193,12 @@ method, as shown in Listing 8-21.</p>
     let score = scores.get(&amp;team_name);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-21: Accessing the score for the Blue team
-stored in the hash map</span></p>
-<p>Here, <code>score</code> will have the value that’s associated with the Blue team, and the
-result will be <code>10</code>. The <code>get</code> method returns an <code>Option&lt;&amp;V&gt;</code>; if there’s no
-value for that key in the hash map, <code>get</code> will return <code>None</code>. This program
-handles the <code>Option</code> by calling <code>unwrap_or</code> to set <code>score</code> to zero if <code>scores</code>
-doesn't have an entry for the key.</p>
-<p>We can iterate over each key/value pair in a hash map in a similar manner as we
-do with vectors, using a <code>for</code> loop:</p>
+<p><span class="caption">Liste 8-21: A-k.k'da saklanan <em>Blue</em> takımının 
+skoruna erişim</span></p>
+<p>Burada, skor <em>Blue</em> takımla ilişkilendirilen değere sahip olacak ve sonuç <code>10</code> olacaktır. <code>get</code> metodu <code>Option&lt;&amp;V&gt;</code> döndürür; 
+a-k.k'da o anahtar için değer yoksa <code>get</code>, <code>None</code> döndürür. Bu program, skorlarda anahtar için bir giriş yoksa skoru sıfıra ayarlamak 
+için <code>unwrap_or</code> öğesini çağırarak <code>Option</code>'ı işler.</p>
+<p>Bir a-k.k'daki her bir anahtar/değer çifti üzerinde, vektörlerde yaptığımıza benzer şekilde, bir <code>for</code> döngüsü kullanarak yineleme yapabiliriz:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -224,14 +212,13 @@ do with vectors, using a <code>for</code> loop:</p>
     }
 <span class="boring">}
 </span></code></pre></pre>
-<p>This code will print each pair in an arbitrary order:</p>
+<p>Bu kod, her bir çifti rastgele bir sırayla yazdıracaktır:</p>
 <pre><code class="language-text">Yellow: 50
 Blue: 10
 </code></pre>
-<h3 id="hash-maps-and-ownership"><a class="header" href="#hash-maps-and-ownership">Hash Maps and Ownership</a></h3>
-<p>For types that implement the <code>Copy</code> trait, like <code>i32</code>, the values are copied
-into the hash map. For owned values like <code>String</code>, the values will be moved and
-the hash map will be the owner of those values, as demonstrated in Listing 8-22.</p>
+<h3 id="a-kklar-ve-sahiplik"><a class="header" href="#a-kklar-ve-sahiplik">A-K.K'lar ve Sahiplik</a></h3>
+<p><code>Copy</code> tanımını uygulayan <code>i32</code> gibi türler için değerler a-k.k'a kopyalanır. <code>String</code> gibi sahip olunan değerler için, 
+değerler taşınır ve a-k.k, Liste 8-22'de gösterildiği gibi bu değerlerin sahibi olur.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -244,33 +231,25 @@ the hash map will be the owner of those values, as demonstrated in Listing 8-22.
     // see what compiler error you get!
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-22: Showing that keys and values are owned by
-the hash map once they’re inserted</span></p>
-<p>We aren’t able to use the variables <code>field_name</code> and <code>field_value</code> after
-they’ve been moved into the hash map with the call to <code>insert</code>.</p>
-<p>If we insert references to values into the hash map, the values won’t be moved
-into the hash map. The values that the references point to must be valid for at
-least as long as the hash map is valid. We’ll talk more about these issues in
-the <a href="ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">“Validating References with
-Lifetimes”</a><!-- ignore --> section in
-Chapter 10.</p>
-<h3 id="updating-a-hash-map"><a class="header" href="#updating-a-hash-map">Updating a Hash Map</a></h3>
-<p>Although the number of key and value pairs is growable, each unique key can
-only have one value associated with it at a time (but not vice versa: for
-example, both the Blue team and the Yellow team could have value 10 stored in
-the <code>scores</code> hash map).</p>
-<p>When you want to change the data in a hash map, you have to decide how to
-handle the case when a key already has a value assigned. You could replace the
-old value with the new value, completely disregarding the old value. You could
-keep the old value and ignore the new value, only adding the new value if the
-key <em>doesn’t</em> already have a value. Or you could combine the old value and the
-new value. Let’s look at how to do each of these!</p>
-<h4 id="overwriting-a-value"><a class="header" href="#overwriting-a-value">Overwriting a Value</a></h4>
-<p>If we insert a key and a value into a hash map and then insert that same key
-with a different value, the value associated with that key will be replaced.
-Even though the code in Listing 8-23 calls <code>insert</code> twice, the hash map will
-only contain one key/value pair because we’re inserting the value for the Blue
-team’s key both times.</p>
+<p><span class="caption">Liste 8-22: Eklendikten sonra anahtarların ve değerlerin a-k.k'a 
+ait olduğunu gösterme</span></p>
+<p><code>field_name</code> ve <code>field_value</code> değişkenlerini, <code>insert</code> çağrısı ile a-k.k'a taşındıktan sonra kullanamıyoruz.</p>
+<p>Değerlere yapılan referansları a-k.k'a eklersek, değerler hash haritasına taşınmaz. 
+Referansların işaret ettiği değerler en azından a-k.k geçerli olduğu sürece geçerli olmalıdır. 
+Bölüm 10'daki <a href="ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">“Referansları Yaşam Süreleriyle Doğrulama”</a><!-- ignore --> bölümünde 
+bu konular hakkında daha fazla konuşacağız.</p>
+<h3 id="a-kkunu-güncelleme"><a class="header" href="#a-kkunu-güncelleme">A-K.K'unu Güncelleme</a></h3>
+<p>Anahtar ve değer çiftlerinin sayısı artırılabilir olsa da, her benzersiz anahtar aynı anda kendisiyle 
+ilişkilendirilmiş yalnızca bir değere sahip olabilir (ancak bunun tersi geçerli değildir: örneğin, hem <em>Blue</em> takım hem de <em>Yellow</em> 
+takım skorlar a-k.k'da depolanan 10 değerine sahip olabilir).</p>
+<p>Bir anahtar-kilit eşlemedeki verileri değiştirmek istediğinizde, bir anahtarın zaten atanmış bir değere sahip olduğu 
+durumu nasıl ele alacağınıza karar vermeniz gerekir. Eski değeri tamamen göz ardı ederek eski değeri yeni değerle değiştirebilirsiniz. 
+Eski değeri tutup yeni değeri <em>yok sayabilir</em>, yalnızca anahtarın zaten bir değeri yoksa yeni değeri ekleyebilirsiniz. 
+Ya da eski değer ile yeni değeri birleştirebilirsiniz. Şimdi bunların her birinin nasıl yapılacağına bakalım!</p>
+<h4 id="bir-değerin-Üzerine-yazma"><a class="header" href="#bir-değerin-Üzerine-yazma">Bir Değerin Üzerine Yazma</a></h4>
+<p>Bir a-k.k'a bir anahtar ve bir değer eklersek ve daha sonra aynı anahtarı farklı bir değerle eklersek, 
+bu anahtarla ilişkili değer değiştirilecektir. Liste 8-23'teki kod iki kez <code>insert</code> çağrısı yapsa da, 
+<em>Blue</em> takımın anahtarının değerini iki kez eklediğimiz için a-k.k yalnızca bir anahtar/değer çifti içerecektir.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -282,23 +261,19 @@ team’s key both times.</p>
     println!(&quot;{:?}&quot;, scores);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-23: Replacing a value stored with a particular
-key</span></p>
-<p>This code will print <code>{&quot;Blue&quot;: 25}</code>. The original value of <code>10</code> has been
-overwritten.</p>
+<p><span class="caption">Liste 8-23: Belirli bir anahtarla saklanan bir değeri değiştirme</span></p>
+<p>Bu kod <code>{&quot;Blue&quot;: 25}</code> yazdıracaktır. <code>10</code>'un orijinal değerinin üzerine yazılmıştır.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="only-inserting-a-value-if-the-key-has-no-value"></a></p>
-<h4 id="adding-a-key-and-value-only-if-a-key-isnt-present"><a class="header" href="#adding-a-key-and-value-only-if-a-key-isnt-present">Adding a Key and Value Only If a Key Isn’t Present</a></h4>
-<p>It’s common to check whether a particular key already exists in the hash map
-with a value then take the following actions: if the key does exist in the hash
-map, the existing value should remain the way it is. If the key doesn’t exist,
-insert it and a value for it.</p>
-<p>Hash maps have a special API for this called <code>entry</code> that takes the key you
-want to check as a parameter. The return value of the <code>entry</code> method is an enum
-called <code>Entry</code> that represents a value that might or might not exist. Let’s say
-we want to check whether the key for the Yellow team has a value associated
-with it. If it doesn’t, we want to insert the value 50, and the same for the
-Blue team. Using the <code>entry</code> API, the code looks like Listing 8-24.</p>
+<h4 id="yalnızca-bir-anahtar-mevcut-değilse-anahtar-ve-değer-ekleme"><a class="header" href="#yalnızca-bir-anahtar-mevcut-değilse-anahtar-ve-değer-ekleme">Yalnızca Bir Anahtar Mevcut Değilse Anahtar ve Değer Ekleme</a></h4>
+<p>Belirli bir anahtarın a-k.k'da bir değerle zaten var olup olmadığını kontrol etmek ve ardından aşağıdaki eylemleri 
+gerçekleştirmek yaygındır: anahtar a-k.k'da varsa, mevcut değer olduğu gibi kalmalıdır. 
+Anahtar mevcut değilse, onu ve değerini eklersiniz.</p>
+<p>A-k.k'ları bunun için kontrol etmek istediğiniz anahtarı parametre olarak alan <code>entry</code> adında özel bir API'ye sahiptir. 
+<code>entry</code> metodunun geri dönüş değeri, var olabilecek veya olmayabilecek bir değeri temsil eden <code>Entry</code> adlı bir <code>enum</code>'dur. 
+Diyelim ki <em>Yellow</em> takımın anahtarının kendisiyle ilişkili bir değeri olup olmadığını kontrol etmek istiyoruz. 
+Eğer yoksa, <code>50</code> değerini eklemek istiyoruz ve aynı şeyi <em>Blue</em> takım için de yapmak istiyoruz. 
+<code>entry</code> API'sini kullanarak yazacağımız kod Liste 8-24'e benzeyecektir:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -311,25 +286,20 @@ Blue team. Using the <code>entry</code> API, the code looks like Listing 8-24.</
     println!(&quot;{:?}&quot;, scores);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-24: Using the <code>entry</code> method to only insert if
-the key does not already have a value</span></p>
-<p>The <code>or_insert</code> method on <code>Entry</code> is defined to return a mutable reference to
-the value for the corresponding <code>Entry</code> key if that key exists, and if not,
-inserts the parameter as the new value for this key and returns a mutable
-reference to the new value. This technique is much cleaner than writing the
-logic ourselves and, in addition, plays more nicely with the borrow checker.</p>
-<p>Running the code in Listing 8-24 will print <code>{&quot;Yellow&quot;: 50, &quot;Blue&quot;: 10}</code>. The
-first call to <code>entry</code> will insert the key for the Yellow team with the value
-50 because the Yellow team doesn’t have a value already. The second call to
-<code>entry</code> will not change the hash map because the Blue team already has the
-value 10.</p>
-<h4 id="updating-a-value-based-on-the-old-value"><a class="header" href="#updating-a-value-based-on-the-old-value">Updating a Value Based on the Old Value</a></h4>
-<p>Another common use case for hash maps is to look up a key’s value and then
-update it based on the old value. For instance, Listing 8-25 shows code that
-counts how many times each word appears in some text. We use a hash map with
-the words as keys and increment the value to keep track of how many times we’ve
-seen that word. If it’s the first time we’ve seen a word, we’ll first insert
-the value 0.</p>
+<p><span class="caption">Liste 8-24: Yalnızca anahtarın halihazırda bir değeri yoksa eklemek 
+için <code>entry</code> metodunu kullanma</span></p>
+<p><code>Entry</code> üzerindeki <code>or_insert</code> metodu, ilgili <code>Entry</code> anahtarı mevcutsa bu anahtarın değerine 
+değiştirilebilir bir referans döndürmek için tanımlanmıştır; mevcut değilse, parametreyi bu anahtarın yeni 
+değeri olarak ekler ve yeni değere değiştirilebilir bir referans döndürür. 
+Bu teknik, mantığı kendimiz yazmaktan çok daha temizdir ve ayrıca ödünç denetleyicisi ile daha iyi çalışır.</p>
+<p>Liste 8-24'teki kod çalıştırıldığında <code>{&quot;Yellow&quot;: 50, &quot;Blue&quot;: 10}</code> çıktısını verecektir. 
+<code>entry</code>'e yapılan ilk çağrı <em>Yellow</em> takımın anahtarına <code>50</code> değerini ekleyecektir çünkü <em>Yellow</em> takımın zaten bir değeri yoktur. 
+İkinci <code>entry</code> çağrısı a-k.k'unu değiştirmeyecektir çünkü <em>Blue</em> takım zaten <code>10</code> değerine sahiptir.</p>
+<h4 id="eski-değere-dayalı-olarak-bir-değeri-güncelleme"><a class="header" href="#eski-değere-dayalı-olarak-bir-değeri-güncelleme">Eski Değere Dayalı Olarak Bir Değeri Güncelleme</a></h4>
+<p>A-K.K'lar için bir başka yaygın kullanım durumu da bir anahtarın değerini aramak ve ardından eski değere göre güncellemektir. 
+Örneğin, Liste 8-25, bir metinde her bir kelimenin kaç kez geçtiğini sayan kodu göstermektedir. 
+Kelimeleri anahtar olarak içeren bir a-k.k kullanırız ve o kelimeyi kaç kez gördüğümüzü takip etmek için değeri artırırız. 
+Eğer bir kelimeyi ilk kez görüyorsak, önce 0 değerini ekleriz.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    use std::collections::HashMap;
 
@@ -345,58 +315,51 @@ the value 0.</p>
     println!(&quot;{:?}&quot;, map);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-25: Counting occurrences of words using a hash
-map that stores words and counts</span></p>
+<p><span class="caption">Liste 8-25: Kelimeleri ve sayıları saklayan bir a-k.k kullanarak 
+kelimelerin oluşumlarını sayma</span></p>
 <p>This code will print <code>{&quot;world&quot;: 2, &quot;hello&quot;: 1, &quot;wonderful&quot;: 1}</code>. You might see
 the same key/value pairs printed in a different order: recall from the
-<a href="#accessing-values-in-a-hash-map">“Accessing Values in a Hash Map”</a><!-- ignore --> section that
+section that
 iterating over a hash map happens in an arbitrary order.</p>
-<p>This code will print <code>{&quot;world&quot;: 2, &quot;hello&quot;: 1, &quot;wonderful&quot;: 1}</code>. The
-<code>split_whitespace</code> method returns an iterator over sub-slices, separated by
-whitespace, of the value in <code>text</code>. The <code>or_insert</code> method returns a mutable
-reference (<code>&amp;mut V</code>) to the value for the specified key. Here we store that
-mutable reference in the <code>count</code> variable, so in order to assign to that value,
-we must first dereference <code>count</code> using the asterisk (<code>*</code>). The mutable
-reference goes out of scope at the end of the <code>for</code> loop, so all of these
-changes are safe and allowed by the borrowing rules.</p>
-<h3 id="hashing-functions"><a class="header" href="#hashing-functions">Hashing Functions</a></h3>
-<p>By default, <code>HashMap</code> uses a hashing function called <em>SipHash</em> that can provide
-resistance to Denial of Service (DoS) attacks involving hash
-tables<sup class="footnote-reference"><a href="#siphash">1</a></sup><!-- ignore -->. This is not the fastest hashing algorithm
-available, but the trade-off for better security that comes with the drop in
-performance is worth it. If you profile your code and find that the default
-hash function is too slow for your purposes, you can switch to another function
-by specifying a different hasher. A <em>hasher</em> is a type that implements the
-<code>BuildHasher</code> trait. We’ll talk about traits and how to implement them in
-Chapter 10. You don’t necessarily have to implement your own hasher from
-scratch; <a href="https://crates.io/">crates.io</a><!-- ignore --> has libraries shared by
-other Rust users that provide hashers implementing many common hashing
-algorithms.</p>
+<p>Bu kod <code>{&quot;world&quot;: 2, &quot;hello&quot;: 1, &quot;wonderful&quot;: 1}</code> yazdıracaktır. Aynı anahtar/değer çiftlerinin farklı bir sırada yazdırıldığını 
+görebilirsiniz: <a href="#accessing-values-in-a-hash-map">“A-K.K'daki Değerlere Erişim”</a><!-- ignore --> bölümünden bir a-k.k üzerinde yinelemenin 
+rastgele bir sırada gerçekleştiğini hatırlayın.</p>
+<p><code>split_whitespace</code> metodu, metin içindeki değerin boşluklarla ayrılmış alt dilimleri üzerinde bir yineleyici döndürür. 
+<code>or_insert</code> metodu, belirtilen anahtar için değere değiştirilebilir bir referans (<code>&amp;mut V</code>) döndürür. 
+Burada bu değişebilir referansı <code>count</code> değişkeninde saklarız, bu nedenle bu değere atama yapmak için önce yıldız işaretini (<code>*</code>) 
+kullanarak <code>count</code> referansını kaldırmamız gerekir. Değiştirilebilir referans <code>for</code> döngüsünün sonunda kapsam dışına çıkar, 
+bu nedenle tüm bu değişiklikler güvenlidir ve ödünç alma kuralları tarafından izin verilir.</p>
+<h3 id="Şifreleme-fonksiyonları"><a class="header" href="#Şifreleme-fonksiyonları">Şifreleme Fonksiyonları</a></h3>
+<p>Varsayılan olarak <code>HashMap</code>, anahtar-kilit tablolarını içeren Hizmet Reddi (DoS) saldırılarına karşı direnç 
+sağlayabilen <em>SipHash</em> adlı bir şifreleme fonksiyonu kullanır<sup class="footnote-reference"><a href="#siphash">1</a></sup><!-- ignore -->. Bu, mevcut en hızlı şifreleme algoritması değildir, 
+ancak performanstaki düşüşle birlikte gelen daha iyi güvenlik için yapılan takas buna değecektir. 
+Kodunuzun profilini çıkarırsanız ve varsayılan şifreleme fonksiyonunun amaçlarınız için çok yavaş olduğunu fark ederseniz, 
+farklı bir şifreleyici belirterek başka bir fonksiyona geçebilirsiniz. Bir şifreleyici, <code>BuildHasher</code> tanımını uygulayan bir türdür. 
+Özellikler ve bunların nasıl uygulanacağı hakkında Bölüm 10'da konuşacağız. Kendi şifreleyicinizi sıfırdan yazmak zorunda değilsiniz; 
+<a href="https://crates.io/">crates.io</a><!-- ignore -->, birçok yaygın hashing algoritmasını uygulayan şifreleyiciler sağlayan, diğer Rust kullanıcıları 
+tarafından paylaşılan kütüphanelere sahiptir.</p>
+<h3 id="Özet"><a class="header" href="#Özet">Özet</a></h3>
+<p>Vektörler, dizgiler ve anahtar-kilit koleksiyonları, verileri depolamanız, erişmeniz ve değiştirmeniz gerektiğinde programlarda 
+gerekli olan büyük miktarda işlevsellik sağlayacaktır. </p>
+<p>İşte şimdi çözmeniz gereken bazı alıştırmalar:</p>
+<ul>
+<li>Bir tam sayı listesi verildiğinde, bir vektör kullanın ve listenin medyanını (sıralandığında orta konumdaki değer) ve modunu 
+(en sık ortaya çıkan değer; bir a-k.k burada yardımcı olacaktır) döndürün.</li>
+<li>Dizgileri Domuz Latincesine dönüştürün. Her kelimenin ilk ünsüzü kelimenin sonuna taşınır ve “ay” eklenir, 
+böylece “first” “irst-fay olur. Sesli harfle başlayan kelimelerin sonuna “hay” eklenir (“apple”, “apple-hay” olur). 
+UTF-8 kodlamasıyla ilgili ayrıntıları aklınızda bulundurun!</li>
+<li>Bir a-k.k ve vektör kullanarak, bir kullanıcının bir şirketteki bir departmana çalışan isimleri eklemesine olanak tanıyan bir metin 
+arayüzü oluşturun. Örneğin, “Sally'i Mühendisliğe Ekle” veya “Amir'i Satış Danışmanlığına Ekle”. 
+Ardından kullanıcının bir departmandaki tüm kişilerin veya şirketteki tüm kişilerin alfabetik olarak 
+sıralanmış bir listesini almasına izin verin.</li>
+</ul>
+<p>Standart kütüphane API dokümantasyonları vektörlerin, dizgilerin ve a-k.k'ların bu alıştırmalar için yararlı olacak 
+metodlarını açıklamaktadır!</p>
+<p>İşlemlerin başarısız olabileceği daha karmaşık programlara giriyoruz, bu nedenle hata işlemeyi tartışmak için mükemmel bir zaman. 
+Bunu daha sonra yapacağız!</p>
 <div class="footnote-definition" id="siphash"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/wiki/SipHash">https://en.wikipedia.org/wiki/SipHash</a></p>
 </div>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<p>Vectors, strings, and hash maps will provide a large amount of functionality
-necessary in programs when you need to store, access, and modify data. Here are
-some exercises you should now be equipped to solve:</p>
-<ul>
-<li>Given a list of integers, use a vector and return the median (when sorted,
-the value in the middle position) and mode (the value that occurs most often;
-a hash map will be helpful here) of the list.</li>
-<li>Convert strings to pig latin. The first consonant of each word is moved to
-the end of the word and “ay” is added, so “first” becomes “irst-fay.” Words
-that start with a vowel have “hay” added to the end instead (“apple” becomes
-“apple-hay”). Keep in mind the details about UTF-8 encoding!</li>
-<li>Using a hash map and vectors, create a text interface to allow a user to add
-employee names to a department in a company. For example, “Add Sally to
-Engineering” or “Add Amir to Sales.” Then let the user retrieve a list of all
-people in a department or all people in the company by department, sorted
-alphabetically.</li>
-</ul>
-<p>The standard library API documentation describes methods that vectors, strings,
-and hash maps have that will be helpful for these exercises!</p>
-<p>We’re getting into more complex programs in which operations can fail, so, it’s
-a perfect time to discuss error handling. We’ll do that next!</p>
 
                     </main>
 
