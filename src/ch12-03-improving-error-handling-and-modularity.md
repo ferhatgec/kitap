@@ -1,493 +1,387 @@
-## Refactoring to Improve Modularity and Error Handling
+## Modülerliği ve Hata İşlemeyi Geliştirmek için Yeniden Düzenleme
 
-To improve our program, we’ll fix four problems that have to do with the
-program’s structure and how it’s handling potential errors. First, our `main`
-function now performs two tasks: it parses arguments and reads files. As our
-program grows, the number of separate tasks the `main` function handles will
-increase. As a function gains responsibilities, it becomes more difficult to
-reason about, harder to test, and harder to change without breaking one of its
-parts. It’s best to separate functionality so each function is responsible for
-one task.
+Programımızı iyileştirmek için, programın yapısı ve olası hataları nasıl ele aldığı ile ilgili dört sorunu çözeceğiz. 
+İlk olarak, `ma'n` fonksiyonumuz artık iki görevi yerine getiriyor: argümanları ayrıştırıyor ve dosyaları okuyor. 
+Programımız büyüdükçe, ana fonksiyonun yerine getirdiği ayrı görevlerin sayısı artacaktır. Bir fonksiyon sorumluluk kazandıkça,
+hakkında mantık yürütmek daha zor, test etmek daha zor ve parçalarından birini bozmadan değiştirmek daha zor hale gelir. 
+Her fonksiyonun tek bir görevden sorumlu olması için işlevleri ayırmak en iyisidir.
 
-This issue also ties into the second problem: although `query` and `filename`
-are configuration variables to our program, variables like `contents` are used
-to perform the program’s logic. The longer `main` becomes, the more variables
-we’ll need to bring into scope; the more variables we have in scope, the harder
-it will be to keep track of the purpose of each. It’s best to group the
-configuration variables into one structure to make their purpose clear.
+Bu konu aynı zamanda ikinci sorunla da bağlantılıdır: sorgu ve dosya adı programımız için yapılandırma değişkenleri olsa da, 
+içerik gibi değişkenler programın mantığını gerçekleştirmek için kullanılır. main ne kadar uzun olursa, 
+o kadar çok değişkeni kapsama almamız gerekecektir; ne kadar çok değişkeni kapsama alırsak, her birinin amacını takip etmek o
+kadar zor olacaktır. Amaçlarını netleştirmek için yapılandırma değişkenlerini tek bir yapıda gruplamak en iyisidir.
 
-The third problem is that we’ve used `expect` to print an error message when
-reading the file fails, but the error message just prints `Something went wrong
-reading the file`. Reading a file can fail in a number of ways: for example,
-the file could be missing, or we might not have permission to open it. Right
-now, regardless of the situation, we’d print the same error message for
-everything, which wouldn’t give the user any information!
+Üçüncü sorun, dosyayı okuma başarısız olduğunda bir hata mesajı yazdırmak için `expect` kullandık, ancak hata mesajı sadece 
+`Something went wrong reading the file` yazıyor. Bir dosyayı okumak çeşitli şekillerde başarısız olabilir: örneğin, 
+dosya eksik olabilir veya dosyayı açmak için iznimiz olmayabilir. Şu anda, durum ne olursa olsun, her şey için aynı hata mesajını 
+yazdırırız ve bu da kullanıcıya hiçbir bilgi vermeyiz.
 
-Fourth, we use `expect` repeatedly to handle different errors, and if the user
-runs our program without specifying enough arguments, they’ll get an `index out
-of bounds` error from Rust that doesn’t clearly explain the problem. It would
-be best if all the error-handling code were in one place so future maintainers
-had only one place to consult the code if the error-handling logic needed to
-change. Having all the error-handling code in one place will also ensure that
-we’re printing messages that will be meaningful to our end users.
+Dördüncüsü, farklı hataları işlemek için tekrar tekrar `expect` kullanıyoruz ve kullanıcı programımızı yeterli argüman belirtmeden 
+çalıştırırsa, Rust'tan sorunu açıkça açıklamayan bir `index out of bounds` hatası alacaktır. Tüm hata işleme kodunun tek bir yerde olması 
+en iyisidir, böylece gelecekteki bakımcılar hata işleme mantığının değişmesi gerektiğinde koda başvurmak için tek bir yere sahip olurlar.
+Tüm hata işleme kodunun tek bir yerde olması, son kullanıcılarımız için anlamlı olacak mesajları yazdırmamızı da sağlayacaktır.
 
-Let’s address these four problems by refactoring our project.
+Projemizi yeniden düzenleyerek bu dört sorunu ele alalım.
 
-### Separation of Concerns for Binary Projects
+### İkili Projeler için Endişelerin Ayrılması
 
-The organizational problem of allocating responsibility for multiple tasks to
-the `main` function is common to many binary projects. As a result, the Rust
-community has developed guidelines for splitting the separate concerns of a
-binary program when `main` starts getting large. This process has the following
-steps:
+Birden fazla görevin sorumluluğunun ana fonksiyona verilmesine ilişkin organizasyonel sorun, 
+birçok ikili projede ortaktır. Sonuç olarak, Rust topluluğu, ana program büyümeye başladığında ikili bir programın ayrı 
+endişelerini bölmek için yönergeler geliştirmiştir. Bu süreç aşağıdaki adımlardan oluşur:
 
-* Split your program into a *main.rs* and a *lib.rs* and move your program’s
-  logic to *lib.rs*.
-* As long as your command line parsing logic is small, it can remain in
-  *main.rs*.
-* When the command line parsing logic starts getting complicated, extract it
-  from *main.rs* and move it to *lib.rs*.
+* Programınızı *main.rs* ve *lib.rs* olarak ayırın ve programınızın ana mantığını *lib.rs*'e taşıyın.
+* Komut satırı ayrıştırma mantığınız küçük olduğu sürece *main.rs* içinde kalabilir.
+* Komut satırı ayrıştırma mantığı karmaşıklaşmaya başladığında, *main.rs*'den çıkarın ve *lib.rs*'e taşıyın.
 
-The responsibilities that remain in the `main` function after this process
-should be limited to the following:
+Bu işlemlerden sonra `main` fonksiyonunda kalanlar aşağıdakilerle sınırlı olmalıdır:
 
-* Calling the command line parsing logic with the argument values
-* Setting up any other configuration
-* Calling a `run` function in *lib.rs*
-* Handling the error if `run` returns an error
+* Komut satırı ayrıştırma mantığını argüman değerleriyle çağırmak
+* Diğer yapılandırmaları ayarlama
+* *lib.rs* içinde bir `run` fonksiyonu çağırma
+* `run` bir hata döndürürse hatayı işleme
 
-This pattern is about separating concerns: *main.rs* handles running the
-program, and *lib.rs* handles all the logic of the task at hand. Because you
-can’t test the `main` function directly, this structure lets you test all of
-your program’s logic by moving it into functions in *lib.rs*. The code that
-remains in *main.rs* will be small enough to verify its correctness by reading
-it. Let’s rework our program by following this process.
+Bu model endişeleri ayırmakla ilgilidir: *main.rs* programı çalıştırır ve *lib.rs* eldeki görevin tüm mantığını ele alır. 
+`main` fonksiyonunu doğrudan test edemeyeceğiniz için, bu yapı programınızın tüm mantığını *lib.rs*'deki fonksiyonlara taşıyarak 
+test etmenizi sağlar. *main.rs*'de kalan kod, okunarak doğruluğu teyit edilebilecek kadar küçük olacaktır. 
 
-#### Extracting the Argument Parser
+Bu süreci takip ederek programımızı yeniden düzenleyelim.
 
-We’ll extract the functionality for parsing arguments into a function that
-`main` will call to prepare for moving the command line parsing logic to
-*src/lib.rs*. Listing 12-5 shows the new start of `main` that calls a new
-function `parse_config`, which we’ll define in *src/main.rs* for the moment.
+#### Argüman Ayrıştırıcısını Çıkarma
 
-<span class="filename">Filename: src/main.rs</span>
+Komut satırı ayrıştırma mantığını *src/lib.rs*'ye taşımaya hazırlanmak için argümanları ayrıştırma işlevini 
+`main`'in çağıracağı bir fonksiyona çıkaracağız. Liste 12-5, şimdilik *src/main.rs* içinde tanımlayacağımız yeni `parse_config` 
+fonksiyonunu çağıran `main`'in yeni başlangıcını göstermektedir.
+
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-05/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-5: Extracting a `parse_config` function from
-`main`</span>
+<span class="caption">Liste 12-5: `parse_config` fonksiyonunun `main`'den çıkarılması</span>
 
-We’re still collecting the command line arguments into a vector, but instead of
-assigning the argument value at index 1 to the variable `query` and the
-argument value at index 2 to the variable `filename` within the `main`
-function, we pass the whole vector to the `parse_config` function. The
-`parse_config` function then holds the logic that determines which argument
-goes in which variable and passes the values back to `main`. We still create
-the `query` and `filename` variables in `main`, but `main` no longer has the
-responsibility of determining how the command line arguments and variables
-correspond.
+Komut satırı argümanlarını hala bir vektörde topluyoruz, ancak 1. indeksteki argüman değerini sorgu değişkenine ve 
+2. indeksteki argüman değerini `main` içindeki dosya adı değişkenine atamak yerine, tüm vektörü `parse_config`'e aktarıyoruz. 
+`parse_config` daha sonra hangi argümanın hangi değişkene gideceğini belirleyen mantığı tutar ve değerleri `main`'e geri aktarır. 
+`query` ve `filename` değişkenlerini hala `main` içinde oluşturuyoruz, ancak `main` artık komut satırı argümanlarının ve 
+değişkenlerin nasıl karşılık geldiğini belirleme sorumluluğuna sahip değil.
 
-This rework may seem like overkill for our small program, but we’re refactoring
-in small, incremental steps. After making this change, run the program again to
-verify that the argument parsing still works. It’s good to check your progress
-often, to help identify the cause of problems when they occur.
+Bu yeniden çalışma küçük programımız için aşırı gibi görünebilir, ancak küçük, artan adımlarla yeniden düzenliyoruz. 
+Bu değişikliği yaptıktan sonra, argüman ayrıştırmanın hala çalıştığını doğrulamak için programı tekrar çalıştırın. 
+İlerlemenizi sık sık kontrol etmek, ortaya çıktıklarında sorunların nedenini belirlemeye yardımcı olmak için iyidir.
 
-#### Grouping Configuration Values
+#### Yapılandırma Değerlerini Gruplama
 
-We can take another small step to improve the `parse_config` function further.
-At the moment, we’re returning a tuple, but then we immediately break that
-tuple into individual parts again. This is a sign that perhaps we don’t have
-the right abstraction yet.
+`parse_config`'i daha da geliştirmek için küçük bir adım daha atabiliriz. Şu anda bir `tuple` döndürüyoruz, ancak hemen ardından bu 
+`tuple`'ı tekrar ayrı parçalara ayırıyoruz. Bu, belki de henüz doğru soyutlamaya sahip olmadığımızın bir işaretidir.
 
-Another indicator that shows there’s room for improvement is the `config` part
-of `parse_config`, which implies that the two values we return are related and
-are both part of one configuration value. We’re not currently conveying this
-meaning in the structure of the data other than by grouping the two values into
-a tuple; we’ll instead put the two values into one struct and give each of the
-struct fields a meaningful name. Doing so will make it easier for future
-maintainers of this code to understand how the different values relate to each
-other and what their purpose is.
+İyileştirme için yer olduğunu gösteren bir başka gösterge de `parse_config`'in `config` kısmıdır, 
+bu da döndürdüğümüz iki değerin ilişkili olduğunu ve her ikisinin de bir yapılandırma değerinin parçası olduğunu ima eder. 
+Şu anda bu anlamı, iki değeri bir `tuple` olarak gruplamak dışında verinin yapısında aktarmıyoruz; bunun yerine iki değeri 
+`struct` içine koyacağız ve `struct` alanlarının her birine anlamlı bir isim vereceğiz. Bunu yapmak, bu kodun gelecekteki 
+bakımcılarının farklı değerlerin birbirleriyle nasıl ilişkili olduğunu ve amaçlarının ne olduğunu anlamalarını kolaylaştıracaktır.
 
-Listing 12-6 shows the improvements to the `parse_config` function.
+Liste 12-6, `parse_config`'de yapılan iyileştirmeleri göstermektedir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,should_panic,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-06/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-6: Refactoring `parse_config` to return an
-instance of a `Config` struct</span>
+<span class="caption">Liste 12-6: `Config` yapısının örneğini döndürmek için `parse_config` öğesini 
+yeniden düzenleme</span>
 
-We’ve added a struct named `Config` defined to have fields named `query` and
-`filename`. The signature of `parse_config` now indicates that it returns a
-`Config` value. In the body of `parse_config`, where we used to return
-string slices that reference `String` values in `args`, we now define `Config`
-to contain owned `String` values. The `args` variable in `main` is the owner of
-the argument values and is only letting the `parse_config` function borrow
-them, which means we’d violate Rust’s borrowing rules if `Config` tried to take
-ownership of the values in `args`.
+`query` ve `filename` adında alanlara sahip olacak şekilde tanımlanmış `Config` adında bir yapı ekledik. `parse_config`'in imzası artık 
+`Config` değeri döndürdüğünü gösteriyor. Eskiden `args` içindeki `String` değerlerine referans veren dizgi dilimleri döndürdüğümüz 
+`parse_config` gövdesinde, artık `Config`'i `String` değerlerini içerecek şekilde tanımlıyoruz. `main` içindeki `args` değişkeni argüman 
+değerlerinin sahibidir ve yalnızca `parse_config` fonksiyonunun bunları ödünç almasına izin verir, bu da `Config`'in `args` içindeki 
+değerlerin sahipliğini almaya çalışması durumunda Rust'ın ödünç alma kurallarını ihlal edeceğimiz anlamına gelir.
 
-There are a number of ways we could manage the `String` data; the easiest,
-though somewhat inefficient, route is to call the `clone` method on the values.
-This will make a full copy of the data for the `Config` instance to own, which
-takes more time and memory than storing a reference to the string data.
-However, cloning the data also makes our code very straightforward because we
-don’t have to manage the lifetimes of the references; in this circumstance,
-giving up a little performance to gain simplicity is a worthwhile trade-off.
+`String` verilerini yönetebileceğimiz birkaç yol vardır; biraz verimsiz olsa da en kolay yol, değerler üzerinde `clone` metodunu çağırmaktır. 
+Bu,` Config` örneğinin sahip olması için verilerin tam bir kopyasını oluşturacaktır, bu da dizgi verilerine bir referans depolamaktan daha 
+fazla zaman ve bellek gerektirir. Bununla birlikte, verileri klonlamak kodumuzu çok basit hale getirir çünkü referansların yaşam sürelerini
+yönetmek zorunda değiliz; bu durumda, basitlik kazanmak için biraz performanstan vazgeçmek değerli bir değiş tokuştur.
 
-> ### The Trade-Offs of Using `clone`
->
-> There’s a tendency among many Rustaceans to avoid using `clone` to fix
-> ownership problems because of its runtime cost. In
-> [Chapter 13][ch13]<!-- ignore -->, you’ll learn how to use more efficient
-> methods in this type of situation. But for now, it’s okay to copy a few
-> strings to continue making progress because you’ll make these copies only
-> once and your filename and query string are very small. It’s better to have
-> a working program that’s a bit inefficient than to try to hyperoptimize code
-> on your first pass. As you become more experienced with Rust, it’ll be
-> easier to start with the most efficient solution, but for now, it’s
-> perfectly acceptable to call `clone`.
+> ### `clone` Kullanmanın Getirileri
+> 
+> Birçok Rustsever arasında, çalışma zamanı maliyeti nedeniyle sahiplik sorunlarını çözmek için 
+> `clone` kullanmaktan kaçınma eğilimi vardır. Bölüm 13'te, bu tür durumlarda nasıl daha verimli yöntemler 
+> kullanacağınızı öğreneceksiniz. Ancak şimdilik, ilerlemeye devam etmek için birkaç dizgiyi kopyalamanızda bir sakınca yok 
+> çünkü bu kopyaları yalnızca bir kez yapacaksınız ve `filename` ve `query` dizginiz çok küçük. İlk geçişinizde kodu aşırı optimize 
+> etmeye çalışmaktansa biraz verimsiz çalışan bir programa sahip olmak daha iyidir. Rust ile daha deneyimli hale geldikçe, 
+> en verimli çözümle başlamak daha kolay olacaktır, ancak şimdilik `clone` kullanmak tamamen kabul edilebilir.
 
-We’ve updated `main` so it places the instance of `Config` returned by
-`parse_config` into a variable named `config`, and we updated the code that
-previously used the separate `query` and `filename` variables so it now uses
-the fields on the `Config` struct instead.
+`main`'i, `parse_config` tarafından döndürülen `Config` örneğini `config` adlı bir değişkene atayacak şekilde güncelledik 
+ve daha önce ayrı `query` ve `filename` değişkenlerini kullanan kodu güncelledik, böylece artık bunun yerine `Config` yapısındaki alanları 
+kullanıyor.
 
-Now our code more clearly conveys that `query` and `filename` are related and
-that their purpose is to configure how the program will work. Any code that
-uses these values knows to find them in the `config` instance in the fields
-named for their purpose.
+Artık kodumuz `query` ve `filename`'in ilişkili olduğunu ve amaçlarının programın nasıl çalışacağını yapılandırmak olduğunu daha açık bir 
+şekilde ifade ediyor. Bu değerleri kullanan herhangi bir kod, bunları `config` örneğinde amaçlarına göre adlandırılmış alanlarda bulmayı bilir.
 
-#### Creating a Constructor for `Config`
+#### `Config` için Bir Yapıcı Oluşturma
 
-So far, we’ve extracted the logic responsible for parsing the command line
-arguments from `main` and placed it in the `parse_config` function. Doing so
-helped us to see that the `query` and `filename` values were related and that
-relationship should be conveyed in our code. We then added a `Config` struct to
-name the related purpose of `query` and `filename` and to be able to return the
-values’ names as struct field names from the `parse_config` function.
+Şimdiye kadar, komut satırı argümanlarını ayrıştırmaktan sorumlu mantığı `main`'den çıkardık ve `parse_config` fonksiyonuna yerleştirdik. 
+Bunu yapmak, `query` ve `filename` değerlerinin ilişkili olduğunu ve bu ilişkinin kodumuzda aktarılması gerektiğini görmemize yardımcı oldu. 
+Daha sonra `query` ve `filename`'in amaçlarını adlandırmak ve `parse_config` fonksiyonundan değerlerin adlarını `struct` alan adları olarak 
+döndürebilmek için bir `Config` `struct`'ı ekledik.
 
-So now that the purpose of the `parse_config` function is to create a `Config`
-instance, we can change `parse_config` from a plain function to a function
-named `new` that is associated with the `Config` struct. Making this change
-will make the code more idiomatic. We can create instances of types in the
-standard library, such as `String`, by calling `String::new`. Similarly, by
-changing `parse_config` into a `new` function associated with `Config`, we’ll
-be able to create instances of `Config` by calling `Config::new`. Listing 12-7
-shows the changes we need to make.
+Artık `parse_config` fonksiyonunun amacı bir `Config` örneği oluşturmak olduğuna göre, `parse_config`'i düz bir fonksiyondan `Config` yapısıyla 
+ilişkili `new` adlı bir fonksiyona dönüştürebiliriz. Bu değişikliği yapmak kodu daha deyimsel hale getirecektir. Standart kütüphanedeki `String` 
+gibi türlerin örneklerini `String::new` fonksiyonunu çağırarak oluşturabiliriz. Benzer şekilde, `parse_config`'i `Config` ile ilişkili yeni 
+bir fonksiyona dönüştürerek, `Config::new`'i çağırarak `Config`'in örneklerini oluşturabileceğiz. Liste 12-7 yapmamız 
+gereken değişiklikleri göstermektedir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,should_panic,noplayground
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-07/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-7: Changing `parse_config` into
-`Config::new`</span>
+<span class="caption">Liste 12-7: `parse_config`'i `Config::new` ile değiştirme</span>
 
-We’ve updated `main` where we were calling `parse_config` to instead call
-`Config::new`. We’ve changed the name of `parse_config` to `new` and moved it
-within an `impl` block, which associates the `new` function with `Config`. Try
-compiling this code again to make sure it works.
+`main`'de `parse_config` çağrısı yaptığımız yeri `Config::new` çağrısı yapacak şekilde güncelledik. 
+`parse_config`'in adını `new` olarak değiştirdik ve yeni fonksiyonu `Config` ile ilişkilendiren `impl` bloğunun içine taşıdık. 
+Çalıştığından emin olmak için bu kodu tekrar derlemeyi deneyin.
 
-### Fixing the Error Handling
+### Hata İşlemeyi Düzeltme
 
-Now we’ll work on fixing our error handling. Recall that attempting to access
-the values in the `args` vector at index 1 or index 2 will cause the program to
-panic if the vector contains fewer than three items. Try running the program
-without any arguments; it will look like this:
+Şimdi hata işlememizi düzeltmeye çalışacağız. `args` vektöründeki değerlere indeks `1` veya indeks `2`'den erişmeye çalışmanın, 
+vektör üçten az öğe içeriyorsa programın paniklemesine neden olacağını hatırlayın. Programı herhangi bir argüman olmadan çalıştırmayı 
+deneyin; şöyle görünecektir:
 
 ```console
 {{#include ../listings/ch12-an-io-project/listing-12-07/output.txt}}
 ```
 
-The line `index out of bounds: the len is 1 but the index is 1` is an error
-message intended for programmers. It won’t help our end users understand what
-they should do instead. Let’s fix that now.
+`index out of bounds: the len is 1 but the index is 1`, programcılara yönelik detaylı bir hata mesajıdır. 
+Son kullanıcılarımızın bunun yerine ne yapmaları gerektiğini anlamalarına yardımcı olmaz. Şimdi bunu düzeltelim.
 
-#### Improving the Error Message
+### Hata Mesajını İyileştirme
 
-In Listing 12-8, we add a check in the `new` function that will verify that the
-slice is long enough before accessing index 1 and 2. If the slice isn’t long
-enough, the program panics and displays a better error message.
+Liste 12-8'de, yeni fonksiyona 1. ve 2. dizine erişmeden önce dilimin yeterince uzun olduğunu doğrulayacak bir kontrol ekliyoruz. 
+Dilim yeterince uzun değilse, program paniğe kapılır ve daha iyi bir hata mesajı görüntüler.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-08/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-8: Adding a check for the number of
-arguments</span>
+<span class="caption">Liste 12-8: Bağımsız değişken sayısı için bir kontrol ekleme</span>
 
-This code is similar to [the `Guess::new` function we wrote in Listing
-9-13][ch9-custom-types]<!-- ignore -->, where we called `panic!` when the
-`value` argument was out of the range of valid values. Instead of checking for
-a range of values here, we’re checking that the length of `args` is at least 3
-and the rest of the function can operate under the assumption that this
-condition has been met. If `args` has fewer than three items, this condition
-will be true, and we call the `panic!` macro to end the program immediately.
+Bu kod, [Liste 9-13'te yazdığımız `Guess::new` fonksiyonuna benzer][ch9-custom-types]<!-- ignore -->; burada `value` bağımsız değişkeni 
+geçerli değerler aralığının dışında kaldığında `panic!` yapar. Bir değer aralığını kontrol etmek yerine, `args` uzunluğunun en az 
+3 olduğunu kontrol ediyoruz ve fonksiyonun geri kalanı bu koşulun sağlandığı varsayımı altında çalışabilir. Eğer `args` üçten az öğeye sahipse, 
+bu koşul doğru olur ve programı hemen sonlandırmak için `panic!` makrosunu çağırırız.
 
-With these extra few lines of code in `new`, let’s run the program without any
-arguments again to see what the error looks like now:
+Bu ekstra birkaç satırlık yeni kodla, hatanın şimdi nasıl göründüğünü görmek için programı herhangi bir 
+argüman olmadan tekrar çalıştıralım:
 
 ```console
 {{#include ../listings/ch12-an-io-project/listing-12-08/output.txt}}
 ```
 
-This output is better: we now have a reasonable error message. However, we also
-have extraneous information we don’t want to give to our users. Perhaps using
-the technique we used in Listing 9-13 isn’t the best to use here: a call to
-`panic!` is more appropriate for a programming problem than a usage problem,
-[as discussed in Chapter 9][ch9-error-guidelines]<!-- ignore -->. Instead,
-we’ll use the other technique you learned about in Chapter 9—[returning a
-`Result`][ch9-result]<!-- ignore --> that indicates either success or an error.
+Bu çıktı daha iyi: artık makul bir hata mesajımız var. Ancak, kullanıcılarımıza vermek istemediğimiz gereksiz bilgilere de sahibiz. 
+Belki de Liste 9-13'te kullandığımız tekniği burada kullanmak en iyisi değildir: [Bölüm 9'da tartışıldığı gibi][ch9-error-guidelines]<!-- ignore -->, 
+`panic!` çağrısı bir kullanım probleminden ziyade bir programlama problemi için daha uygundur. Bunun yerine, 
+Bölüm 9'da öğrendiğiniz diğer tekniği kullanacağız— başarı ya da hatayı gösteren [`Result`'u döndürmek][ch9-result]<!-- ignore -->.
 
-#### Returning a `Result` from `new` Instead of Calling `panic!`
+#### `panic!` Yerine `new`'den `Result` Döndürme
 
-We can instead return a `Result` value that will contain a `Config` instance in
-the successful case and will describe the problem in the error case. When
-`Config::new` is communicating to `main`, we can use the `Result` type to
-signal there was a problem. Then we can change `main` to convert an `Err`
-variant into a more practical error for our users without the surrounding text
-about `thread 'main'` and `RUST_BACKTRACE` that a call to `panic!` causes.
+Bunun yerine, başarılı durumda bir `Config` örneği içeren ve hata durumunda sorunu açıklayan bir `Result` değeri döndürebiliriz. 
+`Config::new` `main` ile iletişim kurarken, bir sorun olduğunu belirtmek için `Result` türünü kullanabiliriz. 
 
-Listing 12-9 shows the changes we need to make to the return value of
-`Config::new` and the body of the function needed to return a `Result`. Note
-that this won’t compile until we update `main` as well, which we’ll do in the
-next listing.
+Daha sonra `main`'i, `panic!`'in neden olduğu `main` iş parçacığı ve `RUST_BACKTRACE` ile ilgili çevreleyen metin olmadan 
+kullanıcılarımız için `Err` varyantını daha pratik bir hataya dönüştürmek için değiştirebiliriz.
 
-<span class="filename">Filename: src/main.rs</span>
+Liste 12-9, `Config::new`'in dönüş değerinde ve `Result` döndürmek için gereken fonksiyonun gövdesinde yapmamız gereken 
+değişiklikleri göstermektedir. Bunun `main`'i de güncellemeden derlenmeyeceğini unutmayın, ki bunu bir sonraki listede yapacağız.
+
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-09/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-9: Returning a `Result` from
-`Config::new`</span>
+<span class="caption">Liste 12-9: `Config::new`'den `Result` Döndürme</span>
 
-Our `new` function now returns a `Result` with a `Config` instance in the
-success case and a `&'static str` in the error case. Our error values will
-always be string literals that have the `'static` lifetime.
+Yeni fonksiyonumuz artık başarı durumunda bir `Config` örneği ve hata durumunda `&'static str` içeren bir `Result` döndürmektedir. 
+Hata değerlerimiz her zaman `'static` ömüre sahip dizgi değişmezleri olacaktır.
 
-We’ve made two changes in the body of the `new` function: instead of calling
-`panic!` when the user doesn’t pass enough arguments, we now return an `Err`
-value, and we’ve wrapped the `Config` return value in an `Ok`. These changes
-make the function conform to its new type signature.
+Yeni fonksiyonun gövdesinde iki değişiklik yaptık: kullanıcı yeterli argüman iletmediğinde `panic!` çağrısı yapmak yerine, 
+artık bir `Err` değeri döndürüyoruz ve `Config` dönüş değerini bir `Ok` içinde tuttuk. Bu değişiklikler fonksiyonun yeni tür imzasına 
+uygun olmasını sağlar.
 
-Returning an `Err` value from `Config::new` allows the `main` function to
-handle the `Result` value returned from the `new` function and exit the process
-more cleanly in the error case.
+`Config::new`'den `Err` değeri döndürmek, `main` fonksiyonun yeni fonksiyondan dönen `Result` değerini işlemesini ve hata 
+durumunda süreçten daha temiz bir şekilde çıkmasını sağlar.
 
-#### Calling `Config::new` and Handling Errors
+#### `Config::new` Çağrısı ve Hataların İşlenmesi
 
-To handle the error case and print a user-friendly message, we need to update
-`main` to handle the `Result` being returned by `Config::new`, as shown in
-Listing 12-10. We’ll also take the responsibility of exiting the command line
-tool with a nonzero error code away from `panic!` and instead implement it by
-hand. A nonzero exit status is a convention to signal to the process that
-called our program that the program exited with an error state.
+Hata durumunu ele almak ve kullanıcı dostu bir mesaj yazdırmak için, Liste 12-10'da gösterildiği gibi, 
+`Config::new` tarafından döndürülen `Result`'u ele almak üzere `main`'i güncellememiz gerekir. Ayrıca, komut satırı aracından 
+sıfır olmayan bir hata koduyla çıkma sorumluluğunu `panic!`'ten alacağız ve elle sürekleyeceğiz. Sıfır olmayan bir çıkış durumu, 
+programımızı çağıran sürece programın bir hata durumuyla çıktığını bildirmek için kullanılan bir kuraldır.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-10/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-10: Exiting with an error code if creating a
-new `Config` fails</span>
+<span class="caption">Liste 12-10: Yeni bir `Config` oluşturma başarısız olursa bir hata koduyla çıkmak</span>
 
-In this listing, we’ve used a method we haven’t covered in detail yet:
-`unwrap_or_else`, which is defined on `Result<T, E>` by the standard library.
-Using `unwrap_or_else` allows us to define some custom, non-`panic!` error
-handling. If the `Result` is an `Ok` value, this method’s behavior is similar
-to `unwrap`: it returns the inner value `Ok` is wrapping. However, if the value
-is an `Err` value, this method calls the code in the *closure*, which is an
-anonymous function we define and pass as an argument to `unwrap_or_else`. We’ll
-cover closures in more detail in [Chapter 13][ch13]<!-- ignore -->. For now,
-you just need to know that `unwrap_or_else` will pass the inner value of the
-`Err`, which in this case is the static string `"not enough arguments"` that we
-added in Listing 12-9, to our closure in the argument `err` that appears
-between the vertical pipes. The code in the closure can then use the `err`
-value when it runs.
+Bu listelemede, henüz ayrıntılı olarak ele almadığımız bir metod kullandık: standart kütüphane tarafından `Result<T, E>` üzerinde 
+tanımlanan `unwrap_or_else`. `unwrap_or_else`'i kullanmak, panik yaratmayan bazı özel hata işleme yöntemleri tanımlamamızı sağlar. 
+Eğer `Result` `Ok` değerinde ise, bu metodun davranışı `unwrap`'a benzer: `Ok`'un sarmaladığı iç değeri döndürür. 
+Ancak, değer `Err` değeriyse, bu metod, tanımladığımız ve `unwrap_or_else`'ye argüman olarak aktardığımız anonim bir fonksiyon olan 
+kapanış ifadesindeki kodu çağırır. Kapanış ifadelerini [Bölüm 13][ch13]<!-- ignore -->'te daha ayrıntılı olarak ele alacağız. 
+Şimdilik, `unwrap_or_else`'nin  `Err`'nin iç değerini, yani bu durumda Liste 12-9'da eklediğimiz `"not enough arguments"` statik dizgisini, 
+dikey *aktarmalar* arasında görünen `err` argümanı içinde kapanış ifadesini aktaracağını bilmeniz yeterlidir. 
+Daha sonra kapanış ifadesi içindeki kod çalıştığında `err` değerini kullanabilir.
 
-We’ve added a new `use` line to bring `process` from the standard library into
-scope. The code in the closure that will be run in the error case is only two
-lines: we print the `err` value and then call `process::exit`. The
-`process::exit` function will stop the program immediately and return the
-number that was passed as the exit status code. This is similar to the
-`panic!`-based handling we used in Listing 12-8, but we no longer get all the
-extra output. Let’s try it:
+Standart kütüphaneden `process`'i kapsam içine almak için yeni bir `use` satırı ekledik. Hata durumunda çalıştırılacak kapanış ifadesi
+içindeki kod yalnızca iki satırdır: `err` değerini yazdırırız ve ardından `process::exit`'i çağırırız. `process::exit` fonksiyonu programı 
+hemen durduracak ve çıkış durum kodu olarak aktarılan sayıyı döndürecektir. Bu, Liste 12-8'de kullandığımız `panic!`-tabanlı işleme benzer, 
+ancak artık tüm ekstra çıktıları almıyoruz. Hadi deneyelim:
 
 ```console
 {{#include ../listings/ch12-an-io-project/listing-12-10/output.txt}}
 ```
 
-Great! This output is much friendlier for our users.
+Harika! Bu çıktı, kullanıcılarımız için çok daha güzel.
 
-### Extracting Logic from `main`
+### `main`'den Mantığı Çıkarma
 
-Now that we’ve finished refactoring the configuration parsing, let’s turn to
-the program’s logic. As we stated in [“Separation of Concerns for Binary
-Projects”](#separation-of-concerns-for-binary-projects)<!-- ignore -->, we’ll
-extract a function named `run` that will hold all the logic currently in the
-`main` function that isn’t involved with setting up configuration or handling
-errors. When we’re done, `main` will be concise and easy to verify by
-inspection, and we’ll be able to write tests for all the other logic.
+Yapılandırma ayrıştırmasını yeniden düzenlemeyi bitirdiğimize göre, şimdi programın mantığına dönelim. 
 
-Listing 12-11 shows the extracted `run` function. For now, we’re just making
-the small, incremental improvement of extracting the function. We’re still
-defining the function in *src/main.rs*.
+[“İkili Projeler için İşlerin Ayrılması”](#separation-of-concerns-for-binary-projects)<!-- ignore --> 
+bölümünde belirttiğimiz gibi, yapılandırmayı ayarlamak veya hataları ele almakla ilgili olmayan `main`'de şu anda bulunan tüm mantığı 
+tutacak `run` adlı bir fonksiyon çıkaracağız. İşimiz bittiğinde, `main` kısa ve öz olacak ve inceleme yoluyla doğrulanması 
+kolay olacak ve diğer tüm mantık için testler yazabileceğiz.
 
-<span class="filename">Filename: src/main.rs</span>
+Liste 12-11 ayıklanmış çalıştırma fonksiyonunu göstermektedir. Şimdilik sadece fonksiyonu ayıklayarak küçük ve aşamalı bir iyileştirme yapıyoruz.
+Fonksiyonu *src/main.rs* içinde tanımlıyoruz.
+
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-11/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-11: Extracting a `run` function containing the
-rest of the program logic</span>
+<span class="caption">Liste 12-11: Program mantığının geri kalanını içeren `run`'ın 
+çıkarılması</span>
 
-The `run` function now contains all the remaining logic from `main`, starting
-from reading the file. The `run` function takes the `Config` instance as an
-argument.
+`run` fonksiyonu artık dosyanın okunmasından başlayarak `main`'den kalan tüm mantığı içerir. 
+`run` fonksiyonu `Config` örneğini bir argüman olarak alır.
 
-#### Returning Errors from the `run` Function
+#### `run` Fonksiyonundan Hata Döndürme
 
-With the remaining program logic separated into the `run` function, we can
-improve the error handling, as we did with `Config::new` in Listing 12-9.
-Instead of allowing the program to panic by calling `expect`, the `run`
-function will return a `Result<T, E>` when something goes wrong. This will let
-us further consolidate the logic around handling errors into `main` in a
-user-friendly way. Listing 12-12 shows the changes we need to make to the
-signature and body of `run`.
+Kalan program mantığının `run` fonksiyonuna ayrılmasıyla, Liste 12-9'da `Config::new` ile yaptığımız gibi hata işlemeyi geliştirebiliriz. 
+Bir şeyler ters gittiğinde programın `expect`'i çağırarak paniklemesine izin vermek yerine, `run` fonksiyonu `Result<T, E>` döndürecektir. 
+Bu, hataları ele alma mantığını `main`'de kullanıcı dostu bir şekilde daha da birleştirmemizi sağlayacaktır. Liste 12-12, `run`'ın 
+imzasında ve gövdesinde yapmamız gereken değişiklikleri göstermektedir.
 
-<span class="filename">Filename: src/main.rs</span>
+
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-12/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-12: Changing the `run` function to return
-`Result`</span>
+<span class="caption">Liste 12-12: `Result` döndürmek için `run`'ı değiştirme</span>
 
-We’ve made three significant changes here. First, we changed the return type of
-the `run` function to `Result<(), Box<dyn Error>>`. This function previously
-returned the unit type, `()`, and we keep that as the value returned in the
-`Ok` case.
+Burada üç önemli değişiklik yaptık. İlk olarak, `run` fonksiyonunun dönüş tipini `Result<(), Box<dyn Error>>` olarak değiştirdik. 
+Bu fonksiyon daha önce birim tipi olan `()'`i döndürüyordu ve bunu `Ok` durumunda döndürülen değer olarak tutuyoruz.
 
-For the error type, we used the *trait object* `Box<dyn Error>` (and we’ve
-brought `std::error::Error` into scope with a `use` statement at the top).
-We’ll cover trait objects in [Chapter 17][ch17]<!-- ignore -->. For now, just
-know that `Box<dyn Error>` means the function will return a type that
-implements the `Error` trait, but we don’t have to specify what particular type
-the return value will be. This gives us flexibility to return error values that
-may be of different types in different error cases. The `dyn` keyword is short
-for “dynamic.”
+Hata türü için `Box<dyn Error>` tanım nesnesini kullandık (ve `std::error::Error`'ı en üstte bir `use` deyimiyle kapsama aldık). 
+Tanım nesnelerini [Bölüm 17][ch17]<!-- ignore -->'de ele alacağız. Şimdilik, `Box<dyn Error>`'un fonksiyonun `Error` tanımını sürekleyen 
+tür döndüreceği anlamına geldiğini bilin, ancak dönüş değerinin hangi tür olacağını belirtmek zorunda değiliz. 
+Bu bize farklı hata durumlarında farklı türlerde olabilecek hata değerleri döndürme esnekliği sağlar. 
+`dyn` anahtar sözcüğü “dinamikin” kısaltmasıdır.
 
-Second, we’ve removed the call to `expect` in favor of the `?` operator, as we
-talked about in [Chapter 9][ch9-question-mark]<!-- ignore -->. Rather than
-`panic!` on an error, `?` will return the error value from the current function
-for the caller to handle.
+İkinci olarak, [Bölüm 9][ch9-question-mark]<!-- ignore -->'da bahsettiğimiz gibi `?` operatörü için `expect` çağrısını kaldırdık. 
+Bir hatada `panic!` yerine, `?` işleci çağıranın işlemesi için geçerli fonksiyondan hata değerini döndürecektir.
 
-Third, the `run` function now returns an `Ok` value in the success case.
-We’ve declared the `run` function’s success type as `()` in the signature,
-which means we need to wrap the unit type value in the `Ok` value. This
-`Ok(())` syntax might look a bit strange at first, but using `()` like this is
-the idiomatic way to indicate that we’re calling `run` for its side effects
-only; it doesn’t return a value we need.
+Üçüncü olarak, `run` fonksiyonu artık başarı durumunda bir `Ok` değeri döndürmektedir. İmzada `run` fonksiyonunun başarı tipini 
+`()` olarak bildirdik, bu da birim tür değerini `Ok` değerine sarmamız gerektiği anlamına geliyor. Bu `Ok(())` söz dizimi ilk başta biraz 
+garip görünebilir, `ancak ()`'yi bu şekilde kullanmak, `run`'ı yalnızca yan etkileri için çağırdığımızı belirtmenin deyimsel yoludur; 
+ihtiyacımız olan bir değer döndürmez.
 
-When you run this code, it will compile but will display a warning:
+Bu kodu çalıştırdığınızda, derlenecek ancak bir uyarı görüntülenecektir:
 
 ```console
 {{#include ../listings/ch12-an-io-project/listing-12-12/output.txt}}
 ```
 
-Rust tells us that our code ignored the `Result` value and the `Result` value
-might indicate that an error occurred. But we’re not checking to see whether or
-not there was an error, and the compiler reminds us that we probably meant to
-have some error-handling code here! Let’s rectify that problem now.
+Rust bize kodumuzun `Result` değerini göz ardı ettiğini ve `Result` değerinin bir hata oluştuğunu gösterebileceğini söyler. 
+Ancak bir hata olup olmadığını kontrol etmiyoruz ve derleyici bize muhtemelen burada bazı hata işleme kodlarına sahip olmamız gerektiğini 
+hatırlatıyor! Şimdi bu sorunu düzeltelim.
 
-#### Handling Errors Returned from `run` in `main`
+#### `main`'de Çalıştırmadan Dönen Hataları İşleme
 
-We’ll check for errors and handle them using a technique similar to one we used
-with `Config::new` in Listing 12-10, but with a slight difference:
+Hataları kontrol edeceğiz ve bunları Liste 12-10'da `Config::new` ile kullandığımıza benzer bir teknik kullanarak ele alacağız, 
+ancak küçük bir farkla:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/no-listing-01-handling-errors-in-main/src/main.rs:here}}
 ```
 
-We use `if let` rather than `unwrap_or_else` to check whether `run` returns an
-`Err` value and call `process::exit(1)` if it does. The `run` function doesn’t
-return a value that we want to `unwrap` in the same way that `Config::new`
-returns the `Config` instance. Because `run` returns `()` in the success case,
-we only care about detecting an error, so we don’t need `unwrap_or_else` to
-return the unwrapped value, which would only be `()`.
+`run`'ın bir `Err` değeri döndürüp döndürmediğini kontrol etmek ve döndürürse `process::exit(1)`'i çağırmak için `unwrap_or_else` yerine 
+`if let` kullanırız. `run` fonksiyonu, `Config::new`'in `Config` örneğini döndürdüğü gibi `unwrap` etmek istediğimiz bir değer döndürmez. 
+`run` başarı durumunda `()` değerini döndürdüğü için, yalnızca bir hatayı tespit etmekle ilgileniyoruz, bu nedenle `unwrap_or_else`'in 
+yalnızca `()` değerini döndürmesine gerek yok.
 
-The bodies of the `if let` and the `unwrap_or_else` functions are the same in
-both cases: we print the error and exit.
+`if let` ve `unwrap_or_else` fonksiyonlarının gövdeleri her iki durumda da aynıdır: hatayı yazdırır ve çıkarız.
 
-### Splitting Code into a Library Crate
+### Kodu Kütüphane Kasasına Bölme
 
-Our `minigrep` project is looking good so far! Now we’ll split the
-*src/main.rs* file and put some code into the *src/lib.rs* file. That way we
-can test the code and have a *src/main.rs* file with fewer responsibilities.
+`minigrep` projemiz şu ana kadar iyi görünüyor! Şimdi *src/main.rs* dosyasını böleceğiz ve *src/lib.rs* dosyasına bazı kodlar koyacağız. 
+Bu şekilde kodu test edebilir ve daha az sorumluluğu olan bir *src/main.rs* dosyasına sahip olabiliriz.
 
-Let’s move all the code that isn’t the `main` function from *src/main.rs* to
-*src/lib.rs*:
+`main` fonksiyonu olmayan tüm kodları *src/main.rs* dosyasından *src/lib.rs* dosyasına taşıyalım:
+* `run` fonksiyonu tanımı
+* İlişkili `use` deyimleri
+* `Config`'in tanımı
+* `Config::new` fonksiyon tanımı
 
-* The `run` function definition
-* The relevant `use` statements
-* The definition of `Config`
-* The `Config::new` function definition
+*src/lib.rs* dosyasının içeriği Liste 12-13'te gösterilen imzalara sahip olmalıdır (kısa olması için fonksiyonların gövdelerini atladık). 
+Liste 12-14'te *src/main.rs*'yi değiştirene kadar bunun derlenmeyeceğini unutmayın.
 
-The contents of *src/lib.rs* should have the signatures shown in Listing 12-13
-(we’ve omitted the bodies of the functions for brevity). Note that this won’t
-compile until we modify *src/main.rs* in Listing 12-14.
-
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-13/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 12-13: Moving `Config` and `run` into
-*src/lib.rs*</span>
+<span class="caption">Liste 12-13: `Config` ve `run`'ı *src/lib.rs*'e taşıma</span>
 
-We’ve made liberal use of the `pub` keyword: on `Config`, on its fields and its
-`new` method, and on the `run` function. We now have a library crate that has a
-public API we can test!
+`pub` anahtar sözcüğünü bolca kullandık: `Config` üzerinde, `Config`'in alanları üzerinde, `new` metodu üzerinde ve `run` fonksiyonu üzerinde. 
+Artık test edebileceğimiz herkese açık bir API'ye sahip bir kütüphane kasamız var!
 
-Now we need to bring the code we moved to *src/lib.rs* into the scope of the
-binary crate in *src/main.rs*, as shown in Listing 12-14.
+Şimdi *src/lib.rs* dosyasına taşıdığımız kodu, Liste 12-14'te gösterildiği gibi 
+*src/main.rs* dosyasındaki ikili kasanın kapsamına almamız gerekiyor.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-14/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 12-14: Using the `minigrep` library crate in
-*src/main.rs*</span>
+<span class="caption">Liste 12-14: *src/main.rs* içinde `minigrep` kütüphanesini kullanma</span>
 
-We add a `use minigrep::Config` line to bring the `Config` type from the
-library crate into the binary crate’s scope, and we prefix the `run` function
-with our crate name. Now all the functionality should be connected and should
-work. Run the program with `cargo run` and make sure everything works
-correctly.
+`Config` türünü kütüphane kasasından ikili kasanın kapsamına getirmek için `use minigrep::Config` satırı ekliyoruz ve 
+`run` fonksiyonunun önüne kasa adımızı ekliyoruz. Artık tüm fonksiyonlar birbirine bağlı olmalı ve çalışmalıdır. 
+Programı `cargo run` ile çalıştırın ve her şeyin doğru çalıştığından emin olun.
 
-Whew! That was a lot of work, but we’ve set ourselves up for success in the
-future. Now it’s much easier to handle errors, and we’ve made the code more
-modular. Almost all of our work will be done in *src/lib.rs* from here on out.
+Vay be! Sanki bu **seni** ve *beni* çok yormuş gibi duruyor, ancak gelecekte başarılı olmak için bunları yapmalıydık. 
+Artık hataları ele almak çok daha kolay ve kodu daha modüler hale getirdik. Bundan sonraki neredeyse tüm işlerimiz *src/lib.rs* içinde 
+yapılacak.
 
-Let’s take advantage of this newfound modularity by doing something that would
-have been difficult with the old code but is easy with the new code: we’ll
-write some tests!
+Eski kodla zor olan ancak yeni kodla kolay olan bir şeyi yaparak bu yeni modülerlikten yararlanalım: 
+bazı testler yazacağız!
 
 [ch13]: ch13-00-functional-features.html
 [ch9-custom-types]: ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation
