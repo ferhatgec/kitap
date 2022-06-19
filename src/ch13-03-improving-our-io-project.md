@@ -1,176 +1,147 @@
-## Improving Our I/O Project
+## G/Ç Projemizi Geliştirmek
 
-With this new knowledge about iterators, we can improve the I/O project in
-Chapter 12 by using iterators to make places in the code clearer and more
-concise. Let’s look at how iterators can improve our implementation of the
-`Config::new` function and the `search` function.
+Yineleyiciler hakkındaki bu yeni bilgiyle, koddaki yerleri daha açık ve öz hale getirmek için yineleyicileri kullanarak Bölüm 12'deki 
+G/Ç projesini geliştirebiliriz. Şimdi yineleyicilerin `Config::new` fonksiyonu ve `search` fonksiyonu uygulamamızı nasıl 
+geliştirebileceğine bakalım.
 
-### Removing a `clone` Using an Iterator
+### Yineleyici Kullanarak bir `clone`'u Kaldırma
 
-In Listing 12-6, we added code that took a slice of `String` values and created
-an instance of the `Config` struct by indexing into the slice and cloning the
-values, allowing the `Config` struct to own those values. In Listing 13-17,
-we’ve reproduced the implementation of the `Config::new` function as it was in
-Listing 12-23:
+Liste 12-6'da, `String` değerlerinin bir dilimini alan ve dilime indeksleme yapıp değerleri klonlayarak `Config` yapısının bir 
+örneğini oluşturan ve `Config` yapısının bu değerlere sahip olmasını sağlayan kodu ekledik. Liste 13-17'de, `Config::new` fonksiyonunun 
+uygulamasını Liste 12-23'te olduğu gibi yeniden ürettik:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-12-23-reproduced/src/lib.rs:ch13}}
 ```
 
-<span class="caption">Listing 13-17: Reproduction of the `Config::new` function
-from Listing 12-23</span>
+<span class="caption">Liste 13-17: Liste 12-23'ten `Config::new` işlevinin çoğaltılması</span>
 
-At the time, we said not to worry about the inefficient `clone` calls because
-we would remove them in the future. Well, that time is now!
+O zaman, verimsiz `clone` çağrıları konusunda endişelenmememizi çünkü gelecekte bunları kaldıracağımızı söylemiştik. 
+İşte o zaman şimdi!
 
-We needed `clone` here because we have a slice with `String` elements in the
-parameter `args`, but the `new` function doesn’t own `args`. To return
-ownership of a `Config` instance, we had to clone the values from the `query`
-and `filename` fields of `Config` so the `Config` instance can own its values.
+Burada `clone`'a ihtiyacımız vardı çünkü parametre `args`'ta `String` öğeleri olan bir dilimimiz var, 
+ancak yeni fonksiyon `args`'a sahip değil. Bir `Config` örneğinin sahipliğini döndürmek için `Config`'in `query` ve `filename` 
+alanlarındaki değerleri klonlamamız gerekiyordu, böylece `Config` örneği kendi değerlerine sahip olabilirdi.
 
-With our new knowledge about iterators, we can change the `new` function to
-take ownership of an iterator as its argument instead of borrowing a slice.
-We’ll use the iterator functionality instead of the code that checks the length
-of the slice and indexes into specific locations. This will clarify what the
-`Config::new` function is doing because the iterator will access the values.
+Yineleyiciler hakkındaki yeni bilgilerimizle, yeni fonksiyonu bir dilimi ödünç almak yerine argümanı olarak bir
+yineleyicinin sahipliğini alacak şekilde değiştirebiliriz. Dilimin uzunluğunu kontrol eden ve belirli konumlara indeksleyen 
+kod yerine yineleyici fonksiyonu kullanacağız. Bu, `Config::new` fonksiyonunun ne yaptığını netleştirecektir çünkü yineleyici 
+değerlere erişecektir.
 
-Once `Config::new` takes ownership of the iterator and stops using indexing
-operations that borrow, we can move the `String` values from the iterator into
-`Config` rather than calling `clone` and making a new allocation.
+`Config::new` yineleyicinin sahipliğini aldığında ve ödünç alan indeksleme işlemlerini kullanmayı bıraktığında, 
+`String` değerlerini `clone`'u çağırmak ve yeni bir tahsisat yapmak yerine yineleyiciden `Config`'e taşıyabiliriz.
 
-#### Using the Returned Iterator Directly
+#### Döndürülen Yineleyiciyi Doğrudan Kullanma
 
-Open your I/O project’s *src/main.rs* file, which should look like this:
+G/Ç projenizin aşağıdaki gibi görünmesi gereken *src/main.rs* dosyasını açın:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-12-24-reproduced/src/main.rs:ch13}}
 ```
 
-We’ll change the start of the `main` function that we had in Listing 12-24 to
-the code in Listing 13-18. This won’t compile until we update `Config::new` as
-well.
+Liste 12-24'te sahip olduğumuz `main` fonksiyonun başlangıcını Liste 13-18'deki kodla değiştireceğiz. 
+Bu, biz `Config::new`'i de güncelleyene kadar derlenmeyecektir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-18/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 13-18: Passing the return value of `env::args` to
-`Config::new`</span>
+<span class="caption">Liste 13-18: `env::args` dönüş değerinin `Config::new` 
+öğesine iletilmesi</span>
 
-The `env::args` function returns an iterator! Rather than collecting the
-iterator values into a vector and then passing a slice to `Config::new`, now
-we’re passing ownership of the iterator returned from `env::args` to
-`Config::new` directly.
+`env::args` fonksiyonu bir yineleyici döndürür! Yineleyici değerlerini bir vektörde toplamak ve ardından bir 
+dilimi `Config::new`'e aktarmak yerine, şimdi `env::args`'dan dönen yineleyicinin sahipliğini doğrudan `Config::new`'e aktarıyoruz.
 
-Next, we need to update the definition of `Config::new`. In your I/O project’s
-*src/lib.rs* file, let’s change the signature of `Config::new` to look like
-Listing 13-19. This still won’t compile because we need to update the function
-body.
+Daha sonra, `Config::new`'in tanımını güncellememiz gerekiyor. G/Ç projenizin *src/lib.rs* dosyasında, 
+`Config::new`'in imzasını Liste 13-19'daki gibi görünecek şekilde değiştirelim. Bu yine de derlenmeyecektir çünkü fonksiyon 
+gövdesini güncellememiz gerekir.
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-19/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 13-19: Updating the signature of `Config::new` to
-expect an iterator</span>
+<span class="caption">Liste 13-19: Bir yineleyici beklemek için `Config::new` 
+imzasını güncelleme</span>
 
-The standard library documentation for the `env::args` function shows that the
-type of the iterator it returns is `std::env::Args`, and that type implements
-the `Iterator` trait and returns `String` values.
+`env::args` fonksiyonunun standart kütüphane belgeleri, döndürdüğü yineleyicinin türünün `std::env::Args` olduğunu ve bu türün 
+`Iterator` özelliğini uyguladığını ve `String` değerleri döndürdüğünü gösterir.
 
-We’ve updated the signature of the `Config::new` function so the parameter
-`args` has a generic type with the trait bounds `impl Iterator<Item = String>`
-instead of `&[String]`. This usage of the `impl Trait` syntax we discussed in
-the [“Traits as Parameters”][impl-trait]<!-- ignore --> section of Chapter 10
-means that `args` can be any type that implements the `Iterator` type and
-returns `String` items.
+`Config::new` fonksiyonunun imzasını güncelledik, böylece `args` parametresi `&[String]` yerine tanım sınırları olan 
+`impl Iterator<Item = String>` ile yaygın bir türe sahip olacak. Bölüm 10'un [“Parametreler Olarak Tanımlar”][impl-trait]<!-- ignore --> bölümünde
+tartıştığımız `impl Trait` söz diziminin bu kullanımı, `args`'nin `Iterator` türünü uygulayan ve `String` öğeleri döndüren herhangi bir tür 
+olabileceği anlamına gelir.
 
-Because we’re taking ownership of `args` and we’ll be mutating `args` by
-iterating over it, we can add the `mut` keyword into the specification of the
-`args` parameter to make it mutable.
+`args`'nin sahipliğini aldığımız ve üzerinde yineleme yaparak `args`'yi mutasyona uğratacağımız için, `mut` anahtar sözcüğünü `args` 
+parametresinin belirtimine ekleyerek onu mutasyona uğratılabilir hale getirebiliriz.
 
-#### Using `Iterator` Trait Methods Instead of Indexing
+#### İndeksleme Yerine `Iterator` Tanım Yöntemlerini Kullanma
 
-Next, we’ll fix the body of `Config::new`. Because `args` implements the
-`Iterator` trait, we know we can call the `next` method on it! Listing 13-20
-updates the code from Listing 12-23 to use the `next` method:
+Sonra, `Config::new`'in gövdesini düzelteceğiz. `args`, `Iterator` tanımını uyguladığı için, bir sonraki 
+yöntemi çağırabileceğimizi biliyoruz! Liste 13-20, `next` yöntemini kullanmak için Liste 12-23'teki kodu günceller:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-20/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 13-20: Changing the body of `Config::new` to use
-iterator methods</span>
+<span class="caption">Liste 13-20: Yineleyici yöntemlerini kullanmak için `Config::new` gövdesini değiştirme</span>
 
-Remember that the first value in the return value of `env::args` is the name of
-the program. We want to ignore that and get to the next value, so first we call
-`next` and do nothing with the return value. Second, we call `next` to get the
-value we want to put in the `query` field of `Config`. If `next` returns a
-`Some`, we use a `match` to extract the value. If it returns `None`, it means
-not enough arguments were given and we return early with an `Err` value. We do
-the same thing for the `filename` value.
+`env::args`'ın dönüş değerindeki ilk değerin programın adı olduğunu unutmayın. 
+Bunu yok saymak ve bir sonraki değere ulaşmak istiyoruz, bu yüzden önce `next`'i çağırıyoruz ve geri dönüş değeriyle hiçbir şey yapmıyoruz. 
+İkinci olarak, `Config'`in `query` alanına koymak istediğimiz değeri almak için `next`'i çağırıyoruz. `next`, `Some` döndürürse, 
+değeri çıkarmak için `match` kullanırız. `None` döndürürse, yeterli argüman verilmediği anlamına gelir ve bir `Err` değeriyle erken döneriz. 
+Aynı şeyi `filename` değeri için de yaparız.
 
-### Making Code Clearer with Iterator Adaptors
+### Yineleyici Bağdaştırıcılar ile Kodu Daha Anlaşılır Hale Getirme
 
-We can also take advantage of iterators in the `search` function in our I/O
-project, which is reproduced here in Listing 13-21 as it was in Listing 12-19:
+G/Ç projemizdeki `search` fonksiyonunda da yineleyicilerden yararlanabiliriz; bu fonksiyon burada Liste 12-19'da olduğu gibi 
+Liste 13-21'de yeniden üretilmiştir:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch12-an-io-project/listing-12-19/src/lib.rs:ch13}}
 ```
 
-<span class="caption">Listing 13-21: The implementation of the `search`
-function from Listing 12-19</span>
+<span class="caption">Liste 13-21: Liste 12-19'dan `search` fonksiyonunun yazılması</span>
 
-We can write this code in a more concise way using iterator adaptor methods.
-Doing so also lets us avoid having a mutable intermediate `results` vector. The
-functional programming style prefers to minimize the amount of mutable state to
-make code clearer. Removing the mutable state might enable a future enhancement
-to make searching happen in parallel, because we wouldn’t have to manage
-concurrent access to the `results` vector. Listing 13-22 shows this change:
+Bu kodu yineleyici bağdaştırıcı metodlarını kullanarak daha kısa bir şekilde yazabiliriz. 
+Bunu yapmak aynı zamanda değiştirilebilir bir ara `results` vektörüne sahip olmaktan kaçınmamızı sağlar. 
+Fonksiyonel programlama stili, kodu daha anlaşılır hale getirmek için değiştirilebilir durum miktarını en aza indirmeyi tercih eder. 
+Değişken durumu kaldırmak, `results` vektörüne eşzamanlı erişimi yönetmek zorunda kalmayacağımız için gelecekte yapılacak bir 
+geliştirmeyle aramanın paralel olarak yapılmasını sağlayabilir. Liste 13-22 bu değişikliği göstermektedir:
 
-<span class="filename">Filename: src/lib.rs</span>
+<span class="filename">Dosya adı: src/lib.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../listings/ch13-functional-features/listing-13-22/src/lib.rs:here}}
 ```
 
-<span class="caption">Listing 13-22: Using iterator adaptor methods in the
-implementation of the `search` function</span>
+<span class="caption">Liste 13-22: "arama" işlevinin uygulanmasında yineleyici bağdaştırıcı 
+yöntemlerini kullanma</span>
 
-Recall that the purpose of the `search` function is to return all lines in
-`contents` that contain the `query`. Similar to the `filter` example in Listing
-13-16, this code uses the `filter` adaptor to keep only the lines that
-`line.contains(query)` returns `true` for. We then collect the matching lines
-into another vector with `collect`. Much simpler! Feel free to make the same
-change to use iterator methods in the `search_case_insensitive` function as
-well.
+`search` fonksiyonunun amacının, `query`'i içeren içerikteki tüm satırları döndürmek olduğunu hatırlayın. Liste 13-16'daki 
+`filter` örneğine benzer şekilde, bu kod yalnızca `line.contains(query)` öğesinin `true` döndürdüğü satırları tutmak için `filter` 
+kullanır. Daha sonra eşleşen satırları `collect` ile başka bir vektörde topluyoruz. Çok daha basit! 
+Aynı değişikliği `search_case_insensitive` fonksiyonunda yineleyici yöntemlerini kullanmak için de yapmaktan çekinmeyin.
 
-The next logical question is which style you should choose in your own code and
-why: the original implementation in Listing 13-21 or the version using
-iterators in Listing 13-22. Most Rust programmers prefer to use the iterator
-style. It’s a bit tougher to get the hang of at first, but once you get a feel
-for the various iterator adaptors and what they do, iterators can be easier to
-understand. Instead of fiddling with the various bits of looping and building
-new vectors, the code focuses on the high-level objective of the loop. This
-abstracts away some of the commonplace code so it’s easier to see the concepts
-that are unique to this code, such as the filtering condition each element in
-the iterator must pass.
+Bir sonraki mantıksal soru, kendi kodunuzda hangi stili ve neden seçmeniz gerektiğidir: Liste 13-21'deki orijinal uygulama mı yoksa 
+Liste 13-22'deki yineleyicileri kullanan sürüm mü? Çoğu Rust programcısı yineleyici stilini kullanmayı tercih eder. 
+İlk başta alışmak biraz daha zordur, ancak çeşitli yineleyici uyarlayıcılarını ve ne yaptıklarını bir kez hissettiğinizde, 
+yineleyicileri anlamak daha kolay olabilir. Döngünün çeşitli kısımlarıyla uğraşmak ve yeni vektörler oluşturmak yerine, 
+kod döngünün üst düzey hedefine odaklanır. Bu, sıradan kodların bazılarını soyutlaştırır, böylece yineleyicideki her bir öğenin 
+geçmesi gereken filtreleme koşulu gibi bu koda özgü kavramları görmek daha kolaydır.
 
-But are the two implementations truly equivalent? The intuitive assumption
-might be that the more low-level loop will be faster. Let’s talk about
-performance.
+Ancak iki uygulama gerçekten eş değer midir? Sezgisel varsayım, daha düşük seviyeli döngünün daha hızlı olacağı yönünde olabilir. 
+Şimdi performans hakkında konuşalım.
 
 [impl-trait]: ch10-02-traits.html#traits-as-parameters
