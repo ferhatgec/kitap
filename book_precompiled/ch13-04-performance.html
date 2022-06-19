@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,44 +147,35 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="comparing-performance-loops-vs-iterators"><a class="header" href="#comparing-performance-loops-vs-iterators">Comparing Performance: Loops vs. Iterators</a></h2>
-<p>To determine whether to use loops or iterators, you need to know which
-implementation is faster: the version of the <code>search</code> function with an explicit
-<code>for</code> loop or the version with iterators.</p>
-<p>We ran a benchmark by loading the entire contents of <em>The Adventures of
-Sherlock Holmes</em> by Sir Arthur Conan Doyle into a <code>String</code> and looking for the
-word <em>the</em> in the contents. Here are the results of the benchmark on the
-version of <code>search</code> using the <code>for</code> loop and the version using iterators:</p>
+                        <h2 id="performans-karşılaştırması-döngüler-ve-yineleyiciler"><a class="header" href="#performans-karşılaştırması-döngüler-ve-yineleyiciler">Performans Karşılaştırması: Döngüler ve Yineleyiciler</a></h2>
+<p>Döngülerin mi yoksa yineleyicilerin mi kullanılacağını belirlemek için, hangi uygulamanın daha hızlı olduğunu bilmeniz gerekir: 
+<code>search</code> fonksiyonunun açık bir <code>for</code> döngüsüne sahip versiyonu ya da yineleyicilere sahip versiyonu.</p>
+<p>Sir Arthur Conan Doyle'un <em>The Adventures of Sherlock Holmes</em>'un tüm içeriğini bir <code>String</code>'e yükleyerek ve içerikte 
+kelimeyi arayarak bir kıyaslama yaptık. Burada, <code>for</code> döngüsünü kullanan arama sürümü ve yineleyicileri kullanan sürümle 
+ilgili karşılaştırmanın sonuçları:</p>
 <pre><code class="language-text">test bench_search_for  ... bench:  19,620,300 ns/iter (+/- 915,700)
 test bench_search_iter ... bench:  19,234,900 ns/iter (+/- 657,200)
 </code></pre>
-<p>The iterator version was slightly faster! We won’t explain the benchmark code
-here, because the point is not to prove that the two versions are equivalent
-but to get a general sense of how these two implementations compare
-performance-wise.</p>
-<p>For a more comprehensive benchmark, you should check using various texts of
-various sizes as the <code>contents</code>, different words and words of different lengths
-as the <code>query</code>, and all kinds of other variations. The point is this:
-iterators, although a high-level abstraction, get compiled down to roughly the
-same code as if you’d written the lower-level code yourself. Iterators are one
-of Rust’s <em>zero-cost abstractions</em>, by which we mean using the abstraction
-imposes no additional runtime overhead. This is analogous to how Bjarne
-Stroustrup, the original designer and implementor of C++, defines
-<em>zero-overhead</em> in “Foundations of C++” (2012):</p>
+<p>Yineleyici sürümü biraz daha hızlıydı! Burada kıyaslama kodunu açıklamayacağız, 
+çünkü mesele iki versiyonun eşdeğer olduğunu kanıtlamak değil, bu iki uygulamanın performans açısından nasıl karşılaştırıldığına 
+dair genel bir fikir edinmek.</p>
+<p>Daha kapsamlı bir kıyaslama için, içerik olarak çeşitli boyutlarda çeşitli metinler, sorgu olarak farklı kelimeler ve 
+farklı uzunluklarda kelimeler ve her türlü diğer varyasyonları kontrol etmelisiniz. </p>
+<p>Mesele şudur: yineleyiciler, üst düzey bir soyutlama olmasına rağmen, alt düzey kodu kendiniz yazmışsınız gibi kabaca aynı koda derlenir. 
+Yineleyiciler, Rust'ın <em>sıfır maliyetli soyutlamalarından</em> biridir; bununla, soyutlamayı kullanmanın ek çalışma zamanı yükü getirmediğini
+kastediyoruz. Bu, C++'ın orijinal tasarımcısı ve uygulayıcısı olan Bjarne Stroustrup'un “Foundations of C++”'ta (2012) 
+sıfır yükü tanımlamasına benzer:</p>
 <blockquote>
-<p>In general, C++ implementations obey the zero-overhead principle: What you
-don’t use, you don’t pay for. And further: What you do use, you couldn’t hand
-code any better.</p>
+<p>Genel olarak, C++ uygulamaları sıfır genel gider ilkesine uyar: 
+Kullanmadığınız şey için ödeme yapmazsınız. 
+Ve dahası: Ne kullanırsanız kullanın, kodu daha iyi veremezdiniz.</p>
 </blockquote>
-<p>As another example, the following code is taken from an audio decoder. The
-decoding algorithm uses the linear prediction mathematical operation to
-estimate future values based on a linear function of the previous samples. This
-code uses an iterator chain to do some math on three variables in scope: a
-<code>buffer</code> slice of data, an array of 12 <code>coefficients</code>, and an amount by which
-to shift data in <code>qlp_shift</code>. We’ve declared the variables within this example
-but not given them any values; although this code doesn’t have much meaning
-outside of its context, it’s still a concise, real-world example of how Rust
-translates high-level ideas to low-level code.</p>
+<p>Başka bir örnek olarak, aşağıdaki kod bir ses kod çözücüsünden alınmıştır. 
+Kod çözme algoritması, önceki örneklerin doğrusal bir fonksiyonuna dayalı olarak gelecekteki değerleri tahmin 
+etmek için doğrusal tahmin matematiksel işlemini kullanır. Bu kod, kapsamdaki üç değişken üzerinde biraz matematik yapmak 
+için bir yineleyici zinciri kullanır: bir arabellek veri dilimi, 12 katsayı dizisi ve <code>qlp_shift</code>'te verilerin kaydırılacağı miktar. 
+Bu örnekte değişkenleri tanımladık ancak onlara herhangi bir değer vermedik; Bu kodun bağlamı dışında pek bir anlamı olmamasına rağmen, 
+yine de Rust'ın yüksek seviyeli fikirleri düşük seviyeli koda nasıl çevirdiğinin kısa ve gerçek bir örneğidir.</p>
 <pre><code class="language-rust ignore">let buffer: &amp;mut [i32];
 let coefficients: [i64; 12];
 let qlp_shift: i16;
@@ -198,35 +189,27 @@ for i in 12..buffer.len() {
     buffer[i] = prediction as i32 + delta;
 }
 </code></pre>
-<p>To calculate the value of <code>prediction</code>, this code iterates through each of the
-12 values in <code>coefficients</code> and uses the <code>zip</code> method to pair the coefficient
-values with the previous 12 values in <code>buffer</code>. Then, for each pair, we
-multiply the values together, sum all the results, and shift the bits in the
-sum <code>qlp_shift</code> bits to the right.</p>
-<p>Calculations in applications like audio decoders often prioritize performance
-most highly. Here, we’re creating an iterator, using two adaptors, and then
-consuming the value. What assembly code would this Rust code compile to? Well,
-as of this writing, it compiles down to the same assembly you’d write by hand.
-There’s no loop at all corresponding to the iteration over the values in
-<code>coefficients</code>: Rust knows that there are 12 iterations, so it “unrolls” the
-loop. <em>Unrolling</em> is an optimization that removes the overhead of the loop
-controlling code and instead generates repetitive code for each iteration of
-the loop.</p>
-<p>All of the coefficients get stored in registers, which means accessing the
-values is very fast. There are no bounds checks on the array access at runtime.
-All these optimizations that Rust is able to apply make the resulting code
-extremely efficient. Now that you know this, you can use iterators and closures
-without fear! They make code seem like it’s higher level but don’t impose a
-runtime performance penalty for doing so.</p>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<p>Closures and iterators are Rust features inspired by functional programming
-language ideas. They contribute to Rust’s capability to clearly express
-high-level ideas at low-level performance. The implementations of closures and
-iterators are such that runtime performance is not affected. This is part of
-Rust’s goal to strive to provide zero-cost abstractions.</p>
-<p>Now that we’ve improved the expressiveness of our I/O project, let’s look at
-some more features of <code>cargo</code> that will help us share the project with the
-world.</p>
+<p><code>prediction</code> değerini hesaplamak için bu kod, katsayılardaki 12 değerin her birini yineler ve katsayı değerlerini arabellekteki önceki 
+12 değerle eşleştirmek için <code>zip</code> metodunu kullanır. Ardından, her bir çift için değerleri birlikte çarparız, 
+tüm sonuçları toplarız ve toplam <code>qlp_shift</code> bitlerindeki bitleri sağa kaydırırız.</p>
+<p>Ses kod çözücüler gibi uygulamalardaki hesaplamalar genellikle performansa en yüksek önceliği verir. 
+Burada, iki bağdaştırıcı kullanarak bir yineleyici oluşturuyoruz ve ardından değeri kullanıyoruz. 
+Bu Rust kodu hangi Assembly koduna derler? Eh, bu yazı itibariyle, elle yazacağınız derlemeye kadar derlenir. 
+Katsayılardaki değerler üzerinde yinelemeye karşılık gelen hiçbir döngü yoktur: Rust, 12 yineleme olduğunu bilir, 
+bu nedenle döngüyü “açar”. <em>Açmak</em>, döngü kontrol kodunun ek yükünü ortadan kaldıran ve bunun yerine döngünün her 
+yinelemesi için tekrarlayan kod üreten bir optimizasyondur.</p>
+<p>Tüm katsayılar kayıtlarda saklanır, bu da değerlere erişmenin çok hızlı olduğu anlamına gelir. 
+Çalışma zamanında dizi erişiminde sınır denetimi yoktur. Rust'ın uygulayabildiği tüm bu optimizasyonlar, 
+ortaya çıkan kodu son derece verimli hale getirir. Artık bunu bildiğinize göre, yineleyicileri ve kapanış ifadelerini 
+korkmadan kullanabilirsiniz! Kodun daha yüksek bir seviye gibi görünmesini sağlarlar, 
+ancak bunu yapmak için bir çalışma zamanı performans <em>kapitülasyonlarını</em> vermezler.</p>
+<h2 id="Özet"><a class="header" href="#Özet">Özet</a></h2>
+<p>Kapanış ifadeleri ve yineleyiciler, fonksiyonel programlama dili fikirlerinden ilham alan Rust özellikleridir. 
+Rust'ın üst düzey fikirleri düşük düzeyde performansla açıkça ifade etme yeteneğine katkıda bulunurlar. 
+Kapanış ifadelerinin ve yineleyicilerin uygulamaları, çalışma zamanı performansının etkilenmeyeceği şekildedir. 
+Bu, Rust'ın <em>sıfır maliyetli soyutlamalar</em> sağlama hedefinin bir parçasıdır.</p>
+<p>G/Ç projemizin dışavurumunu iyileştirdiğimize göre, şimdi projeyi dünyayla paylaşmamıza yardımcı 
+olacak <code>cargo</code>'nun bazı özelliklerine bakalım.</p>
 
                     </main>
 

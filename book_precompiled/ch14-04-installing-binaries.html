@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -149,25 +149,18 @@
                     <main>
                         <!-- Old link, do not remove -->
 <p><a id="installing-binaries-from-cratesio-with-cargo-install"></a></p>
-<h2 id="installing-binaries-with-cargo-install"><a class="header" href="#installing-binaries-with-cargo-install">Installing Binaries with <code>cargo install</code></a></h2>
-<p>The <code>cargo install</code> command allows you to install and use binary crates
-locally. This isn’t intended to replace system packages; it’s meant to be a
-convenient way for Rust developers to install tools that others have shared on
-<a href="https://crates.io/">crates.io</a><!-- ignore -->. Note that you can only install
-packages that have binary targets. A <em>binary target</em> is the runnable program
-that is created if the crate has a <em>src/main.rs</em> file or another file specified
-as a binary, as opposed to a library target that isn’t runnable on its own but
-is suitable for including within other programs. Usually, crates have
-information in the <em>README</em> file about whether a crate is a library, has a
-binary target, or both.</p>
-<p>All binaries installed with <code>cargo install</code> are stored in the installation
-root’s <em>bin</em> folder. If you installed Rust using <em>rustup.rs</em> and don’t have any
-custom configurations, this directory will be <em>$HOME/.cargo/bin</em>. Ensure that
-directory is in your <code>$PATH</code> to be able to run programs you’ve installed with
-<code>cargo install</code>.</p>
-<p>For example, in Chapter 12 we mentioned that there’s a Rust implementation of
-the <code>grep</code> tool called <code>ripgrep</code> for searching files. To install <code>ripgrep</code>, we
-can run the following:</p>
+<h2 id="cargo-install-ile-İkili-dosyaları-yükleme"><a class="header" href="#cargo-install-ile-İkili-dosyaları-yükleme"><code>cargo install</code> ile İkili Dosyaları Yükleme</a></h2>
+<p><code>cargo install</code> komutu, ikili kasaları yerelde kurmanıza ve kullanmanıza olanak tanır. 
+Bunun sistem paketlerinin yerini alması amaçlanmamıştır; Rust geliştiricilerinin, diğer geliştiricilerin 
+<a href="https://crates.io/">crates.io</a><!-- ignore -->'da paylaştığı araçları yüklemeleri için uygun bir yol olması amaçlanmıştı. 
+Yalnızca ikili hedefleri olan paketleri kurabileceğinizi unutmayın. <em>İkili hedef</em>, sandıkta bir <em>src/main.rs</em> dosyası 
+veya ikili olarak belirtilen başka bir dosya varsa o kasa çalıştırılabilir kod içeriyor olabilir. Genellikle kasalar, <em>README</em>
+dosyasında bir kasanın kütüphane mi, çalıştırılabilir mi yoksa her ikisi mi olduğu hakkında bilgi içermektedir.</p>
+<p><code>cargo install</code> ile kurulan tüm ikili dosyalar, kurulum kökünün <em>bin</em> dizininde saklanır. 
+Rust'ı <em>rustup.rs</em> kullanarak yüklediyseniz ve herhangi bir özel yapılandırmanız yoksa bu dizin <em>$HOME/.cargo/bin</em> 
+olacaktır. <code>cargo install</code>'i kullanarak kurduğunuz programları çalıştırabilmek için dizinin <em>$PATH</em> içinde olduğundan emin olun.</p>
+<p>Örneğin, Bölüm 12'de, dosyaları aramak için <code>ripgrep</code> adlı <code>grep</code> aracının bir Rust süreklemesi olduğundan bahsetmiştik. 
+<code>Ripgrep</code>'i kurmak için aşağıdakileri çalıştırabiliriz:</p>
 <!-- manual-regeneration
 cargo install something you don't have, copy relevant output below
 -->
@@ -182,10 +175,7 @@ cargo install something you don't have, copy relevant output below
   Installing ~/.cargo/bin/rg
    Installed package `ripgrep v11.0.2` (executable `rg`)
 </code></pre>
-<p>The second-to-last line of the output shows the location and the name of the
-installed binary, which in the case of <code>ripgrep</code> is <code>rg</code>. As long as the
-installation directory is in your <code>$PATH</code>, as mentioned previously, you can
-then run <code>rg --help</code> and start using a faster, rustier tool for searching files!</p>
+<p>Aynı şekilde, bir inşa sistemi olan <a href="https://github.com/ferhatgec/elite">Elite</a>'i de aynı yolla (<code>cargo install elite</code>) kurabiliriz.</p>
 
                     </main>
 

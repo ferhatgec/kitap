@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,15 +147,13 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="an-example-program-using-structs"><a class="header" href="#an-example-program-using-structs">An Example Program Using Structs</a></h2>
-<p>To understand when we might want to use structs, let’s write a program that
-calculates the area of a rectangle. We’ll start by using single variables, and
-then refactor the program until we’re using structs instead.</p>
-<p>Let’s make a new binary project with Cargo called <em>rectangles</em> that will take
-the width and height of a rectangle specified in pixels and calculate the area
-of the rectangle. Listing 5-8 shows a short program with one way of doing
-exactly that in our project’s <em>src/main.rs</em>.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+                        <h2 id="yapıları-kullanan-Örnek-bir-program"><a class="header" href="#yapıları-kullanan-Örnek-bir-program">Yapıları Kullanan Örnek Bir Program</a></h2>
+<p>Yapıları ne zaman kullanmak isteyebileceğimizi anlamak için, bir dikdörtgenin alanını hesaplayan bir program yazalım. 
+Tek değişkenler kullanarak başlayacağız ve ardından bunun yerine yapıları kullanana kadar programı yeniden düzenleyeceğiz.</p>
+<p>Piksel cinsinden belirtilen bir dikdörtgenin genişlik ve yüksekliğini alacak <em>rectangles</em> adlı,
+Cargo ile yeni bir ikili proje oluşturalım ve dikdörtgenin alanını hesaplayalım. 
+Liste 5-8, projemizin <em>src/main.rs</em> dosyasında tam olarak bunu yapmanın bir yolunu içeren kısa bir program göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">fn main() {
     let width1 = 30;
     let height1 = 50;
@@ -170,19 +168,17 @@ fn area(width: u32, height: u32) -&gt; u32 {
     width * height
 }
 </code></pre></pre>
-<p><span class="caption">Listing 5-8: Calculating the area of a rectangle
-specified by separate width and height variables</span></p>
-<p>Now, run this program using <code>cargo run</code>:</p>
+<p><span class="caption">Liste 5-8: Ayrı genişlik ve yükseklik değişkenleri 
+tarafından belirtilen bir dikdörtgenin alanını hesaplama</span></p>
+<p>Şimdi, bu programı <code>cargo run</code> kullanarak çalıştırın.</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished dev [unoptimized + debuginfo] target(s) in 0.42s
      Running `target/debug/rectangles`
 The area of the rectangle is 1500 square pixels.
 </code></pre>
-<p>This code succeeds in figuring out the area of the rectangle by calling the
-<code>area</code> function with each dimension, but we can do more to make this code clear
-and readable.</p>
-<p>The issue with this code is evident in the signature of <code>area</code>:</p>
+<p>Bu kod, her bir boyutta <code>alan</code> fonksiyonunu çağırarak dikdörtgenin alanını bulmayı başarır, ancak bu kodu açık ve okunabilir hale getirmek için daha fazlasını yapabiliriz.</p>
+<p>Bu kodla ilgili sorun, <code>area</code>'nın imzasında belirgindir:</p>
 <pre><code class="language-rust ignore"><span class="boring">fn main() {
 </span><span class="boring">    let width1 = 30;
 </span><span class="boring">    let height1 = 50;
@@ -197,15 +193,14 @@ and readable.</p>
 <span class="boring">    width * height
 </span><span class="boring">}
 </span></code></pre>
-<p>The <code>area</code> function is supposed to calculate the area of one rectangle, but the
-function we wrote has two parameters, and it’s not clear anywhere in our
-program that the parameters are related. It would be more readable and more
-manageable to group width and height together. We’ve already discussed one way
-we might do that in <a href="ch03-02-data-types.html#the-tuple-type">“The Tuple Type”</a><!-- ignore --> section
-of Chapter 3: by using tuples.</p>
-<h3 id="refactoring-with-tuples"><a class="header" href="#refactoring-with-tuples">Refactoring with Tuples</a></h3>
-<p>Listing 5-9 shows another version of our program that uses tuples.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><code>area</code> fonksiyonunun bir dikdörtgenin alanını hesaplaması gerekiyor, 
+ancak yazdığımız fonksiyonun iki parametresi var ve programımızın 
+hiçbir yerinde parametrelerin ilişkili olduğu net değil. 
+Genişliği ve yüksekliği birlikte gruplamak daha okunaklı ve daha 
+yönetilebilir olurdu. Bunu, Bölüm 3'ün <a href="ch03-02-data-types.html#the-tuple-type">“Demet Türü”</a><!-- ignore --> bölümünde, demetleri kullanarak yapabileceğimizin bir yolunu zaten tartışmıştık.</p>
+<h3 id="demetlerle-yeniden-düzenleme"><a class="header" href="#demetlerle-yeniden-düzenleme">Demetlerle Yeniden Düzenleme</a></h3>
+<p>Liste 5-9, programımızın demet kullanan başka bir sürümünü gösterir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">fn main() {
     let rect1 = (30, 50);
 
@@ -219,23 +214,22 @@ fn area(dimensions: (u32, u32)) -&gt; u32 {
     dimensions.0 * dimensions.1
 }
 </code></pre></pre>
-<p><span class="caption">Listing 5-9: Specifying the width and height of the
-rectangle with a tuple</span></p>
-<p>In one way, this program is better. Tuples let us add a bit of structure, and
-we’re now passing just one argument. But in another way, this version is less
-clear: tuples don’t name their elements, so we have to index into the parts of
-the tuple, making our calculation less obvious.</p>
-<p>Mixing up the width and height wouldn’t matter for the area calculation, but if
-we want to draw the rectangle on the screen, it would matter! We would have to
-keep in mind that <code>width</code> is the tuple index <code>0</code> and <code>height</code> is the tuple
-index <code>1</code>. This would be even harder for someone else to figure out and keep in
-mind if they were to use our code. Because we haven’t conveyed the meaning of
-our data in our code, it’s now easier to introduce errors.</p>
-<h3 id="refactoring-with-structs-adding-more-meaning"><a class="header" href="#refactoring-with-structs-adding-more-meaning">Refactoring with Structs: Adding More Meaning</a></h3>
-<p>We use structs to add meaning by labeling the data. We can transform the tuple
-we’re using into a struct with a name for the whole as well as names for the
-parts, as shown in Listing 5-10.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 5-9: Bir demet ile 
+dikdörtgenin genişliğini ve yüksekliğini belirtme</span></p>
+<p>Bir bakıma bu program daha iyi. Demetler yapı eklememize izin 
+verir ve biz sadece bir argümanı geçeceğiz. Ancak başka bir şekilde, 
+bu versiyon daha az açıktır: demetler öğelerini adlandırmaz, 
+bu nedenle demetin bölümlerine indekslememiz gerekir, 
+bu da hesaplamamızı daha az belirgin hale getirir.</p>
+<p>Genişlik ve yüksekliğin karıştırılması alan hesabı için önemli değil, 
+ancak dikdörtgeni ekranda çizmek istiyorsak önemlidir! Genişliğin <code>0</code> küme indeksi ve yüksekliğin küme indeksi <code>1</code> olduğunu aklımızda tutmalıyız. 
+Eğer bizim kodumuzu kullanacak olsaydı, başka birinin bunu anlaması ve 
+akılda tutması daha da zor olurdu. Verilerimizin anlamını kodumuzda iletmediğimiz için, hataları tanıtmak artık daha kolay.</p>
+<h3 id="yapılarla-yeniden-düzenleme-daha-fazla-anlam-ekleme"><a class="header" href="#yapılarla-yeniden-düzenleme-daha-fazla-anlam-ekleme">Yapılarla Yeniden Düzenleme: Daha Fazla Anlam Ekleme</a></h3>
+<p>Verileri etiketleyerek anlam eklemek için yapılar kullanırız. 
+Kullandığımız demeti, Liste 5-10'da gösterildiği gibi, 
+parçaların adlarının yanı sıra bütün için bir ad içeren bir yapıya dönüştürebiliriz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">struct Rectangle {
     width: u32,
     height: u32,
@@ -257,31 +251,31 @@ fn area(rectangle: &amp;Rectangle) -&gt; u32 {
     rectangle.width * rectangle.height
 }
 </code></pre></pre>
-<p><span class="caption">Listing 5-10: Defining a <code>Rectangle</code> struct</span></p>
-<p>Here we’ve defined a struct and named it <code>Rectangle</code>. Inside the curly
-brackets, we defined the fields as <code>width</code> and <code>height</code>, both of which have
-type <code>u32</code>. Then in <code>main</code>, we created a particular instance of <code>Rectangle</code>
-that has a width of 30 and a height of 50.</p>
-<p>Our <code>area</code> function is now defined with one parameter, which we’ve named
-<code>rectangle</code>, whose type is an immutable borrow of a struct <code>Rectangle</code>
-instance. As mentioned in Chapter 4, we want to borrow the struct rather than
-take ownership of it. This way, <code>main</code> retains its ownership and can continue
-using <code>rect1</code>, which is the reason we use the <code>&amp;</code> in the function signature and
-where we call the function.</p>
-<p>The <code>area</code> function accesses the <code>width</code> and <code>height</code> fields of the <code>Rectangle</code>
-instance (note that accessing fields of a borrowed struct instance does not
-move the field values, which is why you often see borrows of structs). Our
-function signature for <code>area</code> now says exactly what we mean: calculate the area
-of <code>Rectangle</code>, using its <code>width</code> and <code>height</code> fields. This conveys that the
-width and height are related to each other, and it gives descriptive names to
-the values rather than using the tuple index values of <code>0</code> and <code>1</code>. This is a
-win for clarity.</p>
-<h3 id="adding-useful-functionality-with-derived-traits"><a class="header" href="#adding-useful-functionality-with-derived-traits">Adding Useful Functionality with Derived Traits</a></h3>
-<p>It’d be useful to be able to print an instance of <code>Rectangle</code> while we’re
-debugging our program and see the values for all its fields. Listing 5-11 tries
-using the <a href="../std/macro.println.html"><code>println!</code> macro</a><!-- ignore --> as we have used in
-previous chapters. This won’t work, however.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 5-10: Bir <code>Rectangle</code> yapı tanımlama</span></p>
+<p>Burada bir yapı tanımladık ve onu <code>Rectangle</code> olarak adlandırdık. 
+Kıvrımlı parantezler içinde, her ikisi de <code>u32</code> tipinde olan alanları 
+<code>width</code> ve <code>height</code> olarak tanımladık. Ardından, ana olarak, 
+<code>30</code> genişliğinde ve <code>50</code> yüksekliğinde belirli bir 
+<code>Rectangle</code> tanımı oluşturduk.</p>
+<p><code>area</code> fonksiyonumuz şimdi, türü bir <code>struct Rectangle</code> tanımının değişmez bir ödünç alma şekli olan <code>rectangle</code> adını verdiğimiz bir parametre ile tanımlanır. Bölüm 4'te bahsedildiği gibi, yapıyı sahiplenmek yerine ödünç 
+almak istiyoruz. Bu şekilde <code>main</code>, sahipliğini korur ve fonksiyon 
+imzasında ve fonksiyonu çağırdığımız yerde <code>&amp;'</code>yi kullanmamızın nedeni 
+olan <code>rect1</code>'i kullanmaya devam edebilir.</p>
+<p><code>area</code> fonksiyonu, <code>Rectangle</code> tanımının <code>width</code> ve <code>height</code> üyelerine
+erişir (ödünç alınan bir yapı tanımının üyelerine erişmenin 
+üye değerlerini hareket ettirmediğini, bu nedenle sık sık yapı 
+ödünçlerini gördüğünüzü unutmayın). 
+<code>area</code> için fonksiyon imzamız şimdi tam olarak ne demek istediğimizi söylüyor: 
+<code>width</code> ve <code>height</code> üyelerini kullanarak <code>Rectangle</code> alanını hesaplayın. 
+Bu, genişlik ve yüksekliğin birbiriyle ilişkili olduğunu ifade eder ve 
+<code>0</code> ve <code>1</code>'lik demet indeks değerlerini kullanmak yerine değerlere 
+açıklayıcı isimler verir. Bu, netlik için bir kazançtır.</p>
+<h3 id="türetilmiş-tanımlar-ile-faydalı-İşlevsellik-ekleme"><a class="header" href="#türetilmiş-tanımlar-ile-faydalı-İşlevsellik-ekleme">Türetilmiş Tanımlar ile Faydalı İşlevsellik Ekleme</a></h3>
+<p>Programımızda hata ayıklarken bir <code>Rectangle</code> tanımını yazdırabilmek 
+ve tüm üyelerin değerlerini görebilmek faydalı olacaktır. 
+Liste 5-11 <a href="../std/macro.println.html"><code>println!</code> makrosunu</a><!-- ignore --> önceki bölümlerde kullandığımız gibi
+kullanmayı dener. Ancak bu işe yaramayacaktır.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile">struct Rectangle {
     width: u32,
     height: u32,
@@ -296,41 +290,33 @@ fn main() {
     println!(&quot;rect1 is {}&quot;, rect1);
 }
 </code></pre>
-<p><span class="caption">Listing 5-11: Attempting to print a <code>Rectangle</code>
-instance</span></p>
-<p>When we compile this code, we get an error with this core message:</p>
+<p><span class="caption">Liste 5-11: Bir <code>Rectangle</code> tanımını yazdırmaya 
+çalışmak</span></p>
+<p>Bu kodu derlediğimizde, bir hata alıyoruz:</p>
 <pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
 </code></pre>
-<p>The <code>println!</code> macro can do many kinds of formatting, and by default, the curly
-brackets tell <code>println!</code> to use formatting known as <code>Display</code>: output intended
-for direct end user consumption. The primitive types we’ve seen so far
-implement <code>Display</code> by default, because there’s only one way you’d want to show
-a <code>1</code> or any other primitive type to a user. But with structs, the way
-<code>println!</code> should format the output is less clear because there are more
-display possibilities: Do you want commas or not? Do you want to print the
-curly brackets? Should all the fields be shown? Due to this ambiguity, Rust
-doesn’t try to guess what we want, and structs don’t have a provided
-implementation of <code>Display</code> to use with <code>println!</code> and the <code>{}</code> placeholder.</p>
-<p>If we continue reading the errors, we’ll find this helpful note:</p>
+<p><code>println!</code> makrosu birçok türde biçimlendirme yapabilir ve varsayılan olarak 
+süslü parantezler <code>println!</code>'e <code>Display</code> olarak bilinen biçimlendirmeyi kullanmasını söyler.
+Şimdiye kadar gördüğümüz ilkel tipler varsayılan olarak <code>Display</code>'i uygular, çünkü bunu yapabileceğiniz
+tek yoldur.</p>
 <pre><code class="language-text">   = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 </code></pre>
-<p>Let’s try it! The <code>println!</code> macro call will now look like <code>println!(&quot;rect1 is {:?}&quot;, rect1);</code>. Putting the specifier <code>:?</code> inside the curly brackets tells
-<code>println!</code> we want to use an output format called <code>Debug</code>. The <code>Debug</code> trait
-enables us to print our struct in a way that is useful for developers so we can
-see its value while we’re debugging our code.</p>
-<p>Compile the code with this change. Drat! We still get an error:</p>
+<p>Hadi deneyelim! <code>println!</code> makro çağrısı şimdi <code>println!(&quot;rect1 is {:?}&quot;, rect1);</code>. 
+<code>:?</code> belirtecini küme parantezlerinin içine koymak şunu söyler: <code>println!</code> için <code>Debug</code> adında bir 
+çıktı formatı kullanmak istiyoruz. <code>Debug</code> tanımı yapımızı geliştiriciler için yararlı 
+olacak şekilde yazdırmamızı sağlar, böylece kodumuz ayıklanırken değerini görebilirsiniz.</p>
+<p>Kodu bu değişiklikle derleyin. Hala bir hata alıyoruz:</p>
 <pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `Debug`
 </code></pre>
-<p>But again, the compiler gives us a helpful note:</p>
+<p>Ama yine de derleyici bize yardımcı olacak bir not veriyor:</p>
 <pre><code class="language-text">   = help: the trait `Debug` is not implemented for `Rectangle`
    = note: add `#[derive(Debug)]` to `Rectangle` or manually `impl Debug for Rectangle`
 </code></pre>
-<p>Rust <em>does</em> include functionality to print out debugging information, but we
-have to explicitly opt in to make that functionality available for our struct.
-To do that, we add the outer attribute <code>#[derive(Debug)]</code> just before the
-struct definition, as shown in Listing 5-12.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Rust, hata ayıklama bilgilerini yazdırma fonksiyonunu <em>içerir</em>, 
+ancak bu fonksiyonu yapımız için kullanılabilir hale getirmek için açıkça seçmeliyiz. 
+Bunu yapmak için, Liste 5-12'de gösterildiği gibi, yapı tanımından hemen önce <code>#[derive(Debug)]</code> dış niteliğini ekleriz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -346,21 +332,19 @@ fn main() {
     println!(&quot;rect1 is {:?}&quot;, rect1);
 }
 </code></pre></pre>
-<p><span class="caption">Listing 5-12: Adding the attribute to derive the <code>Debug</code>
-trait and printing the <code>Rectangle</code> instance using debug formatting</span></p>
-<p>Now when we run the program, we won’t get any errors, and we’ll see the
-following output:</p>
+<p><span class="caption">Liste 5-12: <code>Debug</code> tanımını türetmek için özniteliği ekleme ve 
+hata ayıklama biçimlendirmesini kullanarak <code>Rectangle</code> tanımı yazdırma</span></p>
+<p>Şimdi programı çalıştırdığımızda herhangi bir hata almayacağız ve aşağıdaki çıktıyı göreceğiz:</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished dev [unoptimized + debuginfo] target(s) in 0.48s
      Running `target/debug/rectangles`
 rect1 is Rectangle { width: 30, height: 50 }
 </code></pre>
-<p>Nice! It’s not the prettiest output, but it shows the values of all the fields
-for this instance, which would definitely help during debugging. When we have
-larger structs, it’s useful to have output that’s a bit easier to read; in
-those cases, we can use <code>{:#?}</code> instead of <code>{:?}</code> in the <code>println!</code> string.
-In this example, using the <code>{:#?}</code> style will output:</p>
+<p>Güzel! En güzel çıktı değil, ancak hata ayıklama sırasında kesinlikle yardımcı olacak bu 
+örnek için tüm alanların değerlerini gösterir. Daha büyük yapılarımız olduğunda, okunması biraz daha
+kolay çıktılara sahip olmak yararlıdır; bu durumlarda <code>println!</code>'de <code>{:?}</code> yerine <code>{:#?}</code> kullanabiliriz. 
+Bu örnekte, <code>{:#?}</code> stilinin kullanılması şu sonucu verecektir:</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished dev [unoptimized + debuginfo] target(s) in 0.48s
@@ -370,20 +354,17 @@ rect1 is Rectangle {
     height: 50,
 }
 </code></pre>
-<p>Another way to print out a value using the <code>Debug</code> format is to use the <a href="../std/macro.dbg.html"><code>dbg!</code>
-macro</a><!-- ignore -->, which takes ownership of an expression (as opposed
-to <code>println!</code> that takes a reference), prints the file and line number of where
-that <code>dbg!</code> macro call occurs in your code along with the resulting value of
-that expression, and returns ownership of the value.</p>
+<p><code>Debug</code> formatını kullanarak bir değer yazdırmanın başka bir yolu da <a href="../std/macro.dbg.html"><code>dbg!</code>
+makrosudur</a><!-- ignore -->.
+Bu makro ifadenin sahipliğini alır (bir referans alan <code>println!</code>'nin aksine) ve bu ifadenin sonuç değeriyle birlikte kodunuzda 
+gerçekleşir ve değerin sahipliğini döndürür.</p>
 <blockquote>
-<p>Note: Calling the <code>dbg!</code> macro prints to the standard error console stream
-(<code>stderr</code>), as opposed to <code>println!</code> which prints to the standard output
-console stream (<code>stdout</code>). We’ll talk more about <code>stderr</code> and <code>stdout</code> in the
-“<a href="ch12-06-writing-to-stderr-instead-of-stdout.html">“Writing Error Messages to Standard Error Instead of Standard
-Output” section in Chapter 12</a><!-- ignore -->.</p>
+<p>Not: <code>dbg!</code>'yi çağırmak, <code>println!</code>'nin aksine standart hata konsolu 
+akışına (<code>stderr</code>) yazdırır. 
+Bölüm 12'deki <a href="ch12-06-writing-to-stderr-instead-of-stdout.html">“Standart Çıktı Yerine Standart Hataya Hata Mesajları Yazma”</a><!-- ignore -->
+bölümünde <code>stderr</code> ve <code>stdout</code> hakkında daha fazla konuşacağız.</p>
 </blockquote>
-<p>Here’s an example where we’re interested in the value that gets assigned to the
-<code>width</code> field, as well as the value of the whole struct in <code>rect1</code>:</p>
+<p>İşte, genişlik alanına atanan değerle ve ayrıca <code>rect1</code>'deki tüm yapının değeriyle ilgilendiğimiz bir örnek:</p>
 <pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -400,11 +381,10 @@ fn main() {
     dbg!(&amp;rect1);
 }
 </code></pre></pre>
-<p>We can put <code>dbg!</code> around the expression <code>30 * scale</code> and, because <code>dbg!</code>
-returns ownership of the expression’s value, the <code>width</code> field will get the
-same value as if we didn’t have the <code>dbg!</code> call there. We don’t want <code>dbg!</code> to
-take ownership of <code>rect1</code>, so we use a reference to <code>rect1</code> in the next call.
-Here’s what the output of this example looks like:</p>
+<p><code>30 * scale</code> ifadesine <code>dbg!</code> makrosunu koyabiliriz çünkü <code>dbg!</code> ifadenin değerinin sahipliğini döndürür.
+Biz ise <code>dbg!</code>'nin <code>rect1</code>'in sahipliğini almasını istemiyor olduğumuzdan dolayı bir diğer çağrıda 
+<code>rect1</code>'in bir referansını kullanacağız.</p>
+<p>Bu örneğin çıktısı şuna benzemelidir:</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished dev [unoptimized + debuginfo] target(s) in 0.61s
@@ -415,25 +395,19 @@ Here’s what the output of this example looks like:</p>
     height: 50,
 }
 </code></pre>
-<p>We can see the first bit of output came from <em>src/main.rs</em> line 10, where we’re
-debugging the expression <code>30 * scale</code>, and its resulting value is 60 (the
-<code>Debug</code> formatting implemented for integers is to print only their value). The
-<code>dbg!</code> call on line 14 of <em>src/main.rs</em> outputs the value of <code>&amp;rect1</code>, which is
-the <code>Rectangle</code> struct. This output uses the pretty <code>Debug</code> formatting of the
-<code>Rectangle</code> type. The <code>dbg!</code> macro can be really helpful when you’re trying to
-figure out what your code is doing!</p>
-<p>In addition to the <code>Debug</code> trait, Rust has provided a number of traits for us
-to use with the <code>derive</code> attribute that can add useful behavior to our custom
-types. Those traits and their behaviors are listed in <a href="appendix-03-derivable-traits.html">Appendix C</a><!--
-ignore -->. We’ll cover how to implement these traits with custom behavior as
-well as how to create your own traits in Chapter 10. There are also many
-attributes other than <code>derive</code>; for more information, see <a href="../reference/attributes.html">the “Attributes”
-section of the Rust Reference</a>.</p>
-<p>Our <code>area</code> function is very specific: it only computes the area of rectangles.
-It would be helpful to tie this behavior more closely to our <code>Rectangle</code>
-struct, because it won’t work with any other type. Let’s look at how we can
-continue to refactor this code by turning the <code>area</code> function into an <code>area</code>
-<em>method</em> defined on our <code>Rectangle</code> type.</p>
+<p>Çıktının ilk bitinin <em>src/main.rs</em> 10. satırdan geldiğini görebiliriz, 
+burada <code>30 * scale</code> ifadesinin hatalarını ayıklıyoruz. <code>dbg!</code> <em>src/main.rs</em> dosyasının 14. satırındaki çağrı, 
+<code>Rectangle</code> yapısı olan <code>&amp;rect1</code> değerini verir. Bu çıktı, <code>Rectangle</code> türünün güzel <code>Debug</code> biçimlendirmesini kullanır. 
+<code>dbg!</code> makrosu, kodunuzun ne yaptığını anlamaya çalışırken gerçekten yardımcı olabilir!</p>
+<p>Rust, <code>Debug</code> tanımına ek olarak, <code>derive</code> özelliğiyle birlikte kullanmamız için özel türlerimize faydalı davranışlar ekleyebilecek bir 
+dizi özellik sağlamıştır. Bu özellikler ve davranışları <a href="appendix-03-derivable-traits.html">Ekleme C</a><!--
+ignore -->'de listelenmiştir. Bu özellikleri özel davranışlarla nasıl uygulayacağınızı ve kendi özelliklerinizi nasıl oluşturacağınızı 
+Bölüm 10'da ele alacağız. <code>derive</code>'ın dışında da birçok nitelik vardır; daha fazla bilgi için, 
+<a href="../reference/attributes.html">Rust Reference'ın “Nitelikler”</a> bölümüne bakın.</p>
+<p><code>area</code> fonksiyonumuz çok spesifiktir: sadece dikdörtgenlerin alanını hesaplar. 
+Bu davranışı <code>Rectangle</code> yapımıza daha yakından bağlamak faydalı olacaktır, çünkü başka hiçbir türle çalışmayacaktır. 
+<code>area</code> fonksiyonunu <code>Rectangle</code> türümüzde tanımlı bir <code>area</code> metoduna çevirerek bu kodu nasıl yeniden düzenlemeye devam 
+edebileceğimizebakalım.</p>
 
                     </main>
 

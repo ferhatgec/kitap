@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,20 +147,17 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="generic-data-types"><a class="header" href="#generic-data-types">Generic Data Types</a></h2>
-<p>We use generics to create definitions for items like function signatures or
-structs, which we can then use with many different concrete data types. Let’s
-first look at how to define functions, structs, enums, and methods using
-generics. Then we’ll discuss how generics affect code performance.</p>
-<h3 id="in-function-definitions"><a class="header" href="#in-function-definitions">In Function Definitions</a></h3>
-<p>When defining a function that uses generics, we place the generics in the
-signature of the function where we would usually specify the data types of the
-parameters and return value. Doing so makes our code more flexible and provides
-more functionality to callers of our function while preventing code duplication.</p>
-<p>Continuing with our <code>largest</code> function, Listing 10-4 shows two functions that
-both find the largest value in a slice. We'll then combine these into a single
-function that uses generics.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+                        <h2 id="yaygın-veri-türleri"><a class="header" href="#yaygın-veri-türleri">Yaygın Veri Türleri</a></h2>
+<p>Fonksiyon imzaları veya yapılar gibi öğeler için tanımlar oluşturmak için yaygınları kullanırız ve bunları daha sonra birçok farklı 
+somut veri türüyle kullanabiliriz. İlk olarak yaygınları kullanarak fonksiyonları, yapıları, <code>enum</code>'ları ve metodları nasıl tanımlayacağımıza 
+bakalım. Daha sonra yaygınların kod performansını nasıl etkilediğini tartışacağız.</p>
+<h3 id="fonksiyon-tanımlarında"><a class="header" href="#fonksiyon-tanımlarında">Fonksiyon Tanımlarında</a></h3>
+<p>Yaygın kullanan bir fonksiyon tanımlarken, yaygınları fonksiyonun imzasına, genellikle parametrelerin ve dönüş değerinin 
+veri tiplerini belirttiğimiz yere yerleştiririz. Bunu yapmak kodumuzu daha esnek hale getirir ve kod tekrarını önlerken 
+fonksiyonumuzu çağıranlara daha fazla işlevsellik sağlar.</p>
+<p><code>largest</code> fonksiyonumuzla devam edersek, Liste 10-4'te her ikisi de bir dilimdeki en büyük değeri bulan iki fonksiyon gösterilmektedir. 
+Daha sonra bunları yaygın kullanan tek bir fonksiyonda birleştireceğiz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">fn largest_i32(list: &amp;[i32]) -&gt; i32 {
     let mut largest = list[0];
 
@@ -199,35 +196,27 @@ fn main() {
 <span class="boring">    assert_eq!(result, 'y');
 </span>}
 </code></pre></pre>
-<p><span class="caption">Listing 10-4: Two functions that differ only in their
-names and the types in their signatures</span></p>
-<p>The <code>largest_i32</code> function is the one we extracted in Listing 10-3 that finds
-the largest <code>i32</code> in a slice. The <code>largest_char</code> function finds the largest
-<code>char</code> in a slice. The function bodies have the same code, so let’s eliminate
-the duplication by introducing a generic type parameter in a single function.</p>
-<p>To parameterize the types in a new single function, we need to name the type
-parameter, just as we do for the value parameters to a function. You can use
-any identifier as a type parameter name. But we’ll use <code>T</code> because, by
-convention, parameter names in Rust are short, often just a letter, and Rust’s
-type-naming convention is CamelCase. Short for “type,” <code>T</code> is the default
-choice of most Rust programmers.</p>
-<p>When we use a parameter in the body of the function, we have to declare the
-parameter name in the signature so the compiler knows what that name means.
-Similarly, when we use a type parameter name in a function signature, we have
-to declare the type parameter name before we use it. To define the generic
-<code>largest</code> function, place type name declarations inside angle brackets, <code>&lt;&gt;</code>,
-between the name of the function and the parameter list, like this:</p>
+<p><span class="caption">Liste 10-4: Yalnızca adlarında ve imzalarındaki türlerde 
+farklılık gösteren iki fonksiyon</span></p>
+<p><code>largest_i32</code> fonksiyonu, bir dilimdeki en büyük <code>i32</code>'yi bulan Liste 10-3'te çıkardığımız fonksiyondur. 
+<code>largest_char</code> fonksiyonu bir dilimdeki en büyük <code>char</code> değerini bulur. Fonksiyon gövdeleri aynı koda sahiptir, 
+bu nedenle tek bir fonksiyona yaygın tür parametresi ekleyerek yinelemeyi ortadan kaldıralım.</p>
+<p>Yeni bir tek fonksiyonda türleri parametrelendirmek için, tıpkı bir fonksiyonun değer parametreleri için yaptığımız gibi tür 
+parametresini adlandırmamız gerekir. Tür parametresi adı olarak herhangi bir tanımlayıcı kullanabilirsiniz. 
+Ancak biz <code>T</code> kullanacağız çünkü Rust'ta parametre adları genellikle sadece bir harf olmak üzere kısadır ve Rust'ın tür adlandırma kuralı 
+<code>CamelCase</code>'dir. “tür, type” kelimesinin kısaltması olan <code>T</code>, çoğu Rust programcısının varsayılan tercihidir.</p>
+<p>Fonksiyonun gövdesinde bir parametre kullandığımızda, parametre adını imzada bildirmemiz gerekir, böylece derleyici bu adın ne anlama geldiğini 
+bilir. Benzer şekilde, bir fonksiyon imzasında bir tür parametre adı kullandığımızda, kullanmadan önce tür parametre adını bildirmemiz gerekir. 
+Yaygın <code>largest</code> fonksiyonunu tanımlamak için, tür adı bildirimlerini fonksiyonun adı ile parametre listesi arasına köşeli parantezler 
+(<code>&lt;&gt;</code>) içinde yerleştirin, aşağıdaki gibi:</p>
 <pre><code class="language-rust ignore">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; T {
 </code></pre>
-<p>We read this definition as: the function <code>largest</code> is generic over some type
-<code>T</code>. This function has one parameter named <code>list</code>, which is a slice of values
-of type <code>T</code>. The <code>largest</code> function will return a value of the
-same type <code>T</code>.</p>
-<p>Listing 10-5 shows the combined <code>largest</code> function definition using the generic
-data type in its signature. The listing also shows how we can call the function
-with either a slice of <code>i32</code> values or <code>char</code> values. Note that this code won’t
-compile yet, but we’ll fix it later in this chapter.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Bu tanımı şu şekilde okuyabiliriz: <code>largest</code> fonksiyonu bazı <code>T</code> türleri üzerinde yaygındır. Bu fonksiyonun <code>list</code> adında bir 
+parametresi vardır ve bu parametre <code>T</code> türünde bir değer dilimidir. <code>largest</code> fonksiyonu aynı <code>T</code> türünde bir değer döndürecektir.</p>
+<p>Liste 10-5, imzasında yaygın veri tipini kullanan birleşik <code>largest</code> fonksiyon tanımını gösterir. 
+Liste ayrıca, fonksiyonu <code>i32</code> değerlerinden oluşan bir dilim ya da <code>char</code> değerleriyle nasıl çağırabileceğimizi de gösterir. 
+Bu kodun henüz derlenmeyeceğini unutmayın, ancak bu bölümün ilerleyen kısımlarında bunu düzelteceğiz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; T {
     let mut largest = list[0];
 
@@ -252,9 +241,9 @@ fn main() {
     println!(&quot;The largest char is {}&quot;, result);
 }
 </code></pre>
-<p><span class="caption">Listing 10-5: The <code>largest</code> function using generic type
-parameters; this doesn’t yet compile</span></p>
-<p>If we compile this code right now, we’ll get this error:</p>
+<p><span class="caption">Liste 10-5: Yaygın tür parametreleri kullanan <code>largest</code> fonksiyonu; 
+bu henüz derlenmiyor</span></p>
+<p>Kodu şimdi derlemeye çalışırsak, şu hatayı alırız:</p>
 <pre><code class="language-console">$ cargo run
    Compiling chapter10 v0.1.0 (file:///projects/chapter10)
 error[E0369]: binary operation `&gt;` cannot be applied to type `T`
@@ -273,22 +262,19 @@ help: consider restricting type parameter `T`
 For more information about this error, try `rustc --explain E0369`.
 error: could not compile `chapter10` due to previous error
 </code></pre>
-<p>The note mentions <code>std::cmp::PartialOrd</code>, which is a <em>trait</em>. We’ll talk about
-traits in the next section. For now, know that this error states that the body
-of <code>largest</code> won’t work for all possible types that <code>T</code> could be. Because we
-want to compare values of type <code>T</code> in the body, we can only use types whose
-values can be ordered. To enable comparisons, the standard library has the
-<code>std::cmp::PartialOrd</code> trait that you can implement on types (see Appendix C
-for more on this trait). You’ll learn how to specify that a generic type has a
-particular trait in the <a href="ch10-02-traits.html#traits-as-parameters">“Traits as Parameters”</a><!--
-ignore --> section. Before we fix this code (in the section <a href="ch10-02-traits.html#fixing-the-largest-function-with-trait-bounds">“Fixing the
-<code>largest</code> Function with Trait Bounds”</a><!-- ignore -->), let’s first
-explore other ways of using generic type parameters.</p>
-<h3 id="in-struct-definitions"><a class="header" href="#in-struct-definitions">In Struct Definitions</a></h3>
-<p>We can also define structs to use a generic type parameter in one or more
-fields using the <code>&lt;&gt;</code> syntax. Listing 10-6 defines a <code>Point&lt;T&gt;</code> struct to hold
-<code>x</code> and <code>y</code> coordinate values of any type.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Notta bir tanım olan <code>std::cmp::PartialOrd</code>'dan bahsedilmektedir. Tanımlar hakkında bir sonraki bölümde konuşacağız. 
+Şimdilik, bu hatanın <code>largest</code>'in gövdesinin <code>T</code>'nin olabileceği tüm olası türler için çalışmayacağını belirttiğini bilin. 
+Gövdede <code>T</code> türündeki değerleri karşılaştırmak istediğimiz için, yalnızca değerleri sıralanabilen türleri kullanabiliriz. 
+Karşılaştırmaları etkinleştirmek için, standart kütüphanede türler üzerinde uygulayabileceğiniz <code>std::cmp::PartialOrd</code> tanımı vardır 
+(bu tanım hakkında daha fazla bilgi için Ekleme C'ye bakın). Yaygın bir türün belirli bir tanıma sahip olduğunu nasıl belirteceğinizi 
+<a href="ch10-02-traits.html#traits-as-parameters">“Parametre Olarak Tanımlar”</a><!-- ignore --> bölümünde öğreneceksiniz. 
+Bu kodu düzeltmeden önce (<a href="ch10-02-traits.html#fixing-the-largest-function-with-trait-bounds">“Tanım Sınırları ile Fonksiyonu Düzeltme”</a><!-- ignore --> bölümünde), yaygın tür parametrelerini 
+kullanmanın diğer yollarını inceleyelim.</p>
+<h3 id="struct-tanımlarında"><a class="header" href="#struct-tanımlarında">Struct Tanımlarında</a></h3>
+<p>Ayrıca, <code>&lt;&gt;</code> söz dizimini kullanarak bir veya daha fazla alanda yaygın tür parametresi kullanmak için 
+<code>struct</code>'ları tanımlayabiliriz. Liste 10-6, herhangi bir türdeki <code>x</code> ve <code>y</code> koordinat değerlerini tutmak için bir 
+<code>Point&lt;T&gt;</code> <code>struct</code>'ı tanımlar.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
     x: T,
     y: T,
@@ -299,18 +285,15 @@ fn main() {
     let float = Point { x: 1.0, y: 4.0 };
 }
 </code></pre></pre>
-<p><span class="caption">Listing 10-6: A <code>Point&lt;T&gt;</code> struct that holds <code>x</code> and <code>y</code>
-values of type <code>T</code></span></p>
-<p>The syntax for using generics in struct definitions is similar to that used in
-function definitions. First, we declare the name of the type parameter inside
-angle brackets just after the name of the struct. Then we use the generic type
-in the struct definition where we would otherwise specify concrete data types.</p>
-<p>Note that because we’ve used only one generic type to define <code>Point&lt;T&gt;</code>, this
-definition says that the <code>Point&lt;T&gt;</code> struct is generic over some type <code>T</code>, and
-the fields <code>x</code> and <code>y</code> are <em>both</em> that same type, whatever that type may be. If
-we create an instance of a <code>Point&lt;T&gt;</code> that has values of different types, as in
-Listing 10-7, our code won’t compile.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 10-6: <code>T</code> türünde <code>x</code> ve <code>y</code> değerlerini tutan bir <code>Point&lt;T</code> 
+yapısı</span></p>
+<p>Yapı tanımlarında yaygın türlerin kullanımı için söz dizimi, fonksiyon tanımlarında kullanılan söz dizimine benzer. 
+İlk olarak, <code>struct</code> adından hemen sonra köşeli parantezler içinde tür parametresinin adını bildiririz. 
+Ardından, <code>struct</code> tanımında somut veri türlerini belirteceğimiz yerde yaygın türü kullanırız.</p>
+<p><code>Point&lt;T&gt;</code>'yi tanımlamak için yalnızca bir yaygın tür kullandığımızdan, bu tanımın <code>Point&lt;T&gt;</code> yapısının bazı <code>T</code> türleri üzerinde 
+yaygın olduğunu ve <code>x</code> ve <code>y</code> üyelerinin her ikisinin de, bu tür ne olursa olsun, aynı tür olduğunu söylediğine dikkat edin. 
+Liste 10-7'de olduğu gibi, farklı türlerde değerlere sahip bir <code>Point&lt;T&gt;</code> tanımı oluşturursak, kodumuz derlenmeyecektir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile">struct Point&lt;T&gt; {
     x: T,
     y: T,
@@ -320,12 +303,11 @@ fn main() {
     let wont_work = Point { x: 5, y: 4.0 };
 }
 </code></pre>
-<p><span class="caption">Listing 10-7: The fields <code>x</code> and <code>y</code> must be the same
-type because both have the same generic data type <code>T</code>.</span></p>
-<p>In this example, when we assign the integer value 5 to <code>x</code>, we let the compiler
-know that the generic type <code>T</code> will be an integer for this instance of
-<code>Point&lt;T&gt;</code>. Then when we specify 4.0 for <code>y</code>, which we’ve defined to have the
-same type as <code>x</code>, we’ll get a type mismatch error like this:</p>
+<p><span class="caption">Liste 10-7: Her ikisi de aynı genel veri türü <code>T</code>'ye sahip olduğundan, 
+<code>x</code> ve <code>y</code> üyeleri aynı türde olmalıdır.</span></p>
+<p>Bu örnekte, <code>x</code>'e <code>5</code> tam sayı değerini atadığımızda, derleyiciye <code>T</code> yaygın türünün bu <code>Point&lt;T&gt;</code> tanımı için bir tam sayı olacağını bildiririz. 
+Daha sonra, <code>x</code> ile aynı türe sahip olacak şekilde tanımladığımız <code>y</code> için <code>4.0</code> değerini belirttiğimizde, aşağıdaki gibi tür 
+uyuşmazlığı hatası alırız:</p>
 <pre><code class="language-console">$ cargo run
    Compiling chapter10 v0.1.0 (file:///projects/chapter10)
 error[E0308]: mismatched types
@@ -337,11 +319,10 @@ error[E0308]: mismatched types
 For more information about this error, try `rustc --explain E0308`.
 error: could not compile `chapter10` due to previous error
 </code></pre>
-<p>To define a <code>Point</code> struct where <code>x</code> and <code>y</code> are both generics but could have
-different types, we can use multiple generic type parameters. For example, in
-Listing 10-8, we change the definition of <code>Point</code> to be generic over types <code>T</code>
-and <code>U</code> where <code>x</code> is of type <code>T</code> and <code>y</code> is of type <code>U</code>.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><code>x</code> ve <code>y</code>'nin her ikisinin de yaygın olduğu ancak farklı türlere sahip olabileceği bir <code>Point</code> yapısını tanımlamak için birden fazla 
+yaygın tür parametresi kullanabiliriz. Örneğin, Liste 10-8'de, <code>Point</code> tanımını <code>T</code> ve <code>U</code> türleri üzerinde yaygın olacak şekilde 
+değiştiririz; burada <code>x</code> <code>T</code> tipinde ve <code>y</code> <code>U</code> tipindedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">struct Point&lt;T, U&gt; {
     x: T,
     y: U,
@@ -353,17 +334,14 @@ fn main() {
     let integer_and_float = Point { x: 5, y: 4.0 };
 }
 </code></pre></pre>
-<p><span class="caption">Listing 10-8: A <code>Point&lt;T, U&gt;</code> generic over two types so
-that <code>x</code> and <code>y</code> can be values of different types</span></p>
-<p>Now all the instances of <code>Point</code> shown are allowed! You can use as many generic
-type parameters in a definition as you want, but using more than a few makes
-your code hard to read. If you're finding you need lots of generic types in
-your code, it could indicate that your code needs restructuring into smaller
-pieces.</p>
-<h3 id="in-enum-definitions"><a class="header" href="#in-enum-definitions">In Enum Definitions</a></h3>
-<p>As we did with structs, we can define enums to hold generic data types in their
-variants. Let’s take another look at the <code>Option&lt;T&gt;</code> enum that the standard
-library provides, which we used in Chapter 6:</p>
+<p><span class="caption">Liste 10-8: İki tür üzerinde yaygın bir <code>Point&lt;T, U&gt;</code>, böylece <code>x</code> ve <code>y</code> farklı türlerin 
+değerleri olabilir</span></p>
+<p>Artık gösterilen tüm <code>Point</code> tanımlarına izin verilmektedir! Bir tanımda istediğiniz kadar yaygın tür parametresi kullanabilirsiniz, 
+ancak birkaç taneden fazla kullanmak kodunuzun okunmasını zorlaştırır. Kodunuzda çok sayıda yaygın türe ihtiyaç duyuyorsanız, 
+bu kodunuzun daha küçük parçalar halinde yeniden yapılandırılması gerektiğini gösterebilir.</p>
+<h3 id="enum-tanımlarında"><a class="header" href="#enum-tanımlarında"><code>enum</code> Tanımlarında</a></h3>
+<p>Yapılarda yaptığımız gibi, yaygın veri türlerini varyantlarında tutmak için <code>enum</code>'ları tanımlayabiliriz. 
+Standart kütüphanenin sağladığı ve Bölüm 6'da kullandığımız <code>Option&lt;T&gt;</code> <code>enum</code>'una bir kez daha göz atalım:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -373,14 +351,11 @@ library provides, which we used in Chapter 6:</p>
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>This definition should now make more sense to you. As you can see, the
-<code>Option&lt;T&gt;</code> enum is generic over type <code>T</code> and has two variants: <code>Some</code>, which
-holds one value of type <code>T</code>, and a <code>None</code> variant that doesn’t hold any value.
-By using the <code>Option&lt;T&gt;</code> enum, we can express the abstract concept of an
-optional value, and because <code>Option&lt;T&gt;</code> is generic, we can use this abstraction
-no matter what the type of the optional value is.</p>
-<p>Enums can use multiple generic types as well. The definition of the <code>Result</code>
-enum that we used in Chapter 9 is one example:</p>
+<p>Bu tanım şimdi size daha anlamlı gelecektir. Gördüğünüz gibi <code>Option&lt;T&gt;</code> <code>enum</code>'u <code>T</code> türü üzerinde yaygındır ve iki çeşidi vardır: 
+<code>T</code> türünde bir değer tutan <code>Some</code> ve herhangi bir değer tutmayan <code>None</code> varyantı. <code>Option&lt;T&gt;</code> <code>enum</code>'unu kullanarak, 
+isteğe bağlı bir değerin soyut kavramını ifade edebiliriz ve <code>Option&lt;T&gt;</code> yaygın olduğu için, isteğe bağlı değerin türü ne olursa 
+olsun bu soyutlamayı kullanabiliriz.</p>
+<p><code>enum</code>'lar birden fazla yaygın tür de kullanabilir. Bölüm 9'da kullandığımız <code>Result</code> <code>enum</code> tanımı buna bir örnektir:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -390,22 +365,17 @@ enum that we used in Chapter 9 is one example:</p>
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>The <code>Result</code> enum is generic over two types, <code>T</code> and <code>E</code>, and has two variants:
-<code>Ok</code>, which holds a value of type <code>T</code>, and <code>Err</code>, which holds a value of type
-<code>E</code>. This definition makes it convenient to use the <code>Result</code> enum anywhere we
-have an operation that might succeed (return a value of some type <code>T</code>) or fail
-(return an error of some type <code>E</code>). In fact, this is what we used to open a
-file in Listing 9-3, where <code>T</code> was filled in with the type <code>std::fs::File</code> when
-the file was opened successfully and <code>E</code> was filled in with the type
-<code>std::io::Error</code> when there were problems opening the file.</p>
-<p>When you recognize situations in your code with multiple struct or enum
-definitions that differ only in the types of the values they hold, you can
-avoid duplication by using generic types instead.</p>
-<h3 id="in-method-definitions"><a class="header" href="#in-method-definitions">In Method Definitions</a></h3>
-<p>We can implement methods on structs and enums (as we did in Chapter 5) and use
-generic types in their definitions, too. Listing 10-9 shows the <code>Point&lt;T&gt;</code>
-struct we defined in Listing 10-6 with a method named <code>x</code> implemented on it.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><code>Result</code> <code>enum</code>'u, <code>T</code> ve <code>E</code> olmak üzere iki tür üzerinde yaygındır ve iki çeşidi vardır: <code>T</code> türünde bir değer tutan <code>Ok</code> ve 
+<code>E</code> türünde bir değer tutan <code>Err</code>. Bu tanım, başarılı (<code>T</code> türünde bir değer döndüren) veya başarısız (<code>E</code> türünde bir hata döndüren) 
+olabilecek bir işlemimiz olan her yerde <code>Result</code> <code>enum</code>'unu kullanmayı kolaylaştırır. Aslında, Liste 9-3'te bir dosyayı açmak 
+için kullandığımız şey buydu; dosya başarıyla açıldığında <code>T</code>, <code>std::fs::File</code> türüyle atandı ve dosyanın açılmasında sorun olduğunda 
+<code>E</code>, <code>std::io::Error</code> türüyle atandı.</p>
+<p>Kodunuzda, yalnızca tuttukları değerlerin türlerinde farklılık gösteren birden fazla <code>struct</code> veya <code>enum</code> tanımının bulunduğu 
+durumları fark ettiğinizde, bunun yerine yaygın türleri kullanarak yinelemeyi önleyebilirsiniz.</p>
+<h3 id="metod-tanımlarında"><a class="header" href="#metod-tanımlarında">Metod Tanımlarında</a></h3>
+<p>Yapılar ve <code>enum</code>'lar üzerinde metodlar uygulayabilir (Bölüm 5'te yaptığımız gibi) ve tanımlarında yaygın türleri kullanabiliriz. 
+Liste 10-9, Liste 10-6'da tanımladığımız <code>Point&lt;T&gt;</code> yapısını ve üzerinde uygulanan <code>x</code> adlı bir metodu göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
     x: T,
     y: T,
@@ -423,25 +393,18 @@ fn main() {
     println!(&quot;p.x = {}&quot;, p.x());
 }
 </code></pre></pre>
-<p><span class="caption">Listing 10-9: Implementing a method named <code>x</code> on the
-<code>Point&lt;T&gt;</code> struct that will return a reference to the <code>x</code> field of type
-<code>T</code></span></p>
-<p>Here, we’ve defined a method named <code>x</code> on <code>Point&lt;T&gt;</code> that returns a reference
-to the data in the field <code>x</code>.</p>
-<p>Note that we have to declare <code>T</code> just after <code>impl</code> so we can use <code>T</code> to specify
-that we’re implementing methods on the type <code>Point&lt;T&gt;</code>. By declaring <code>T</code> as a
-generic type after <code>impl</code>, Rust can identify that the type in the angle
-brackets in <code>Point</code> is a generic type rather than a concrete type. We could
-have chosen a different name for this generic parameter than the generic
-parameter declared in the struct definition, but using the same name is
-conventional. Methods written within an <code>impl</code> that declares the generic type
-will be defined on any instance of the type, no matter what concrete type ends
-up substituting for the generic type.</p>
-<p>We can also specify constraints on generic types when defining methods on the
-type. We could, for example, implement methods only on <code>Point&lt;f32&gt;</code> instances
-rather than on <code>Point&lt;T&gt;</code> instances with any generic type. In Listing 10-10 we
-use the concrete type <code>f32</code>, meaning we don’t declare any types after <code>impl</code>.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 10-9: <code>T</code> türündeki <code>x</code> üyesine bir başvuru döndürecek olan <code>Point&lt;T&gt;</code> yapısında 
+<code>x</code> adlı metodun süreklenmesi</span></p>
+<p>Burada, <code>x</code> üyesindeki verilere bir referans döndüren <code>Point&lt;T&gt;</code> üzerinde <code>x</code> adında bir metod tanımladık.</p>
+<p><code>T</code>'yi <code>impl</code>'den hemen sonra bildirmemiz gerektiğine dikkat edin, böylece <code>T</code>'yi <code>Point&lt;T&gt;</code> türünde metodlar tanımladığımızı belirtmek için
+kullanabiliriz. <code>T</code>'yi <code>impl</code>'den sonra yaygın bir tür olarak bildirerek, Rust, <code>Point</code>'teki köşeli parantez içindeki türün somut bir tür 
+yerine yaygın bir tür olduğunu belirleyebilir. Bu yaygın parametre için <code>struct</code> tanımında bildirilen yaygın parametreden farklı bir 
+isim seçebilirdik, ancak aynı ismi kullanmak gelenekseldir. Yaygın türü bildiren bir <code>impl</code> içinde yazılan metodlar, 
+yaygın türün yerine hangi somut tür geçerse geçsin, türün herhangi bir tanımı üzerinde tanımlanacaktır.</p>
+<p>Tür üzerinde metod tanımlarken yaygın türler üzerinde kısıtlamalar da belirtebiliriz. 
+Örneğin, herhangi bir yaygın türe sahip <code>Point&lt;T&gt;</code> tanımları yerine yalnızca <code>Point&lt;f32&gt;</code> tanımları üzerinde metodlar uygulayabiliriz. 
+Liste 10-10'da somut <code>f32</code> türünü kullanıyoruz, yani <code>impl</code>'den sonra herhangi bir tür bildirmiyoruz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point&lt;T&gt; {
 </span><span class="boring">    x: T,
 </span><span class="boring">    y: T,
@@ -465,20 +428,16 @@ use the concrete type <code>f32</code>, meaning we don’t declare any types aft
 </span><span class="boring">    println!(&quot;p.x = {}&quot;, p.x());
 </span><span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 10-10: An <code>impl</code> block that only applies to a
-struct with a particular concrete type for the generic type parameter <code>T</code></span></p>
-<p>This code means the type <code>Point&lt;f32&gt;</code> will have a <code>distance_from_origin</code>
-method; other instances of <code>Point&lt;T&gt;</code> where <code>T</code> is not of type <code>f32</code> will not
-have this method defined. The method measures how far our point is from the
-point at coordinates (0.0, 0.0) and uses mathematical operations that are
-available only for floating point types.</p>
-<p>Generic type parameters in a struct definition aren’t always the same as those
-you use in that same struct’s method signatures. Listing 10-11 uses the generic
-types <code>X1</code> and <code>Y1</code> for the <code>Point</code> struct and <code>X2</code> <code>Y2</code> for the <code>mixup</code> method
-signature to make the example clearer. The method creates a new <code>Point</code>
-instance with the <code>x</code> value from the <code>self</code> <code>Point</code> (of type <code>X1</code>) and the <code>y</code>
-value from the passed-in <code>Point</code> (of type <code>Y2</code>).</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 10-10: Yaygın tür parametresi <code>T</code> için yalnızca belirli bir somut türe sahip bir 
+yapıya tanımlanan bir <code>impl</code> bloğu</span></p>
+<p>Bu kod, <code>Point&lt;f32&gt;</code> türünün bir <code>distance_from_origin</code> metoduna sahip olacağı anlamına gelir; 
+<code>T</code>'nin <code>f32</code> türünde olmadığı diğer <code>Point&lt;T&gt;</code> örneklerinde bu metod tanımlı olmayacaktır. Metod, noktamızın <code>(0.0, 0.0)</code> 
+koordinatlarındaki noktadan ne kadar uzakta olduğunu ölçer ve yalnızca kayan nokta türleri için kullanılabilen matematiksel işlemleri kullanır.</p>
+<p>Bir <code>struct</code> tanımındaki yaygın tür parametreleri her zaman aynı <code>struct</code>'ın metod imzalarında kullandıklarınızla aynı değildir. 
+Liste 10-11, örneği daha açık hale getirmek için <code>Point</code> <code>struct</code>'ı için <code>X1</code> ve <code>Y1</code> yaygın türlerini ve <code>mixup</code> metod imzası için <code>X2</code> <code>Y2</code>'yi
+kullanır. Metod, kendi <code>Point</code>'inden (<code>X1</code> türünde) alınan <code>x</code> değeri ve aktarılan <code>Point</code>'ten (<code>Y2</code> türünde) alınan <code>y</code> değeriyle yeni bir 
+<code>Point</code> tanımı oluşturur.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">struct Point&lt;X1, Y1&gt; {
     x: X1,
     y: Y1,
@@ -502,34 +461,23 @@ fn main() {
     println!(&quot;p3.x = {}, p3.y = {}&quot;, p3.x, p3.y);
 }
 </code></pre></pre>
-<p><span class="caption">Listing 10-11: A method that uses generic types different
-from its struct’s definition</span></p>
-<p>In <code>main</code>, we’ve defined a <code>Point</code> that has an <code>i32</code> for <code>x</code> (with value <code>5</code>)
-and an <code>f64</code> for <code>y</code> (with value <code>10.4</code>). The <code>p2</code> variable is a <code>Point</code> struct
-that has a string slice for <code>x</code> (with value <code>&quot;Hello&quot;</code>) and a <code>char</code> for <code>y</code>
-(with value <code>c</code>). Calling <code>mixup</code> on <code>p1</code> with the argument <code>p2</code> gives us <code>p3</code>,
-which will have an <code>i32</code> for <code>x</code>, because <code>x</code> came from <code>p1</code>. The <code>p3</code> variable
-will have a <code>char</code> for <code>y</code>, because <code>y</code> came from <code>p2</code>. The <code>println!</code> macro
-call will print <code>p3.x = 5, p3.y = c</code>.</p>
-<p>The purpose of this example is to demonstrate a situation in which some generic
-parameters are declared with <code>impl</code> and some are declared with the method
-definition. Here, the generic parameters <code>X1</code> and <code>Y1</code> are declared after
-<code>impl</code> because they go with the struct definition. The generic parameters <code>X2</code>
-and <code>Y2</code> are declared after <code>fn mixup</code>, because they’re only relevant to the
-method.</p>
-<h3 id="performance-of-code-using-generics"><a class="header" href="#performance-of-code-using-generics">Performance of Code Using Generics</a></h3>
-<p>You might be wondering whether there is a runtime cost when using generic type
-parameters. The good news is that using generic types won't make your run any
-slower than it would with concrete types.</p>
-<p>Rust accomplishes this by performing monomorphization of the code using
-generics at compile time. <em>Monomorphization</em> is the process of turning generic
-code into specific code by filling in the concrete types that are used when
-compiled. In this process, the compiler does the opposite of the steps we used
-to create the generic function in Listing 10-5: the compiler looks at all the
-places where generic code is called and generates code for the concrete types
-the generic code is called with.</p>
-<p>Let’s look at how this works by using the standard library’s generic
-<code>Option&lt;T&gt;</code> enum:</p>
+<p><span class="caption">Liste 10-11: Yapısının tanımından farklı yaygın türleri 
+kullanan bir metod</span></p>
+<p><code>main</code>'de, <code>x</code> için bir <code>i32</code> (değeri <code>5</code>) ve <code>y</code> için bir <code>f64</code> (değeri <code>10,4</code>) olan bir <code>Point</code> tanımladık. <code>p2</code> değişkeni, 
+<code>x</code> için bir dizgi dilimine (<code>&quot;Hello&quot;</code> değeriyle) ve <code>y</code> için bir <code>char</code> değerine (<code>c</code> değeriyle) sahip bir <code>Point</code> <code>struct</code>'tır. 
+<code>p1</code> üzerinde <code>p2</code> argümanıyla <code>mixup</code> çağrıldığında, <code>x</code> <code>p1</code>'den geldiği için <code>x</code> için bir <code>i32</code>'ye sahip olan <code>p3</code> elde edilir. 
+<code>p3</code> değişkeninde <code>y</code> için bir <code>char</code> olacaktır, çünkü <code>y</code> <code>p2</code>'den gelmiştir. <code>println!</code> makro çağrısı <code>p3.x = 5, p3.y = c</code> yazdıracaktır.</p>
+<p>Bu örneğin amacı, bazı yaygın parametrelerin <code>impl</code> ile bildirildiği ve bazılarının metod tanımıyla bildirildiği bir durumu göstermektir. 
+Burada, <code>X1</code> ve <code>Y1</code> yaygın parametreleri <code>impl</code>'den sonra bildirilir, çünkü bunlar <code>struct</code> tanımıyla birlikte tanımlanmıştır. 
+<code>X2</code> ve <code>Y2</code> yaygın parametreleri <code>fn mixup</code>'tan sonra bildirilir, çünkü bunlar yalnızca metodla ilgilidir.</p>
+<h3 id="yaygınları-kullanan-kodun-performansı"><a class="header" href="#yaygınları-kullanan-kodun-performansı">Yaygınları Kullanan Kodun Performansı</a></h3>
+<p>Yaygın tür parametrelerini kullanırken bir çalışma zamanı maliyeti olup olmadığını merak ediyor olabilirsiniz. 
+İyi haber şu ki, yaygın türleri kullanmak çalışmanızı somut tiplere göre daha yavaş hale getirmeyecektir.</p>
+<p>Rust bunu, derleme zamanında yaygınları kullanarak kodun <em>monomorfizasyonunu</em> gerçekleştirerek başarır. 
+<em>Monomorfizasyon</em>, derlendiğinde kullanılan somut tiplerin içini doldurarak genel kodu belirli bir koda dönüştürme işlemidir. 
+Bu süreçte derleyici, Liste 10-5'teki yaygın fonksiyonu oluşturmak için kullandığımız adımların tersini yapar: 
+derleyici, genel kodun çağrıldığı tüm yerlere bakar ve genel kodun çağrıldığı somut türler için kod oluşturur.</p>
+<p>Standart kütüphanenin yaygın <code>Option&lt;T&gt;</code> <code>enum</code>'unu kullanarak bunun nasıl çalıştığına bakalım:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -537,14 +485,11 @@ the generic code is called with.</p>
 let float = Some(5.0);
 <span class="boring">}
 </span></code></pre></pre>
-<p>When Rust compiles this code, it performs monomorphization. During that
-process, the compiler reads the values that have been used in <code>Option&lt;T&gt;</code>
-instances and identifies two kinds of <code>Option&lt;T&gt;</code>: one is <code>i32</code> and the other
-is <code>f64</code>. As such, it expands the generic definition of <code>Option&lt;T&gt;</code> into
-<code>Option_i32</code> and <code>Option_f64</code>, thereby replacing the generic definition with
-the specific ones.</p>
-<p>The monomorphized version of the code looks like the following:</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Rust bu kodu derlediğinde, <em>monomorflaştırma</em> gerçekleştirir. Bu işlem sırasında, derleyici <code>Option&lt;T&gt;</code> tanımlarında kullanılan değerleri 
+okur ve iki tür <code>Option&lt;T&gt;</code> tanımlar: biri <code>i32</code> ve diğeri <code>f64</code>. Bu nedenle, <code>Option&lt;T&gt;</code>'nin yaygın tanımını <code>Option_i32</code> ve 
+<code>Option_f64</code> olarak genişletir, böylece genel tanımı özel olanlarla değiştirir.</p>
+<p>Kodun monomorfize edilmiş versiyonu aşağıdaki gibi görünür:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">enum Option_i32 {
     Some(i32),
     None,
@@ -560,12 +505,10 @@ fn main() {
     let float = Option_f64::Some(5.0);
 }
 </code></pre></pre>
-<p>The generic <code>Option&lt;T&gt;</code> is replaced with the specific definitions created by
-the compiler. Because Rust compiles generic code into code that specifies the
-type in each instance, we pay no runtime cost for using generics. When the code
-runs, it performs just as it would if we had duplicated each definition by
-hand. The process of monomorphization makes Rust’s generics extremely efficient
-at runtime.</p>
+<p>Yaygın <code>Option&lt;T&gt;</code>, derleyici tarafından oluşturulan özel tanımlarla değiştirilir. 
+Rust, yaygın kodu her örnekte türü belirten koda derlediğinden, yaygınları kullanmak için çalışma zamanı maliyeti ödemeyiz. 
+Kod çalıştığında, her bir tanımı elle çoğaltmış olsaydık nasıl çalışacaksa öyle çalışır. Monomorfizasyon süreci, 
+Rust'ın yaygınlarını çalışma zamanında son derece verimli hale getirir.</p>
 
                     </main>
 

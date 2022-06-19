@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,41 +147,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="refutability-whether-a-pattern-might-fail-to-match"><a class="header" href="#refutability-whether-a-pattern-might-fail-to-match">Refutability: Whether a Pattern Might Fail to Match</a></h2>
-<p>Patterns come in two forms: refutable and irrefutable. Patterns that will match
-for any possible value passed are <em>irrefutable</em>. An example would be <code>x</code> in the
-statement <code>let x = 5;</code> because <code>x</code> matches anything and therefore cannot fail
-to match. Patterns that can fail to match for some possible value are
-<em>refutable</em>. An example would be <code>Some(x)</code> in the expression <code>if let Some(x) = a_value</code> because if the value in the <code>a_value</code> variable is <code>None</code> rather than
-<code>Some</code>, the <code>Some(x)</code> pattern will not match.</p>
-<p>Function parameters, <code>let</code> statements, and <code>for</code> loops can only accept
-irrefutable patterns, because the program cannot do anything meaningful when
-values don’t match. The <code>if let</code> and <code>while let</code> expressions accept
-refutable and irrefutable patterns, but the compiler warns against
-irrefutable patterns because by definition they’re intended to handle possible
-failure: the functionality of a conditional is in its ability to perform
-differently depending on success or failure.</p>
-<p>In general, you shouldn’t have to worry about the distinction between refutable
-and irrefutable patterns; however, you do need to be familiar with the concept
-of refutability so you can respond when you see it in an error message. In
-those cases, you’ll need to change either the pattern or the construct you’re
-using the pattern with, depending on the intended behavior of the code.</p>
-<p>Let’s look at an example of what happens when we try to use a refutable pattern
-where Rust requires an irrefutable pattern and vice versa. Listing 18-8 shows a
-<code>let</code> statement, but for the pattern we’ve specified <code>Some(x)</code>, a refutable
-pattern. As you might expect, this code will not compile.</p>
+                        <h2 id="reddedilebilirlik-bir-model-eşleşmede-başarısız-olabilir-mi"><a class="header" href="#reddedilebilirlik-bir-model-eşleşmede-başarısız-olabilir-mi">Reddedilebilirlik: Bir Model; Eşleşmede Başarısız Olabilir mi?</a></h2>
+<p>Modeller iki biçimde gelir: reddedilebilir ve reddedilemez. 
+Geçilen herhangi bir olası değer için eşleşecek kalıplar reddedilemez. 
+Bir örnek, <code>let x = 5</code> ifade yapısındaki <code>x</code> olabilir; çünkü <code>x</code> herhangi bir şeyle eşleşir 
+ve bu nedenle eşleşme başarısız olamaz. Bazı olası değerler için eşleşmeyen kalıplar reddedilebilir. </p>
+<p>Fonksiyon parametreleri, <code>let</code> deyimleri ve <code>for</code> döngüleri yalnızca reddedilemez kalıpları kabul edebilir, 
+çünkü değerler eşleşmediğinde program anlamlı bir şey yapamaz. <code>if let</code> ve <code>while let</code> ifadeleri reddedilemez ve reddedilemez 
+modelleri kabul eder, ancak derleyici reddedilemez kalıplara karşı uyarır çünkü tanımları gereği olası başarısızlığı ele almayı amaçlarlar: 
+bir koşulun işlevselliği, başarıya veya başarısızlığa bağlı olarak farklı performans gösterme yeteneğindedir.</p>
+<p>Genel olarak, reddedilebilir ve reddedilemez modeller arasındaki ayrım hakkında endişelenmenize gerek yoktur; 
+ancak, bir hata mesajında gördüğünüzde yanıt verebilmeniz için reddedilebilirlik kavramına aşina olmanız gerekir. 
+Bu durumlarda, kodun amaçlanan davranışına bağlı olarak, modeli veya modeli kullandığınız yapıyı değiştirmeniz gerekir.</p>
+<p>Rust'ın reddedilemez bir model gerektirdiği ve bunun tersi olduğu halde, 
+çürütülebilir bir model kullanmaya çalıştığımızda ne olduğuna dair bir örneğe bakalım. Liste 18-8, 
+bir <code>let</code> ifade yapısını gösterir, ancak <code>Some(x)</code> belirttiğimiz model için reddedilebilir bir modeldir. 
+Tahmin edebileceğiniz gibi, bu kod derlenmeyecektir:</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
 </span>    let Some(x) = some_option_value;
 <span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 18-8: Attempting to use a refutable pattern with
-<code>let</code></span></p>
-<p>If <code>some_option_value</code> was a <code>None</code> value, it would fail to match the pattern
-<code>Some(x)</code>, meaning the pattern is refutable. However, the <code>let</code> statement can
-only accept an irrefutable pattern because there is nothing valid the code can
-do with a <code>None</code> value. At compile time, Rust will complain that we’ve tried to
-use a refutable pattern where an irrefutable pattern is required:</p>
+<p><span class="caption">Liste 18-8: <code>let</code> ile çürütülebilir bir 
+model kullanmaya çalışmak</span></p>
+<p><code>some_option_value</code>, <code>None</code> değerinde olsaydı, <code>Some(x)</code> modeliyle eşleşmezdi, bu da kalıbın reddedilebilir olduğu anlamına gelir. 
+Ancak, <code>let</code> ifade yapısı yalnızca reddedilemez bir kalıbı kabul edebilir, çünkü kodun <code>None</code> değeriyle yapabileceği geçerli hiçbir şey yoktur. 
+Derleme zamanında; Rust, reddedilemez bir modelin gerekli olduğu durumlarda reddedilebilir bir model kullanmaya çalıştığımızdan şikayet edecektir:</p>
 <pre><code class="language-console">$ cargo run
    Compiling patterns v0.1.0 (file:///projects/patterns)
 error[E0005]: refutable pattern in local binding: `None` not covered
@@ -201,13 +192,11 @@ help: you might want to use `if let` to ignore the variant that isn't matched
 For more information about this error, try `rustc --explain E0005`.
 error: could not compile `patterns` due to previous error
 </code></pre>
-<p>Because we didn’t cover (and couldn’t cover!) every valid value with the
-pattern <code>Some(x)</code>, Rust rightfully produces a compiler error.</p>
-<p>If we have a refutable pattern where an irrefutable pattern is needed, we can
-fix it by changing the code that uses the pattern: instead of using <code>let</code>, we
-can use <code>if let</code>. Then if the pattern doesn’t match, the code will just skip
-the code in the curly brackets, giving it a way to continue validly. Listing
-18-9 shows how to fix the code in Listing 18-8.</p>
+<p><code>Some(x)</code> modeliyle geçerli her değeri kapsamadığımız (ve kapsayamadığımız) için, Rust haklı olarak bir derleyici hatası üretir.</p>
+<p>Çürütülemez bir modele ihtiyaç duyulan bir çürütülebilir modelimiz varsa, modeli kullanan kodu değiştirerek düzeltebiliriz: 
+<code>let</code> yerine <code>if let</code> kullanabiliriz. Ardından, model eşleşmezse, kod, süslü parantezler arasındaki kodu 
+atlayarak geçerli bir şekilde devam etmesinin bir yolunu sunar. 
+Liste 18-9, Liste 18-8'deki kodun nasıl düzeltileceğini gösterir.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
 </span>    if let Some(x) = some_option_value {
@@ -215,21 +204,19 @@ the code in the curly brackets, giving it a way to continue validly. Listing
     }
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 18-9: Using <code>if let</code> and a block with refutable
-patterns instead of <code>let</code></span></p>
-<p>We’ve given the code an out! This code is perfectly valid, although it means we
-cannot use an irrefutable pattern without receiving an error. If we give <code>if let</code> a pattern that will always match, such as <code>x</code>, as shown in Listing 18-10,
-the compiler will give a warning.</p>
+<p><span class="caption">Liste 18-9: <code>let</code> yerine <code>if let</code> kullanan ve reddedilebilir modellere sahip 
+bir blok kullanma</span></p>
+<p>Kodu bir çıkış verdik! Bu kod tamamen geçerlidir, ancak bir hata almadan reddedilemez bir model kullanamayacağımız 
+anlamına gelir. Liste 18-10'da gösterildiği gibi <code>x</code> gibi her zaman eşleşecek bir model verirsek, derleyici bir uyarı verecektir.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    if let x = 5 {
         println!(&quot;{}&quot;, x);
     };
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 18-10: Attempting to use an irrefutable pattern
-with <code>if let</code></span></p>
-<p>Rust complains that it doesn’t make sense to use <code>if let</code> with an irrefutable
-pattern:</p>
+<p><span class="caption">Liste 18-10: <code>if let</code> ile reddedilemez bir model
+kullanmaya çalışmak</span></p>
+<p>Rust, reddedilemez bir modelle <code>if let</code> kullanmanın mantıklı olmadığından şikayet ediyor:</p>
 <pre><code class="language-console">$ cargo run
    Compiling patterns v0.1.0 (file:///projects/patterns)
 warning: irrefutable `if let` pattern
@@ -247,14 +234,11 @@ warning: `patterns` (bin &quot;patterns&quot;) generated 1 warning
      Running `target/debug/patterns`
 5
 </code></pre>
-<p>For this reason, match arms must use refutable patterns, except for the last
-arm, which should match any remaining values with an irrefutable pattern. Rust
-allows us to use an irrefutable pattern in a <code>match</code> with only one arm, but
-this syntax isn’t particularly useful and could be replaced with a simpler
-<code>let</code> statement.</p>
-<p>Now that you know where to use patterns and the difference between refutable
-and irrefutable patterns, let’s cover all the syntax we can use to create
-patterns.</p>
+<p>Bu nedenle, eşleşme kolları, kalan değerleri reddedilemez bir modelle eşleştirmesi gereken son kol hariç, 
+reddedilebilir modeller kullanmalıdır. Rust, tek kollu bir eşleşmede reddedilemez bir model kullanmamıza izin verir, 
+ancak bu söz dizimi çok kullanışlı değildir ve daha basit bir <code>let</code> ifade yapısı ile değiştirilebilir.</p>
+<p>Artık modeleri nerede kullanacağınızı ve reddedilebilir ve reddedilemez modeller arasındaki farkı 
+bildiğinize göre, model oluşturmak için kullanabileceğimiz söz dizimini ele alalım.</p>
 
                     </main>
 

@@ -118,7 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        <a href="https://github.com/rust-lang/book" title="Git repository" aria-label="Git repository">
+                        <a href="https://github.com/ferhatgec/kitap" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
 
@@ -147,48 +147,39 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="storing-lists-of-values-with-vectors"><a class="header" href="#storing-lists-of-values-with-vectors">Storing Lists of Values with Vectors</a></h2>
-<p>The first collection type we’ll look at is <code>Vec&lt;T&gt;</code>, also known as a <em>vector</em>.
-Vectors allow you to store more than one value in a single data structure that
-puts all the values next to each other in memory. Vectors can only store values
-of the same type. They are useful when you have a list of items, such as the
-lines of text in a file or the prices of items in a shopping cart.</p>
-<h3 id="creating-a-new-vector"><a class="header" href="#creating-a-new-vector">Creating a New Vector</a></h3>
-<p>To create a new empty vector, we call the <code>Vec::new</code> function, as shown in
-Listing 8-1.</p>
+                        <h2 id="vektörlerle-değer-listelerini-saklama"><a class="header" href="#vektörlerle-değer-listelerini-saklama">Vektörlerle Değer Listelerini Saklama</a></h2>
+<p>Bakacağımız ilk koleksiyon türü, vektör olarak da bilinen <code>Vec&lt;T&gt;</code>'dir. Vektörler, tüm değerleri bellekte 
+yan yana koyan tek bir veri yapısında birden fazla değeri saklamanıza izin verir. Vektörler yalnızca aynı türdeki 
+değerleri saklayabilir. Bir dosyadaki metin satırları veya bir alış veriş sepetindeki ürünlerin fiyatları gibi bir 
+öğe listeniz olduğunda kullanışlıdırlar.</p>
+<h3 id="yeni-bir-vektör-oluşturma"><a class="header" href="#yeni-bir-vektör-oluşturma">Yeni bir Vektör Oluşturma</a></h3>
+<p>Yeni bir boş vektör oluşturmak için Liste 8-1'de gösterildiği gibi 
+<code>Vec::new</code> fonksiyonunu çağırıyoruz.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v: Vec&lt;i32&gt; = Vec::new();
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-1: Creating a new, empty vector to hold values
-of type <code>i32</code></span></p>
-<p>Note that we added a type annotation here. Because we aren’t inserting any
-values into this vector, Rust doesn’t know what kind of elements we intend to
-store. This is an important point. Vectors are implemented using generics;
-we’ll cover how to use generics with your own types in Chapter 10. For now,
-know that the <code>Vec&lt;T&gt;</code> type provided by the standard library can hold any type.
-When we create a vector to hold a specific type, we can specify the type within
-angle brackets. In Listing 8-1, we’ve told Rust that the <code>Vec&lt;T&gt;</code> in <code>v</code> will
-hold elements of the <code>i32</code> type.</p>
-<p>More often, you’ll create a <code>Vec&lt;T&gt;</code> with initial values and Rust will infer
-the type of value you want to store, so you rarely need to do this type
-annotation. Rust conveniently provides the <code>vec!</code> macro, which will create a
-new vector that holds the values you give it. Listing 8-2 creates a new
-<code>Vec&lt;i32&gt;</code> that holds the values <code>1</code>, <code>2</code>, and <code>3</code>. The integer type is <code>i32</code>
-because that’s the default integer type, as we discussed in the <a href="ch03-02-data-types.html#data-types">“Data
-Types”</a><!-- ignore --> section of Chapter 3.</p>
+<p><span class="caption">Liste 8-1: <code>i32</code> türündeki değerleri tutmak için yeni, 
+boş bir vektör oluşturma</span></p>
+<p>Buraya bir tür ek açıklaması eklediğimize dikkat edin. Bu vektöre herhangi bir değer eklemediğimiz için, 
+Rust ne tür öğeler depolamak istediğimizi bilmiyor. Bu önemli bir noktadır. Vektörler yaygınlar kullanılarak uygulanır; 
+Bölüm 10'da yaygınları kendi türlerinizle nasıl kullanacağınızı ele alacağız. Şimdilik, standart kütüphane tarafından sağlanan 
+<code>Vec&lt;T&gt;</code> türünün herhangi bir türü tutabileceğini bilin. Belirli bir türü tutmak için bir vektör oluşturduğumuzda, 
+türü köşeli parantezler içinde belirtebiliriz. Liste 8-1'de, Rust'a <code>v</code> içindeki <code>Vec&lt;T&gt;</code>'nin <code>i32</code> tipinde elemanlar tutacağını söyledik.</p>
+<p>Daha sık olarak, ilk değerlerle bir <code>Vec&lt;T&gt;</code> oluşturursunuz ve Rust saklamak istediğiniz değerin türünü çıkarır, 
+bu nedenle bu tür ek açıklamasını yapmanız nadiren gerekir. Rust, verdiğiniz değerleri tutan yeni bir vektör oluşturacak olan 
+<code>vec!</code> makrosunu uygun bir şekilde sağlar. Liste 8-2, <code>1</code>, <code>2</code> ve <code>3</code> değerlerini tutan yeni bir <code>Vec&lt;i32&gt;</code> oluşturur. Tam sayı 
+türü <code>i32</code>'dir çünkü bu, Bölüm 3'ün <a href="ch03-02-data-types.html#data-types">“Veri Türleri”</a><!-- ignore -->  bölümünde tartıştığımız gibi varsayılan tam sayı türüdür.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v = vec![1, 2, 3];
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-2: Creating a new vector containing
-values</span></p>
-<p>Because we’ve given initial <code>i32</code> values, Rust can infer that the type of <code>v</code>
-is <code>Vec&lt;i32&gt;</code>, and the type annotation isn’t necessary. Next, we’ll look at how
-to modify a vector.</p>
-<h3 id="updating-a-vector"><a class="header" href="#updating-a-vector">Updating a Vector</a></h3>
-<p>To create a vector and then add elements to it, we can use the <code>push</code> method,
-as shown in Listing 8-3.</p>
+<p><span class="caption">Liste 8-2: Değerler içeren yeni bir vektör oluşturma</span></p>
+<p><code>i32</code> değerlerini verdiğimiz için, Rust <code>v</code> türünün <code>Vec&lt;i32&gt;</code> olduğu sonucunu çıkarabilir ve tür ek açıklamasına gerek kalmaz. 
+Sonraki başlıkta bir vektörün nasıl değiştirileceğine bakacağız.</p>
+<h3 id="bir-vektörü-güncelleme"><a class="header" href="#bir-vektörü-güncelleme">Bir Vektörü Güncelleme</a></h3>
+<p>Bir vektör oluşturmak ve daha sonra ona eleman eklemek için <code>push</code> metodunu kullanabiliriz,
+Liste 8-3'te gösterildiği gibi.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let mut v = Vec::new();
 
@@ -200,16 +191,14 @@ as shown in Listing 8-3.</p>
 </span></code></pre></pre>
 <p><span class="caption">Listing 8-3: Using the <code>push</code> method to add values to a
 vector</span></p>
-<p>As with any variable, if we want to be able to change its value, we need to
-make it mutable using the <code>mut</code> keyword, as discussed in Chapter 3. The numbers
-we place inside are all of type <code>i32</code>, and Rust infers this from the data, so
-we don’t need the <code>Vec&lt;i32&gt;</code> annotation.</p>
-<h3 id="reading-elements-of-vectors"><a class="header" href="#reading-elements-of-vectors">Reading Elements of Vectors</a></h3>
-<p>There are two ways to reference a value stored in a vector: via indexing or
-using the <code>get</code> method. In the following examples, we’ve annotated the types of
-the values that are returned from these functions for extra clarity.</p>
-<p>Listing 8-4 shows both methods of accessing a value in a vector, with indexing
-syntax and the <code>get</code> method.</p>
+<p>Herhangi bir değişkende olduğu gibi, değerini değiştirebilmek istiyorsak, şunu yapmamız gerekir:
+Bölüm 3'te tartışıldığı gibi <code>mut</code> anahtar sözcüğünü kullanarak değiştirilebilir hale getirmelisiniz. </p>
+<p>Sayılar içine yerleştirdiğimiz tüm öğeler <code>i32</code> türündedir ve Rust bunu verilerden çıkarır, yani
+<code>Vec&lt;i32&gt;</code> ek açıklamasına ihtiyacımız yoktur.</p>
+<h3 id="vektörlerin-elemanlarını-okuma"><a class="header" href="#vektörlerin-elemanlarını-okuma">Vektörlerin Elemanlarını Okuma</a></h3>
+<p>Bir vektörde saklanan bir değere başvurmanın iki yolu vardır: indeksleme veya
+<code>get</code> metodunu kullanma. Aşağıdaki örneklerde, daha fazla netlik için bu fonksiyonlardan 
+döndürülen değerlerin türlerini açıkladık.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v = vec![1, 2, 3, 4, 5];
 
@@ -223,18 +212,15 @@ syntax and the <code>get</code> method.</p>
     }
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-4: Using indexing syntax or the <code>get</code> method to
-access an item in a vector</span></p>
-<p>Note a few details here. We use the index value of <code>2</code> to get the third element
-because vectors are indexed by number, starting at zero. Using <code>&amp;</code> and <code>[]</code>
-gives us a reference to the element at the index value. When we use the <code>get</code>
-method with the index passed as an argument, we get an <code>Option&lt;&amp;T&gt;</code> that we can
-use with <code>match</code>.</p>
-<p>The reason Rust provides these two ways to reference an element is so you can
-choose how the program behaves when you try to use an index value outside the
-range of existing elements. As an example, let’s see what happens when we have
-a vector of five elements and then we try to access an element at index 100
-with each technique, as shown in Listing 8-5.</p>
+<p><span class="caption">Liste 8-4: Bir vektördeki bir öğeye erişmek için indekslemeyi veya 
+<code>get</code> metodunu kullanma</span></p>
+<p>Burada birkaç ayrıntıya dikkat edin. Üçüncü elemanı elde etmek için <code>2</code> indeks değerini kullanırız çünkü vektörler sıfırdan 
+başlayarak sayıya göre indekslenir ve <code>[]</code> kullanmak bize indeks değerindeki elemana bir referans verir. <code>get</code> metodunu argüman 
+olarak geçirilen indeksle kullandığımızda, <code>match</code> ile kullanabileceğimiz bir <code>Option&lt;&amp;T&gt;</code> elde ederiz.</p>
+<p>Rust'ın bir öğeye başvurmak için bu iki yolu sağlamasının nedeni, mevcut öğelerin aralığı dışında bir 
+indeks değeri kullanmaya çalıştığınızda programın nasıl davranacağını seçebilmenizdir. 
+Örnek olarak, beş elemanlı bir vektörümüz olduğunda ve ardından Liste 8-5'te gösterildiği gibi her bir teknikle 
+<code>100</code> indeksindeki bir elemana erişmeye çalıştığımızda ne olacağını görelim.</p>
 <pre><pre class="playground"><code class="language-rust should_panic panics"><span class="boring">fn main() {
 </span>    let v = vec![1, 2, 3, 4, 5];
 
@@ -242,30 +228,20 @@ with each technique, as shown in Listing 8-5.</p>
     let does_not_exist = v.get(100);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-5: Attempting to access the element at index
-100 in a vector containing five elements</span></p>
-<p>When we run this code, the first <code>[]</code> method will cause the program to panic
-because it references a nonexistent element. This method is best used when you
-want your program to crash if there’s an attempt to access an element past the
-end of the vector.</p>
-<p>When the <code>get</code> method is passed an index that is outside the vector, it returns
-<code>None</code> without panicking. You would use this method if accessing an element
-beyond the range of the vector may happen occasionally under normal
-circumstances. Your code will then have logic to handle having either
-<code>Some(&amp;element)</code> or <code>None</code>, as discussed in Chapter 6. For example, the index
-could be coming from a person entering a number. If they accidentally enter a
-number that’s too large and the program gets a <code>None</code> value, you could tell the
-user how many items are in the current vector and give them another chance to
-enter a valid value. That would be more user-friendly than crashing the program
-due to a typo!</p>
-<p>When the program has a valid reference, the borrow checker enforces the
-ownership and borrowing rules (covered in Chapter 4) to ensure this reference
-and any other references to the contents of the vector remain valid. Recall the
-rule that states you can’t have mutable and immutable references in the same
-scope. That rule applies in Listing 8-6, where we hold an immutable reference
-to the first element in a vector and try to add an element to the end. This
-program won’t work if we also try to refer to that element later in the
-function:</p>
+<p><span class="caption">Liste 8-5: Beş element içeren bir vektörde indeks 
+<code>100</code>'deki elemana erişmeye çalışmak</span></p>
+<p>Bu kodu çalıştırdığımızda ilk <code>[]</code> metodu var olmayan bir elemente referans verdiği için programın paniğe kapılmasına neden olacaktır. 
+Bu yöntem en iyi şekilde, vektörün sonundaki bir öğeye erişme girişimi olduğunda programınızın çökmesini istediğinizde kullanılır.</p>
+<p><code>get</code> metodu vektörün dışında bir indeks iletildiğinde panik yapmadan <code>None</code> döndürür. 
+Normal koşullar altında, vektör aralığının dışındaki bir öğeye erişim ara sıra gerçekleşebiliyorsa, 
+bu metodu kullanırsınız. Kodunuz, Bölüm 6'da tartışıldığı gibi, <code>Some(&amp;element)</code> veya <code>None</code>'a sahip olmayı işlemek için bir mantığa sahip 
+olacaktır. Örneğin, dizin bir sayı giren bir kişiden geliyor olabilir. Yanlışlıkla çok büyük bir sayı girerlerse ve program <code>None</code> değeri alırsa,
+kullanıcıya geçerli vektörde kaç öğe olduğunu söyleyebilir ve onlara geçerli bir değer girmeleri için bir şans daha verebilirsiniz. 
+Bu, bir yazım hatası nedeniyle programı çökertmekten daha kullanıcı dostu olurdu!</p>
+<p>Programın geçerli bir referansı olduğunda, ödünç alma denetleyicisi, bu referansın ve vektörün içeriğine yönelik diğer referansların geçerli 
+kalmasını sağlamak için mülkiyet ve ödünç alma kurallarını (Bölüm 4'te ele alınmıştır) uygular. Aynı kapsamda değiştirilebilir ve değişmez 
+referanslara sahip olamayacağınızı belirten kuralı hatırlayın. Bu kural, bir vektördeki ilk öğeye değişmez bir referans tuttuğumuz ve 
+sona bir öğe eklemeye çalıştığımız Liste 8-6'da geçerlidir. Fonksiyonda daha sonra bu öğeye başvurmaya çalışırsak, bu program çalışmayacaktır:</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span>    let mut v = vec![1, 2, 3, 4, 5];
 
@@ -276,9 +252,8 @@ function:</p>
     println!(&quot;The first element is: {}&quot;, first);
 <span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 8-6: Attempting to add an element to a vector
-while holding a reference to an item</span></p>
-<p>Compiling this code will result in this error:</p>
+<p><span class="caption">Liste 8-6: Bir öğeye referans tutarken bir vektöre öğe eklemeye çalışmak</span></p>
+<p>Bu kodu derlemek şu hataya neden olur:</p>
 <pre><code class="language-console">$ cargo run
    Compiling collections v0.1.0 (file:///projects/collections)
 error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
@@ -296,24 +271,18 @@ error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immuta
 For more information about this error, try `rustc --explain E0502`.
 error: could not compile `collections` due to previous error
 </code></pre>
-<p>The code in Listing 8-6 might look like it should work: why should a reference
-to the first element care about changes at the end of the vector? This error is
-due to the way vectors work: because vectors put the values next to each other
-in memory, adding a new element onto the end of the vector might require
-allocating new memory and copying the old elements to the new space, if there
-isn’t enough room to put all the elements next to each other where the vector
-is currently stored. In that case, the reference to the first element would be
-pointing to deallocated memory. The borrowing rules prevent programs from
-ending up in that situation.</p>
+<p>Liste 8-6'daki kod çalışması gerekiyormuş gibi görünebilir: ilk elemana yapılan bir referans vektörün sonundaki değişiklikleri neden önemsesin? 
+Bu hata vektörlerin çalışma şeklinden kaynaklanmaktadır: vektörler değerleri bellekte yan yana koyduğu için, vektörün sonuna yeni bir 
+eleman eklemek, vektörün şu anda depolandığı yerde tüm elemanları yan yana koymak için yeterli yer yoksa, yeni bellek ayırmayı ve eski 
+elemanları yeni alana kopyalamayı gerektirebilir. Bu durumda, ilk elemanın referansı ayrılmış belleğe işaret ediyor olacaktır. 
+Ödünç alma kuralları programların bu duruma düşmesini engeller.</p>
 <blockquote>
-<p>Note: For more on the implementation details of the <code>Vec&lt;T&gt;</code> type, see <a href="../nomicon/vec/vec.html">“The
-Rustonomicon”</a>.</p>
+<p>Not: <code>Vec&lt;T&gt;</code> türünün sürekleme ayrıntıları hakkında daha fazla bilgi için bkz. <a href="../nomicon/vec/vec.html">“The Rustonomicon”</a>.</p>
 </blockquote>
-<h3 id="iterating-over-the-values-in-a-vector"><a class="header" href="#iterating-over-the-values-in-a-vector">Iterating over the Values in a Vector</a></h3>
-<p>To access each element in a vector in turn, we would iterate through all of the
-elements rather than use indices to access one at a time. Listing 8-7 shows how
-to use a <code>for</code> loop to get immutable references to each element in a vector of
-<code>i32</code> values and print them.</p>
+<h3 id="bir-vektördeki-değerler-Üzerinde-yineleme"><a class="header" href="#bir-vektördeki-değerler-Üzerinde-yineleme">Bir Vektördeki Değerler Üzerinde Yineleme</a></h3>
+<p>Bir vektördeki her bir öğeye sırayla erişmek için, her seferinde bir öğeye erişmek üzere indisleri kullanmak yerine 
+tüm öğeler arasında yineleme yaparız. Liste 8-7, <code>i32</code> değerlerinden oluşan bir vektördeki her bir öğeye 
+değişmez referanslar almak ve bunları yazdırmak için bir <code>for</code> döngüsünün nasıl kullanılacağını gösterir.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v = vec![100, 32, 57];
     for i in &amp;v {
@@ -321,11 +290,9 @@ to use a <code>for</code> loop to get immutable references to each element in a 
     }
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-7: Printing each element in a vector by
-iterating over the elements using a <code>for</code> loop</span></p>
-<p>We can also iterate over mutable references to each element in a mutable vector
-in order to make changes to all the elements. The <code>for</code> loop in Listing 8-8
-will add <code>50</code> to each element.</p>
+<p><span class="caption">Liste 8-7: Bir <code>for</code> döngüsü kullanarak öğeler üzerinde yineleme yaparak bir vektördeki her bir öğeyi yazdırma</span></p>
+<p>Ayrıca, tüm öğelerde değişiklik yapmak için değişebilir bir vektördeki her bir öğeye yönelik değişebilir referanslar 
+üzerinde yineleme yapabiliriz. Liste 8-8'deki <code>for</code> döngüsü her öğeye <code>50</code> ekleyecektir.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let mut v = vec![100, 32, 57];
     for i in &amp;mut v {
@@ -333,31 +300,21 @@ will add <code>50</code> to each element.</p>
     }
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-8: Iterating over mutable references to
-elements in a vector</span></p>
-<p>To change the value that the mutable reference refers to, we have to use the
-<code>*</code> dereference operator to get to the value in <code>i</code> before we can use the <code>+=</code>
-operator. We’ll talk more about the dereference operator in the <a href="ch15-02-deref.html#following-the-pointer-to-the-value-with-the-dereference-operator">“Following the
-Pointer to the Value with the Dereference Operator”</a><!-- ignore -->
-section of Chapter 15.</p>
-<p>Iterating over a vector, whether immutably or mutably, is safe because of the
-borrow checker's rules. If we attempted to insert or remove items in the <code>for</code>
-loop bodies in Listing 8-7 and Listing 8-8, we would get a compiler error
-similar to the one we got with the code in Listing 8-6. The reference to the
-vector that the <code>for</code> loop holds prevents simultaneous modification of the
-whole vector.</p>
-<h3 id="using-an-enum-to-store-multiple-types"><a class="header" href="#using-an-enum-to-store-multiple-types">Using an Enum to Store Multiple Types</a></h3>
-<p>Vectors can only store values that are the same type. This can be inconvenient;
-there are definitely use cases for needing to store a list of items of
-different types. Fortunately, the variants of an enum are defined under the
-same enum type, so when we need one type to represent elements of different
-types, we can define and use an enum!</p>
-<p>For example, say we want to get values from a row in a spreadsheet in which
-some of the columns in the row contain integers, some floating-point numbers,
-and some strings. We can define an enum whose variants will hold the different
-value types, and all the enum variants will be considered the same type: that
-of the enum. Then we can create a vector to hold that enum and so, ultimately,
-holds different types. We’ve demonstrated this in Listing 8-9.</p>
+<p><span class="caption">Liste 8-8: Bir vektördeki öğelere yönelik değiştirilebilir referanslar üzerinde yineleme</span></p>
+<p>Değiştirilebilir referansın ifade ettiği değeri değiştirmek için, <code>+=</code> operatörünü kullanmadan önce <code>i</code> içindeki değere ulaşmak için 
+<code>*</code> referansı alma operatörünü kullanmamız gerekir. Referansı alma operatörü hakkında daha fazla bilgiyi Bölüm 15'teki  <a href="ch15-02-deref.html#following-the-pointer-to-the-value-with-the-dereference-operator">“Referansı Alma Operatörü ile Değere Bakan İşaretçiyi Takip Etme”</a><!-- ignore --> kısmında bulacağız.</p>
+<p>İster değişmez ister değişebilir olsun, bir vektör üzerinde yineleme yapmak, ödünç denetleyicisinin kuralları nedeniyle güvenlidir. 
+Liste 8-7 ve Liste 8-8'deki <code>for</code> döngüsü gövdelerine öğe eklemeye veya çıkarmaya çalışırsak, 
+Liste 8-6'daki kodla aldığımıza benzer bir derleyici hatası alırız. <code>for</code> döngüsünün tuttuğu vektör referansı tüm vektörün aynı anda 
+değiştirilmesini engeller.</p>
+<h3 id="birden-fazla-türü-saklamak-için-enum-kullanma"><a class="header" href="#birden-fazla-türü-saklamak-için-enum-kullanma">Birden Fazla Türü Saklamak için <code>enum</code> Kullanma</a></h3>
+<p>Vektörler yalnızca aynı türden değerleri depolayabilir. Bu elverişsiz olabilir; farklı türlerdeki öğelerin bir 
+listesini saklamaya ihtiyaç duyan kullanım durumları kesinlikle vardır. Neyse ki, bir <code>enum</code>'un varyantları aynı <code>enum</code> tipi altında tanımlanır, 
+bu nedenle farklı tiplerdeki öğeleri temsil etmek için tek bir tipe ihtiyaç duyduğumuzda, bir <code>enum</code> tanımlayabilir ve kullanabiliriz!</p>
+<p>Örneğin, satırdaki sütunlardan bazılarının tam sayılar, bazılarının kayan noktalı sayılar ve bazılarının da dizgiler içerdiği bir elektronik 
+tablodaki bir satırdan değerler almak istediğimizi varsayalım. Varyantları farklı değer türlerini tutacak bir <code>enum</code> tanımlayabiliriz ve 
+tüm <code>enum</code> varyantları aynı tür olarak kabul edilir. Daha sonra bu <code>enum</code>'u tutmak için bir vektör oluşturabiliriz ve 
+böylece sonuçta farklı türleri tutabiliriz. Bunu Liste 8-9'da gösterdik.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    enum SpreadsheetCell {
         Int(i32),
@@ -372,25 +329,21 @@ holds different types. We’ve demonstrated this in Listing 8-9.</p>
     ];
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-9: Defining an <code>enum</code> to store values of
-different types in one vector</span></p>
-<p>Rust needs to know what types will be in the vector at compile time so it knows
-exactly how much memory on the heap will be needed to store each element. We
-must also be explicit about what types are allowed in this vector. If Rust
-allowed a vector to hold any type, there would be a chance that one or more of
-the types would cause errors with the operations performed on the elements of
-the vector. Using an enum plus a <code>match</code> expression means that Rust will ensure
-at compile time that every possible case is handled, as discussed in Chapter 6.</p>
-<p>If you don’t know the exhaustive set of types a program will get at runtime to
-store in a vector, the enum technique won’t work. Instead, you can use a trait
-object, which we’ll cover in Chapter 17.</p>
-<p>Now that we’ve discussed some of the most common ways to use vectors, be sure
-to review <a href="../std/vec/struct.Vec.html">the API documentation</a><!-- ignore --> for all the many
-useful methods defined on <code>Vec&lt;T&gt;</code> by the standard library. For example, in
-addition to <code>push</code>, a <code>pop</code> method removes and returns the last element.</p>
-<h3 id="dropping-a-vector-drops-its-elements"><a class="header" href="#dropping-a-vector-drops-its-elements">Dropping a Vector Drops Its Elements</a></h3>
-<p>Like any other <code>struct</code>, a vector is freed when it goes out of scope, as
-annotated in Listing 8-10.</p>
+<p><span class="caption">Liste 8-9: Farklı türlerdeki değerleri tek bir vektörde saklamak için <code>enum</code> tanımlama</span></p>
+<p>Rust'ın derleme zamanında vektörde hangi türlerin olacağını bilmesi gerekir, böylece her bir öğeyi depolamak için 
+yığın üzerinde tam olarak ne kadar bellek gerekeceğini bilir. Ayrıca bu vektörde hangi türlere izin verildiği konusunda 
+da açık olmalıyız. Rust bir vektörün herhangi bir türü tutmasına izin verseydi, 
+türlerden birinin veya daha fazlasının vektörün elemanları üzerinde gerçekleştirilen işlemlerde hatalara neden olma ihtimali olurdu. 
+Bir <code>enum</code> ve bir <code>match</code> ifadesi kullanmak, Bölüm 6'da tartışıldığı gibi, Rust'ın derleme zamanında olası her durumun 
+ele alınmasını sağlayacağı anlamına gelir.</p>
+<p>Bir programın çalışma zamanında bir vektörde depolamak için alacağı kapsamlı tür kümesini bilmiyorsanız, 
+<code>enum</code> işe yaramayacaktır. Bunun yerine, Bölüm 17'de ele alacağımız bir <code>trait</code> tanımını kullanabilirsiniz.</p>
+<p>Vektörleri kullanmanın en yaygın yollarından bazılarını tartıştığımıza göre, standart kütüphane tarafından <code>Vec&lt;T&gt;</code> üzerinde tanımlanan 
+birçok yararlı yöntem için <a href="../std/vec/struct.Vec.html">API dokümantasyonunu</a><!-- ignore --> gözden geçirdiğinizden emin olun. 
+Örneğin, <code>push</code>'a ek olarak, <code>pop</code> yöntemi son elemanı kaldırır 
+ve döndürür.</p>
+<h3 id="bir-vektörü-düşürmek-elemanlarını-düşürür"><a class="header" href="#bir-vektörü-düşürmek-elemanlarını-düşürür">Bir Vektörü Düşürmek Elemanlarını Düşürür</a></h3>
+<p><code>struct</code>'lar gibi, bir vektör de kapsam dışına çıktığında, Liste 8-10'da açıklandığı gibi serbest bırakılır.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    {
         let v = vec![1, 2, 3, 4];
@@ -399,13 +352,10 @@ annotated in Listing 8-10.</p>
     } // &lt;- v goes out of scope and is freed here
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 8-10: Showing where the vector and its elements
-are dropped</span></p>
-<p>When the vector gets dropped, all of its contents are also dropped, meaning the
-integers it holds will be cleaned up. The borrow checker ensures that any
-references to contents of a vector are only used while the vector itself is
-valid.</p>
-<p>Let’s move on to the next collection type: <code>String</code>!</p>
+<p><span class="caption">Liste 8-10: Vektörün ve elemanlarının nereye bırakıldığını gösterme</span></p>
+<p>Vektör bırakıldığında, tüm içeriği de bırakılır, yani tuttuğu tam sayılar temizlenir. Ödünç alma denetleyicisi, 
+bir vektörün içeriğine yapılan referansların yalnızca vektörün kendisi geçerli olduğu sürece kullanılmasını sağlar.</p>
+<p>Bir sonraki koleksiyon türüne geçelim: <code>String</code>!</p>
 
                     </main>
 
