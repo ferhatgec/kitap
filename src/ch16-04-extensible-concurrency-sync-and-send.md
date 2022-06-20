@@ -1,89 +1,65 @@
-## Extensible Concurrency with the `Sync` and `Send` Traits
+## `Sync` ve `Send` Tanımlarıyla Genişletilebilir Eşzamanlılık
 
-Interestingly, the Rust language has *very* few concurrency features. Almost
-every concurrency feature we’ve talked about so far in this chapter has been
-part of the standard library, not the language. Your options for handling
-concurrency are not limited to the language or the standard library; you can
-write your own concurrency features or use those written by others.
+İlginç bir şekilde, Rust dili çok az eşzamanlılık özelliğine sahiptir. Bu bölümde şimdiye kadar bahsettiğimiz neredeyse 
+tüm eşzamanlılık özellikleri dilin değil, standart kütüphanenin bir parçasıydı. Eşzamanlılığı ele almak için seçenekleriniz 
+dil veya standart kütüphane ile sınırlı değildir; kendi eşzamanlılık özelliklerinizi yazabilir veya başkaları tarafından 
+yazılanları kullanabilirsiniz.
 
-However, two concurrency concepts are embedded in the language: the
-`std::marker` traits `Sync` and `Send`.
+Ancak, iki eşzamanlılık kavramı dilin içine yerleştirilmiştir: `std::marker` tanımları `Sync` ve `Send`.
 
-### Allowing Transference of Ownership Between Threads with `Send`
+### `Send` ile İş Parçacıkları Arasında Sahiplik Aktarımına İzin Verme
 
-The `Send` marker trait indicates that ownership of values of the type
-implementing `Send` can be transferred between threads. Almost every Rust type
-is `Send`, but there are some exceptions, including `Rc<T>`: this cannot be
-`Send` because if you cloned an `Rc<T>` value and tried to transfer ownership
-of the clone to another thread, both threads might update the reference count
-at the same time. For this reason, `Rc<T>` is implemented for use in
-single-threaded situations where you don’t want to pay the thread-safe
-performance penalty.
+`Send` işaretleyici tanımı, `Send`'i sürekleyen türdeki değerlerin sahipliğinin iş parçacıkları arasında aktarılabileceğini gösterir. 
+Hemen hemen her Rust türü `Send`'dir, ancak `Rc<T>` gibi bazı istisnalar vardır: bu tür `Send` olamaz, çünkü bir `Rc<T>` değerini klonlarsanız 
+ve klonun sahipliğini başka bir iş parçacığına aktarmaya çalışırsanız, her iki iş parçacığı da referans sayısını aynı anda güncelleyebilir. 
+Bu nedenle `Rc<T>`, iş parçacığı güvenli performans cezasını ödemek istemediğiniz tek iş parçacıklı durumlarda kullanılmak üzere uygulanmıştır.
 
-Therefore, Rust’s type system and trait bounds ensure that you can never
-accidentally send an `Rc<T>` value across threads unsafely. When we tried to do
-this in Listing 16-14, we got the error `the trait Send is not implemented for
-Rc<Mutex<i32>>`. When we switched to `Arc<T>`, which is `Send`, the code
-compiled.
+Bu nedenle, Rust'ın tür sistemi ve tanım bağlılığı, bir `Rc<T>` değerini asla yanlışlıkla iş parçacıkları arasında güvenli olmayan bir şekilde
+gönderemeyeceğinizi garanti eder. Bunu Liste 16-14'te yapmaya çalıştığımızda, `Send` tanımının `Rc<Mutex<i32>>` için süreklenmediği hatasını almıştık.
+`Send`'i süreklemiş `Arc<T>`'ye geçtiğimizde kod derlendi.
 
-Any type composed entirely of `Send` types is automatically marked as `Send` as
-well. Almost all primitive types are `Send`, aside from raw pointers, which
-we’ll discuss in Chapter 19.
+Tamamen `Send` türlerinden oluşan herhangi bir tür de otomatik olarak `Send` olarak işaretlenir. 
+Bölüm 19'da tartışacağımız ham işaretçiler dışında neredeyse tüm ilkel tipler `Send`'dir.
 
-### Allowing Access from Multiple Threads with `Sync`
+### `Sync` ile Birden Fazla İş Parçacığından Erişime İzin Verme
 
-The `Sync` marker trait indicates that it is safe for the type implementing
-`Sync` to be referenced from multiple threads. In other words, any type `T` is
-`Sync` if `&T` (an immutable reference to `T`) is `Send`, meaning the reference
-can be sent safely to another thread. Similar to `Send`, primitive types are
-`Sync`, and types composed entirely of types that are `Sync` are also `Sync`.
+`Sync` işaretleyici tanımı, `Sync`'i sürekleyen türe birden fazla iş parçacığından başvurulmasının güvenli olduğunu belirtir. 
+Başka bir deyişle, `&T` (`T`'ye değişmez bir referans) `Send` ise herhangi bir `T` türü `Sync`'tir, yani referans başka bir iş 
+parçacığına güvenle gönderilebilir. `Send`'e benzer şekilde, ilkel tipler `Sync`'tir ve tamamen `Sync` olan tiplerden oluşan tipler de 
+`Sync`'tir.
 
-The smart pointer `Rc<T>` is also not `Sync` for the same reasons that it’s not
-`Send`. The `RefCell<T>` type (which we talked about in Chapter 15) and the
-family of related `Cell<T>` types are not `Sync`. The implementation of borrow
-checking that `RefCell<T>` does at runtime is not thread-safe. The smart
-pointer `Mutex<T>` is `Sync` and can be used to share access with multiple
-threads as you saw in the [“Sharing a `Mutex<T>` Between Multiple
-Threads”][sharing-a-mutext-between-multiple-threads]<!-- ignore --> section.
+Akıllı işaretçi `Rc<T>` de `Send` olmamasıyla aynı nedenlerden dolayı `Sync` değildir. `RefCell<T>` türü (Bölüm 15'te bahsetmiştik) 
+ve ilgili `Cell<T>` türleri ailesi `Sync` değildir. `RefCell<T>`'nin çalışma zamanında yaptığı ödünç alma denetimi uygulaması iş parçacığı 
+güvenli değildir. Akıllı işaretçi `Mutex<T>` `Sync`'tir ve [“Bir `Mutex<T>`'i Birden Fazla İş Parçacığı Arasında Paylaşma”][sharing-a-mutext-between-multiple-threads]<!-- ignore --> bölümünde gördüğünüz gibi erişimi birden fazla iş parçacığı ile paylaşmak için kullanılabilir.
 
-### Implementing `Send` and `Sync` Manually Is Unsafe
+### `Send` ve `Sync`'i Manuel Olarak Süreklemek Güvenli Değildir
 
-Because types that are made up of `Send` and `Sync` traits are automatically
-also `Send` and `Sync`, we don’t have to implement those traits manually. As
-marker traits, they don’t even have any methods to implement. They’re just
-useful for enforcing invariants related to concurrency.
+`Send` ve `Sync` tanımlarından oluşan türler otomatik olarak `Send` ve `Sync` özelliklerine de sahip olduğundan, 
+bu özellikleri manuel olarak süreklememiz gerekmez. İşaretleyici tanımlar olarak, süreklenecek herhangi bir metodları bile yoktur. 
+Sadece eşzamanlılıkla ilgili değişmezleri uygulamak için kullanışlıdırlar.
 
-Manually implementing these traits involves implementing unsafe Rust code.
-We’ll talk about using unsafe Rust code in Chapter 19; for now, the important
-information is that building new concurrent types not made up of `Send` and
-`Sync` parts requires careful thought to uphold the safety guarantees. [“The
-Rustonomicon”][nomicon] has more information about these guarantees and how to
-uphold them.
+Bu tanımların manuel olarak uygulanması, güvenli olmayan Rust kodunun uygulanmasını gerektirir. 
+Güvensiz Rust kodunun kullanımı hakkında Bölüm 19'da konuşacağız; şimdilik önemli bilgi, `Send` ve `Sync` parçalarından oluşmayan yeni eşzamanlı 
+türler oluşturmanın güvenlik garantilerini korumak için dikkatli düşünmeyi gerektirdiğidir. 
+[“The Rustonomicon”][nomicon] bu garantiler ve bunların nasıl korunacağı hakkında daha fazla bilgi içerir.
 
-## Summary
+## Özet
 
-This isn’t the last you’ll see of concurrency in this book: the project in
-Chapter 20 will use the concepts in this chapter in a more realistic situation
-than the smaller examples discussed here.
+Bu kitapta eşzamanlılıkla ilgili göreceğiniz son şey bu değil: Bölüm 20'deki proje, bu bölümdeki kavramları burada 
+tartışılan küçük örneklerden daha gerçekçi bir durumda kullanacaktır.
 
-As mentioned earlier, because very little of how Rust handles concurrency is
-part of the language, many concurrency solutions are implemented as crates.
-These evolve more quickly than the standard library, so be sure to search
-online for the current, state-of-the-art crates to use in multithreaded
-situations.
+Daha önce de belirtildiği gibi, Rust'ın eşzamanlılığı nasıl ele aldığının çok azı dilin bir parçası olduğu için, 
+birçok eşzamanlılık çözümü kasa olarak süreklenmektedir. Bunlar standart kütüphaneden daha hızlı gelişir, bu
+nedenle çok iş parçacıklı durumlarda kullanılacak güncel, son teknoloji ürünü kasalar için doğru çevrimiçi arama yaptığınızdan emin olun.
 
-The Rust standard library provides channels for message passing and smart
-pointer types, such as `Mutex<T>` and `Arc<T>`, that are safe to use in
-concurrent contexts. The type system and the borrow checker ensure that the
-code using these solutions won’t end up with data races or invalid references.
-Once you get your code to compile, you can rest assured that it will happily
-run on multiple threads without the kinds of hard-to-track-down bugs common in
-other languages. Concurrent programming is no longer a concept to be afraid of:
-go forth and make your programs concurrent, fearlessly!
+Rust standart kütüphanesi, mesaj geçişi için kanallar ve eş zamanlı bağlamlarda kullanımı güvenli olan `Mutex<T>` ve `Arc<T>` gibi akıllı 
+işaretçi türleri sağlar. Tür sistemi ve ödünç denetleyicisi, bu çözümleri kullanan kodun veri yarışları veya geçersiz referanslarla 
+sonuçlanmamasını sağlar. Kodunuzun derlenmesini sağladıktan sonra, diğer dillerde yaygın olan izlenmesi zor hata türleri olmadan 
+birden fazla iş parçacığında mutlu bir şekilde çalışacağından emin olabilirsiniz. Eşzamanlı programlama artık korkulacak bir kavram değil: 
+gidin ve programlarınızı korkusuzca eşzamanlı hale getirin!
 
-Next, we’ll talk about idiomatic ways to model problems and structure solutions
-as your Rust programs get bigger. In addition, we’ll discuss how Rust’s idioms
-relate to those you might be familiar with from object-oriented programming.
+Daha sonra, Rust programlarınız büyüdükçe sorunları modellemenin ve çözümleri yapılandırmanın deyimsel yollarından bahsedeceğiz. 
+Ayrıca, Rust'ın deyimlerinin nesne yönelimli programlamadan aşina olabileceğiniz deyimlerle nasıl ilişkili olduğunu tartışacağız.
 
 [sharing-a-mutext-between-multiple-threads]:
 ch16-03-shared-state.html#sharing-a-mutext-between-multiple-threads
