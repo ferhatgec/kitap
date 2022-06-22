@@ -1,123 +1,95 @@
-## Using Message Passing to Transfer Data Between Threads
+## İş Parçacıkları Arasında Veri Aktarmak için Mesaj Geçişini Kullanma
 
-One increasingly popular approach to ensuring safe concurrency is *message
-passing*, where threads or actors communicate by sending each other messages
-containing data. Here’s the idea in a slogan from [the Go language
-documentation](https://golang.org/doc/effective_go.html#concurrency):
-“Do not communicate by sharing memory; instead, share memory by communicating.”
+Güvenli eşzamanlılık sağlamak için giderek daha popüler hale gelen bir yaklaşım, 
+iş parçacıklarının veya aktörlerin birbirlerine veri içeren mesajlar göndererek iletişim kurduğu mesaj geçişidir. 
+İşte [Go dil dokümantasyonundan](https://golang.org/doc/effective_go.html#concurrency) bir slogan:
+“Belleği paylaşarak iletişim kurmayın; bunun yerine iletişim kurarak belleği paylaşın.”
 
-To accomplish message-sending concurrency, Rust's standard library provides an
-implementation of *channels*. A channel is a general programming concept by
-which data is sent from one thread to another.
+Mesaj gönderme eşzamanlılığını gerçekleştirmek için Rust'ın standart kütüphanesi bir *kanal* süreklemesi sağlar. 
+Kanal, verilerin bir iş parçacığından diğerine gönderildiği genel bir programlama kavramıdır.
 
-You can imagine a channel in programming as being like a directional channel of
-water, such as a stream or a river. If you put something like a rubber duck
-into a river, it will travel downstream to the end of the waterway.
+Programlamada bir kanalı, bir dere veya nehir gibi yönlü bir su kanalı gibi düşünebilirsiniz. 
+Bir nehre lastik ördek gibi bir şey koyarsanız, su yolunun sonuna kadar aşağı doğru hareket edecektir.
 
-A channel has two halves: a transmitter and a receiver. The transmitter half is
-the upstream location where you put rubber ducks into the river, and the
-receiver half is where the rubber duck ends up downstream. One part of your
-code calls methods on the transmitter with the data you want to send, and
-another part checks the receiving end for arriving messages. A channel is said
-to be *closed* if either the transmitter or receiver half is dropped.
+Bir kanalın iki yarısı vardır: bir verici ve bir alıcı. Verici yarı, nehre lastik ördek koyduğunuz yukarı akış konumudur 
+ve alıcı yarı, lastik ördeğin aşağı akışta sona erdiği yerdir. Kodunuzun bir kısmı göndermek istediğiniz verilerle 
+vericideki yöntemleri çağırır ve başka bir kısmı da gelen mesajlar için alıcı ucunu kontrol eder.
+Verici veya alıcı yarısından herhangi biri düşerse bir kanalın kapalı olduğu söylenir.
 
-Here, we’ll work up to a program that has one thread to generate values and
-send them down a channel, and another thread that will receive the values and
-print them out. We’ll be sending simple values between threads using a channel
-to illustrate the feature. Once you’re familiar with the technique, you could
-use channels for any threads that needs to communicate between each other, such
-as a chat system or a system where many threads perform parts of a calculation
-and send the parts to one thread that aggregates the results.
+Burada, değerler üreten ve bunları bir kanaldan gönderen bir iş parçacığına ve değerleri alıp yazdıracak başka 
+bir iş parçacığına sahip bir program üzerinde çalışacağız. Özelliği göstermek için bir kanal kullanarak iş parçacıkları 
+arasında basit değerler göndereceğiz. Tekniğe aşina olduktan sonra, sohbet sistemi veya birçok iş parçacığının bir 
+hesaplamanın parçalarını gerçekleştirdiği ve parçaları sonuçları toplayan bir iş parçacığına gönderdiği bir sistem gibi 
+birbirleri arasında iletişim kurması gereken herhangi bir iş parçacığı için kanalları kullanabilirsiniz.
 
-First, in Listing 16-6, we’ll create a channel but not do anything with it.
-Note that this won’t compile yet because Rust can’t tell what type of values we
-want to send over the channel.
+İlk olarak, Liste 16-6'da bir kanal oluşturacağız ancak onunla hiçbir şey yapmayacağız. 
+Bunun henüz derlenmeyeceğini unutmayın çünkü Rust kanal üzerinden ne tür değerler göndermek istediğimizi söyleyemez.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-06/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-6: Creating a channel and assigning the two
-halves to `tx` and `rx`</span>
+<span class="caption">Liste 16-6: Bir kanal oluşturma ve iki yarıyı `tx` ve `rx` olarak atama</span>
 
-We create a new channel using the `mpsc::channel` function; `mpsc` stands for
-*multiple producer, single consumer*. In short, the way Rust’s standard library
-implements channels means a channel can have multiple *sending* ends that
-produce values but only one *receiving* end that consumes those values. Imagine
-multiple streams flowing together into one big river: everything sent down any
-of the streams will end up in one river at the end. We’ll start with a single
-producer for now, but we’ll add multiple producers when we get this example
-working.
+`mpsc::channel` fonksiyonunu kullanarak yeni bir kanal oluşturuyoruz; `mpsc` *çoklu üretici, 
+tekli tüketici* anlamına geliyor. Kısacası, Rust'ın standart kütüphanesinin kanalları sürekleme şekli, bir 
+kanalın değer üreten birden fazla gönderen uca sahip olabileceği, ancak bu değerleri tüketen yalnızca bir 
+alıcı uca sahip olabileceği anlamına gelir. Birden fazla akarsuyun birlikte büyük bir nehre aktığını düşünün: 
+akarsulardan herhangi birine gönderilen her şey sonunda tek bir nehirde son bulacaktır. Şimdilik tek bir üretici ile 
+başlayacağız, ancak bu örneği çalıştırdığımızda birden fazla üretici ekleyeceğiz.
 
-The `mpsc::channel` function returns a tuple, the first element of which is the
-sending end--the transmitter--and the second element is the receiving end--the
-receiver. The abbreviations `tx` and `rx` are traditionally used in many fields
-for *transmitter* and *receiver* respectively, so we name our variables as such
-to indicate each end. We’re using a `let` statement with a pattern that
-destructures the tuples; we’ll discuss the use of patterns in `let` statements
-and destructuring in Chapter 18. For now, know that using a `let` statement
-this way is a convenient approach to extract the pieces of the tuple returned
-by `mpsc::channel`.
+`mpsc::channel` fonksiyonu bir `tuple` döndürür, ilk elemanı gönderen uç-verici- ve ikinci elemanı alan uç-alıcıdır.
+`tx` ve `rx` kısaltmaları geleneksel olarak birçok alanda sırasıyla verici ve alıcı için kullanılır, 
+bu nedenle değişkenlerimizi her bir ucu belirtmek için bu şekilde adlandırıyoruz. `tuple`'ları yıkıma uğratan bir kalıp 
+ile `let` ifade yapısını kullanıyoruz; `let` ifade yapılarında kalıp kullanımı ve yıkım konusunu Bölüm 18'de tartışacağız. 
+Şimdilik, let deyimini bu şekilde kullanmanın `mpsc::channel` tarafından döndürülen `tuple` parçalarını ayıklamak için uygun 
+bir yaklaşım olduğunu bilin.
 
-Let’s move the transmitting end into a spawned thread and have it send one
-string so the spawned thread is communicating with the main thread, as shown in
-Listing 16-7. This is like putting a rubber duck in the river upstream or
-sending a chat message from one thread to another.
+İletim ucunu oluşturulmuş bir iş parçacığına taşıyalım ve bir dize göndermesini sağlayalım, böylece oluşturulmuş iş 
+parçacığı Liste 16-7'de gösterildiği gibi ana iş parçacığı ile iletişim kurar. Bu, nehrin yukarısına bir lastik ördek 
+koymak veya bir iş parçacığından diğerine bir sohbet mesajı göndermek gibidir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-07/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-7: Moving `tx` to a spawned thread and sending
-“hi”</span>
+<span class="caption">Liste 16-7: `tx`i doğmuş bir iş parçacığına taşıma ve “hello” gönderme</span>
 
-Again, we’re using `thread::spawn` to create a new thread and then using `move`
-to move `tx` into the closure so the spawned thread owns `tx`. The spawned
-thread needs to own the transmitter to be able to send messages through the
-channel. The transmitter has a `send` method that takes the value we want to
-send. The `send` method returns a `Result<T, E>` type, so if the receiver has
-already been dropped and there’s nowhere to send a value, the send operation
-will return an error. In this example, we’re calling `unwrap` to panic in case
-of an error. But in a real application, we would handle it properly: return to
-Chapter 9 to review strategies for proper error handling.
+Yine, yeni bir iş parçacığı oluşturmak için `thread::spawn` kullanıyoruz ve ardından `tx`'i kapanışa taşımak için
+`move` kullanıyoruz, böylece oluşturulan iş parçacığı `tx`'e sahip oluyor. Ortaya çıkan iş parçacığının kanal üzerinden 
+mesaj gönderebilmesi için vericiye sahip olması gerekir. Verici, göndermek istediğimiz değeri alan bir `send` metoda 
+sahiptir. `send` metodu `Result<T, E>` türü döndürür, bu nedenle alıcı zaten bırakılmışsa ve değer gönderilecek bir yer yoksa,
+`send` metodu bir hata döndürür. Bu örnekte, hata durumunda paniklemek için `unwrap`'i çağırıyoruz. Ancak gerçek bir 
+süreklemede bunu düzgün bir şekilde ele alırız: düzgün hata işleme stratejilerini gözden geçirmek için Bölüm 9'a dönün.
 
-In Listing 16-8, we’ll get the value from the receiver in the main thread. This
-is like retrieving the rubber duck from the water at the end of the river or
-receiving a chat message.
+Liste 16-8'de, ana iş parçacığındaki alıcıdan değeri alacağız. Bu, nehrin sonundaki sudan lastik ördeği almak veya 
+bir sohbet mesajı almak gibidir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-08/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-8: Receiving the value “hi” in the main thread
-and printing it</span>
+<span class="caption">Liste 16-8: Ana iş parçacığında “hi” değerinin alınması ve yazdırılması</span>
 
-The receiver has two useful methods: `recv` and `try_recv`. We’re using `recv`,
-short for *receive*, which will block the main thread’s execution and wait
-until a value is sent down the channel. Once a value is sent, `recv` will
-return it in a `Result<T, E>`. When the transmitter closes, `recv` will return
-an error to signal that no more values will be coming.
+Alıcının iki faydalı yöntemi vardır: `recv` ve `try_recv`. Ana iş parçacığının çalışmasını engelleyecek ve kanaldan bir 
+değer gönderilinceye kadar bekleyecek olan `recv`'yi kullanıyoruz. Bir değer gönderildiğinde, `recv` bu değeri `Result<T, E>` 
+olarak döndürür. Verici kapandığında, `recv` daha fazla değer gelmeyeceğini belirtmek için bir hata döndürecektir.
 
-The `try_recv` method doesn’t block, but will instead return a `Result<T, E>`
-immediately: an `Ok` value holding a message if one is available and an `Err`
-value if there aren’t any messages this time. Using `try_recv` is useful if
-this thread has other work to do while waiting for messages: we could write a
-loop that calls `try_recv` every so often, handles a message if one is
-available, and otherwise does other work for a little while until checking
-again.
+`try_recv` yöntemi bloke olmaz, ancak bunun yerine hemen bir `Result<T, E>` döndürür: mevcutsa bir mesaj içeren bir
+`Ok` değeri ve bu sefer herhangi bir mesaj yoksa bir `Err` değeri. Bu iş parçacığının mesajları beklerken yapacak
+başka işleri varsa `try_recv`'i kullanmak yararlıdır: `try_recv`'i sık sık çağıran, varsa bir mesajı işleyen ve aksi 
+takdirde tekrar kontrol edene kadar kısa bir süre başka işler yapan bir döngü yazabiliriz.
 
-We’ve used `recv` in this example for simplicity; we don’t have any other work
-for the main thread to do other than wait for messages, so blocking the main
-thread is appropriate.
+Bu örnekte basitlik için `recv` kullandık; ana iş parçacığının mesajları beklemek dışında yapacağı başka bir işimiz yok, 
+bu nedenle ana iş parçacığını engellemek uygundur.
 
-When we run the code in Listing 16-8, we’ll see the value printed from the main
-thread:
+Liste 16-8'deki kodu çalıştırdığımızda, ana iş parçacığından yazdırılan değeri göreceğiz:
 
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -127,71 +99,60 @@ changes in the compiler -->
 Got: hi
 ```
 
-Perfect!
+Mükemmel!
 
-### Channels and Ownership Transference
+### Kanallar ve Sahiplik Transferi
 
-The ownership rules play a vital role in message sending because they help you
-write safe, concurrent code. Preventing errors in concurrent programming is the
-advantage of thinking about ownership throughout your Rust programs. Let’s do
-an experiment to show how channels and ownership work together to prevent
-problems: we’ll try to use a `val` value in the spawned thread *after* we’ve
-sent it down the channel. Try compiling the code in Listing 16-9 to see why
-this code isn’t allowed:
+Sahiplik kuralları mesaj göndermede hayati bir rol oynar çünkü güvenli, eşzamanlı kod yazmanıza yardımcı olurlar. 
+Eşzamanlı programlamada hataları önlemek, Rust programlarınız boyunca sahiplik hakkında düşünmenin avantajıdır. 
+Kanalların ve sahipliğin sorunları önlemek için nasıl birlikte çalıştığını göstermek için bir deney yapalım: 
+kanaldan aşağı gönderdikten sonra ortaya çıkan iş parçacığında bir `val` değeri kullanmaya çalışacağız. 
+Bu koda neden izin verilmediğini görmek için Liste 16-9'daki kodu derlemeyi deneyin:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-09/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-9: Attempting to use `val` after we’ve sent it
-down the channel</span>
+<span class="caption">Liste 16-9: Kanaldan gönderdikten sonra `val` kullanmayı denemek</span>
 
-Here, we try to print `val` after we’ve sent it down the channel via `tx.send`.
-Allowing this would be a bad idea: once the value has been sent to another
-thread, that thread could modify or drop it before we try to use the value
-again. Potentially, the other thread’s modifications could cause errors or
-unexpected results due to inconsistent or nonexistent data. However, Rust gives
-us an error if we try to compile the code in Listing 16-9:
+Burada, `tx.send` aracılığıyla kanala gönderdikten sonra `val`'ı yazdırmayı deniyoruz. Buna izin vermek kötü 
+bir fikir olacaktır: değer başka bir iş parçacığına gönderildikten sonra, biz değeri tekrar kullanmaya çalışmadan 
+önce o iş parçacığı değeri değiştirebilir veya düşürebilir. Potansiyel olarak, diğer iş parçacığının değişiklikleri 
+tutarsız veya var olmayan veriler nedeniyle hatalara veya beklenmedik sonuçlara neden olabilir. 
+Ancak, Liste 16-9'daki kodu derlemeye çalışırsak Rust bize bir hata verir:
 
 ```console
 {{#include ../listings/ch16-fearless-concurrency/listing-16-09/output.txt}}
 ```
 
-Our concurrency mistake has caused a compile time error. The `send` function
-takes ownership of its parameter, and when the value is moved, the receiver
-takes ownership of it. This stops us from accidentally using the value again
-after sending it; the ownership system checks that everything is okay.
+Eşzamanlılık hatamız bir derleme zamanı hatasına neden oldu. `send` fonksiyonu parametresinin sahipliğini alır ve 
+değer taşındığında alıcı onun sahipliğini alır. Bu, değeri gönderdikten sonra yanlışlıkla tekrar kullanmamızı engeller; 
+sahiplik sistemi her şeyin yolunda olup olmadığını kontrol eder.
 
-### Sending Multiple Values and Seeing the Receiver Waiting
+### Birden Fazla Değer Gönderme ve Alıcının Beklediğini Görme
 
-The code in Listing 16-8 compiled and ran, but it didn’t clearly show us that
-two separate threads were talking to each other over the channel. In Listing
-16-10 we’ve made some modifications that will prove the code in Listing 16-8 is
-running concurrently: the spawned thread will now send multiple messages and
-pause for a second between each message.
+Liste 16-8'deki kod derlendi ve çalıştırıldı, ancak bize iki ayrı iş parçacığının kanal üzerinden birbiriyle konuştuğunu 
+açıkça göstermedi. Liste 16-10'da, Liste 16-8'deki kodun eşzamanlı olarak çalıştığını kanıtlayacak bazı değişiklikler yaptık: 
+ortaya çıkan iş parçacığı artık birden fazla mesaj gönderecek ve her mesaj arasında bir saniye duracak.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-10/src/main.rs}}
 ```
 
-<span class="caption">Listing 16-10: Sending multiple messages and pausing
-between each</span>
+<span class="caption">Liste 16-10: Birden fazla mesaj gönderme ve her biri arasında duraklama</span>
 
-This time, the spawned thread has a vector of strings that we want to send to
-the main thread. We iterate over them, sending each individually, and pause
-between each by calling the `thread::sleep` function with a `Duration` value of
-1 second.
+Bu kez, ortaya çıkan iş parçacığı ana iş parçacığına göndermek istediğimiz dizelerden oluşan bir vektöre sahiptir. 
+Bunların üzerinde yineleme yaparak her birini ayrı ayrı gönderiyoruz ve `thread::sleep` fonksiyonunu `1` saniyelik bir
+`Duration` değeriyle çağırarak her biri arasında duraklatıyoruz.
 
-In the main thread, we’re not calling the `recv` function explicitly anymore:
-instead, we’re treating `rx` as an iterator. For each value received, we’re
-printing it. When the channel is closed, iteration will end.
+Ana iş parçacığında, artık `recv` fonksiyonunu açıkça çağırmıyoruz: bunun yerine, `rx`'i yineleyici olarak ele alıyoruz. 
+Alınan her değer için onu yazdırıyoruz. Kanal kapatıldığında, yineleme sona erecektir.
 
-When running the code in Listing 16-10, you should see the following output
-with a 1-second pause in between each line:
+Liste 16-10'daki kodu çalıştırdığınızda, her satır arasında `1` saniyelik bir duraklama ile aşağıdaki çıktıyı görmelisiniz:
 
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -204,32 +165,28 @@ Got: the
 Got: thread
 ```
 
-Because we don’t have any code that pauses or delays in the `for` loop in the
-main thread, we can tell that the main thread is waiting to receive values from
-the spawned thread.
+Ana iş parçacığındaki `for` döngüsünde duraklatan veya geciktiren herhangi bir kodumuz olmadığından, 
+ana iş parçacığının ortaya çıkan iş parçacığından değer almayı beklediğini söyleyebiliriz.
 
-### Creating Multiple Producers by Cloning the Transmitter
+### Vericiyi Klonlayarak Birden Fazla Üretici Oluşturma
 
-Earlier we mentioned that `mpsc` was an acronym for *multiple producer,
-single consumer*. Let’s put `mpsc` to use and expand the code in Listing 16-10
-to create multiple threads that all send values to the same receiver. We can do
-so by cloning the transmitter, as shown in Listing 16-11:
+Daha önce `mpsc`'nin çoklu üretici, tekli tüketici için kullanılan bir kısaltma olduğundan bahsetmiştik. 
+Şimdi `mpsc`'yi kullanalım ve hepsi aynı alıcıya değer gönderen birden fazla iş parçacığı oluşturmak için Liste 16-10'daki 
+kodu genişletelim. Bunu, Liste 16-11'de gösterildiği gibi vericiyi klonlayarak yapabiliriz:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,noplayground
 {{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-11/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 16-11: Sending multiple messages from multiple
-producers</span>
+<span class="caption">Liste 16-11: Birden fazla üreticiden birden fazla mesaj gönderme</span>
 
-This time, before we create the first spawned thread, we call `clone` on the
-transmitter. This will give us a new transmitter we can pass to the first
-spawned thread. We pass the original transmitter to a second spawned thread.
-This gives us two threads, each sending different messages to the one receiver.
+Bu kez, ilk iş parçacığını oluşturmadan önce, vericide `clone` çağrısı yapıyoruz. 
+Bu bize ilk iş parçacığına aktarabileceğimiz yeni bir verici verecektir. Orijinal vericiyi ikinci bir 
+iş parçacığına aktarırız. Bu bize her biri bir alıcıya farklı mesajlar gönderen iki iş parçacığı verir.
 
-When you run the code, your output should look something like this:
+Kodu çalıştırdığınızda, çıktınız aşağıdaki gibi görünmelidir:
 
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
@@ -246,10 +203,8 @@ Got: thread
 Got: you
 ```
 
-You might see the values in another order, depending on your system. This is
-what makes concurrency interesting as well as difficult. If you experiment with
-`thread::sleep`, giving it various values in the different threads, each run
-will be more nondeterministic and create different output each time.
+Sisteminize bağlı olarak değerleri farklı bir sırada görebilirsiniz. Eşzamanlılığı zor olduğu kadar ilginç kılan da budur.
+`Thread::sleep` ile denemeler yaparsanız, farklı iş parçacıklarında farklı değerler verirseniz, her çalıştırma daha 
+belirsiz olacak ve her seferinde farklı çıktılar oluşturacaktır.
 
-Now that we’ve looked at how channels work, let’s look at a different method of
-concurrency.
+Kanalların nasıl çalıştığına baktığımıza göre, şimdi farklı bir eşzamanlılık yöntemine bakalım.
