@@ -147,67 +147,50 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="refactoring-to-improve-modularity-and-error-handling"><a class="header" href="#refactoring-to-improve-modularity-and-error-handling">Refactoring to Improve Modularity and Error Handling</a></h2>
-<p>To improve our program, we’ll fix four problems that have to do with the
-program’s structure and how it’s handling potential errors. First, our <code>main</code>
-function now performs two tasks: it parses arguments and reads files. As our
-program grows, the number of separate tasks the <code>main</code> function handles will
-increase. As a function gains responsibilities, it becomes more difficult to
-reason about, harder to test, and harder to change without breaking one of its
-parts. It’s best to separate functionality so each function is responsible for
-one task.</p>
-<p>This issue also ties into the second problem: although <code>query</code> and <code>filename</code>
-are configuration variables to our program, variables like <code>contents</code> are used
-to perform the program’s logic. The longer <code>main</code> becomes, the more variables
-we’ll need to bring into scope; the more variables we have in scope, the harder
-it will be to keep track of the purpose of each. It’s best to group the
-configuration variables into one structure to make their purpose clear.</p>
-<p>The third problem is that we’ve used <code>expect</code> to print an error message when
-reading the file fails, but the error message just prints <code>Something went wrong reading the file</code>. Reading a file can fail in a number of ways: for example,
-the file could be missing, or we might not have permission to open it. Right
-now, regardless of the situation, we’d print the same error message for
-everything, which wouldn’t give the user any information!</p>
-<p>Fourth, we use <code>expect</code> repeatedly to handle different errors, and if the user
-runs our program without specifying enough arguments, they’ll get an <code>index out of bounds</code> error from Rust that doesn’t clearly explain the problem. It would
-be best if all the error-handling code were in one place so future maintainers
-had only one place to consult the code if the error-handling logic needed to
-change. Having all the error-handling code in one place will also ensure that
-we’re printing messages that will be meaningful to our end users.</p>
-<p>Let’s address these four problems by refactoring our project.</p>
-<h3 id="separation-of-concerns-for-binary-projects"><a class="header" href="#separation-of-concerns-for-binary-projects">Separation of Concerns for Binary Projects</a></h3>
-<p>The organizational problem of allocating responsibility for multiple tasks to
-the <code>main</code> function is common to many binary projects. As a result, the Rust
-community has developed guidelines for splitting the separate concerns of a
-binary program when <code>main</code> starts getting large. This process has the following
-steps:</p>
+                        <h2 id="modülerliği-ve-hata-İşlemeyi-geliştirmek-için-yeniden-düzenleme"><a class="header" href="#modülerliği-ve-hata-İşlemeyi-geliştirmek-için-yeniden-düzenleme">Modülerliği ve Hata İşlemeyi Geliştirmek için Yeniden Düzenleme</a></h2>
+<p>Programımızı iyileştirmek için, programın yapısı ve olası hataları nasıl ele aldığı ile ilgili dört sorunu çözeceğiz. 
+İlk olarak, <code>ma'n</code> fonksiyonumuz artık iki görevi yerine getiriyor: argümanları ayrıştırıyor ve dosyaları okuyor. 
+Programımız büyüdükçe, ana fonksiyonun yerine getirdiği ayrı görevlerin sayısı artacaktır. Bir fonksiyon sorumluluk kazandıkça,
+hakkında mantık yürütmek daha zor, test etmek daha zor ve parçalarından birini bozmadan değiştirmek daha zor hale gelir. 
+Her fonksiyonun tek bir görevden sorumlu olması için işlevleri ayırmak en iyisidir.</p>
+<p>Bu konu aynı zamanda ikinci sorunla da bağlantılıdır: sorgu ve dosya adı programımız için yapılandırma değişkenleri olsa da, 
+içerik gibi değişkenler programın mantığını gerçekleştirmek için kullanılır. main ne kadar uzun olursa, 
+o kadar çok değişkeni kapsama almamız gerekecektir; ne kadar çok değişkeni kapsama alırsak, her birinin amacını takip etmek o
+kadar zor olacaktır. Amaçlarını netleştirmek için yapılandırma değişkenlerini tek bir yapıda gruplamak en iyisidir.</p>
+<p>Üçüncü sorun, dosyayı okuma başarısız olduğunda bir hata mesajı yazdırmak için <code>expect</code> kullandık, ancak hata mesajı sadece 
+<code>Something went wrong reading the file</code> yazıyor. Bir dosyayı okumak çeşitli şekillerde başarısız olabilir: örneğin, 
+dosya eksik olabilir veya dosyayı açmak için iznimiz olmayabilir. Şu anda, durum ne olursa olsun, her şey için aynı hata mesajını 
+yazdırırız ve bu da kullanıcıya hiçbir bilgi vermeyiz.</p>
+<p>Dördüncüsü, farklı hataları işlemek için tekrar tekrar <code>expect</code> kullanıyoruz ve kullanıcı programımızı yeterli argüman belirtmeden 
+çalıştırırsa, Rust'tan sorunu açıkça açıklamayan bir <code>index out of bounds</code> hatası alacaktır. Tüm hata işleme kodunun tek bir yerde olması 
+en iyisidir, böylece gelecekteki bakımcılar hata işleme mantığının değişmesi gerektiğinde koda başvurmak için tek bir yere sahip olurlar.
+Tüm hata işleme kodunun tek bir yerde olması, son kullanıcılarımız için anlamlı olacak mesajları yazdırmamızı da sağlayacaktır.</p>
+<p>Projemizi yeniden düzenleyerek bu dört sorunu ele alalım.</p>
+<h3 id="İkili-projeler-için-endişelerin-ayrılması"><a class="header" href="#İkili-projeler-için-endişelerin-ayrılması">İkili Projeler için Endişelerin Ayrılması</a></h3>
+<p>Birden fazla görevin sorumluluğunun ana fonksiyona verilmesine ilişkin organizasyonel sorun, 
+birçok ikili projede ortaktır. Sonuç olarak, Rust topluluğu, ana program büyümeye başladığında ikili bir programın ayrı 
+endişelerini bölmek için yönergeler geliştirmiştir. Bu süreç aşağıdaki adımlardan oluşur:</p>
 <ul>
-<li>Split your program into a <em>main.rs</em> and a <em>lib.rs</em> and move your program’s
-logic to <em>lib.rs</em>.</li>
-<li>As long as your command line parsing logic is small, it can remain in
-<em>main.rs</em>.</li>
-<li>When the command line parsing logic starts getting complicated, extract it
-from <em>main.rs</em> and move it to <em>lib.rs</em>.</li>
+<li>Programınızı <em>main.rs</em> ve <em>lib.rs</em> olarak ayırın ve programınızın ana mantığını <em>lib.rs</em>'e taşıyın.</li>
+<li>Komut satırı ayrıştırma mantığınız küçük olduğu sürece <em>main.rs</em> içinde kalabilir.</li>
+<li>Komut satırı ayrıştırma mantığı karmaşıklaşmaya başladığında, <em>main.rs</em>'den çıkarın ve <em>lib.rs</em>'e taşıyın.</li>
 </ul>
-<p>The responsibilities that remain in the <code>main</code> function after this process
-should be limited to the following:</p>
+<p>Bu işlemlerden sonra <code>main</code> fonksiyonunda kalanlar aşağıdakilerle sınırlı olmalıdır:</p>
 <ul>
-<li>Calling the command line parsing logic with the argument values</li>
-<li>Setting up any other configuration</li>
-<li>Calling a <code>run</code> function in <em>lib.rs</em></li>
-<li>Handling the error if <code>run</code> returns an error</li>
+<li>Komut satırı ayrıştırma mantığını argüman değerleriyle çağırmak</li>
+<li>Diğer yapılandırmaları ayarlama</li>
+<li><em>lib.rs</em> içinde bir <code>run</code> fonksiyonu çağırma</li>
+<li><code>run</code> bir hata döndürürse hatayı işleme</li>
 </ul>
-<p>This pattern is about separating concerns: <em>main.rs</em> handles running the
-program, and <em>lib.rs</em> handles all the logic of the task at hand. Because you
-can’t test the <code>main</code> function directly, this structure lets you test all of
-your program’s logic by moving it into functions in <em>lib.rs</em>. The code that
-remains in <em>main.rs</em> will be small enough to verify its correctness by reading
-it. Let’s rework our program by following this process.</p>
-<h4 id="extracting-the-argument-parser"><a class="header" href="#extracting-the-argument-parser">Extracting the Argument Parser</a></h4>
-<p>We’ll extract the functionality for parsing arguments into a function that
-<code>main</code> will call to prepare for moving the command line parsing logic to
-<em>src/lib.rs</em>. Listing 12-5 shows the new start of <code>main</code> that calls a new
-function <code>parse_config</code>, which we’ll define in <em>src/main.rs</em> for the moment.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Bu model endişeleri ayırmakla ilgilidir: <em>main.rs</em> programı çalıştırır ve <em>lib.rs</em> eldeki görevin tüm mantığını ele alır. 
+<code>main</code> fonksiyonunu doğrudan test edemeyeceğiniz için, bu yapı programınızın tüm mantığını <em>lib.rs</em>'deki fonksiyonlara taşıyarak 
+test etmenizi sağlar. <em>main.rs</em>'de kalan kod, okunarak doğruluğu teyit edilebilecek kadar küçük olacaktır. </p>
+<p>Bu süreci takip ederek programımızı yeniden düzenleyelim.</p>
+<h4 id="argüman-ayrıştırıcısını-Çıkarma"><a class="header" href="#argüman-ayrıştırıcısını-Çıkarma">Argüman Ayrıştırıcısını Çıkarma</a></h4>
+<p>Komut satırı ayrıştırma mantığını <em>src/lib.rs</em>'ye taşımaya hazırlanmak için argümanları ayrıştırma işlevini 
+<code>main</code>'in çağıracağı bir fonksiyona çıkaracağız. Liste 12-5, şimdilik <em>src/main.rs</em> içinde tanımlayacağımız yeni <code>parse_config</code> 
+fonksiyonunu çağıran <code>main</code>'in yeni başlangıcını göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -234,36 +217,25 @@ fn parse_config(args: &amp;[String]) -&gt; (&amp;str, &amp;str) {
     (query, filename)
 }
 </code></pre>
-<p><span class="caption">Listing 12-5: Extracting a <code>parse_config</code> function from
-<code>main</code></span></p>
-<p>We’re still collecting the command line arguments into a vector, but instead of
-assigning the argument value at index 1 to the variable <code>query</code> and the
-argument value at index 2 to the variable <code>filename</code> within the <code>main</code>
-function, we pass the whole vector to the <code>parse_config</code> function. The
-<code>parse_config</code> function then holds the logic that determines which argument
-goes in which variable and passes the values back to <code>main</code>. We still create
-the <code>query</code> and <code>filename</code> variables in <code>main</code>, but <code>main</code> no longer has the
-responsibility of determining how the command line arguments and variables
-correspond.</p>
-<p>This rework may seem like overkill for our small program, but we’re refactoring
-in small, incremental steps. After making this change, run the program again to
-verify that the argument parsing still works. It’s good to check your progress
-often, to help identify the cause of problems when they occur.</p>
-<h4 id="grouping-configuration-values"><a class="header" href="#grouping-configuration-values">Grouping Configuration Values</a></h4>
-<p>We can take another small step to improve the <code>parse_config</code> function further.
-At the moment, we’re returning a tuple, but then we immediately break that
-tuple into individual parts again. This is a sign that perhaps we don’t have
-the right abstraction yet.</p>
-<p>Another indicator that shows there’s room for improvement is the <code>config</code> part
-of <code>parse_config</code>, which implies that the two values we return are related and
-are both part of one configuration value. We’re not currently conveying this
-meaning in the structure of the data other than by grouping the two values into
-a tuple; we’ll instead put the two values into one struct and give each of the
-struct fields a meaningful name. Doing so will make it easier for future
-maintainers of this code to understand how the different values relate to each
-other and what their purpose is.</p>
-<p>Listing 12-6 shows the improvements to the <code>parse_config</code> function.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 12-5: <code>parse_config</code> fonksiyonunun <code>main</code>'den çıkarılması</span></p>
+<p>Komut satırı argümanlarını hala bir vektörde topluyoruz, ancak 1. indeksteki argüman değerini sorgu değişkenine ve 
+2. indeksteki argüman değerini <code>main</code> içindeki dosya adı değişkenine atamak yerine, tüm vektörü <code>parse_config</code>'e aktarıyoruz. 
+<code>parse_config</code> daha sonra hangi argümanın hangi değişkene gideceğini belirleyen mantığı tutar ve değerleri <code>main</code>'e geri aktarır. 
+<code>query</code> ve <code>filename</code> değişkenlerini hala <code>main</code> içinde oluşturuyoruz, ancak <code>main</code> artık komut satırı argümanlarının ve 
+değişkenlerin nasıl karşılık geldiğini belirleme sorumluluğuna sahip değil.</p>
+<p>Bu yeniden çalışma küçük programımız için aşırı gibi görünebilir, ancak küçük, artan adımlarla yeniden düzenliyoruz. 
+Bu değişikliği yaptıktan sonra, argüman ayrıştırmanın hala çalıştığını doğrulamak için programı tekrar çalıştırın. 
+İlerlemenizi sık sık kontrol etmek, ortaya çıktıklarında sorunların nedenini belirlemeye yardımcı olmak için iyidir.</p>
+<h4 id="yapılandırma-değerlerini-gruplama"><a class="header" href="#yapılandırma-değerlerini-gruplama">Yapılandırma Değerlerini Gruplama</a></h4>
+<p><code>parse_config</code>'i daha da geliştirmek için küçük bir adım daha atabiliriz. Şu anda bir <code>tuple</code> döndürüyoruz, ancak hemen ardından bu 
+<code>tuple</code>'ı tekrar ayrı parçalara ayırıyoruz. Bu, belki de henüz doğru soyutlamaya sahip olmadığımızın bir işaretidir.</p>
+<p>İyileştirme için yer olduğunu gösteren bir başka gösterge de <code>parse_config</code>'in <code>config</code> kısmıdır, 
+bu da döndürdüğümüz iki değerin ilişkili olduğunu ve her ikisinin de bir yapılandırma değerinin parçası olduğunu ima eder. 
+Şu anda bu anlamı, iki değeri bir <code>tuple</code> olarak gruplamak dışında verinin yapısında aktarmıyoruz; bunun yerine iki değeri 
+<code>struct</code> içine koyacağız ve <code>struct</code> alanlarının her birine anlamlı bir isim vereceğiz. Bunu yapmak, bu kodun gelecekteki 
+bakımcılarının farklı değerlerin birbirleriyle nasıl ilişkili olduğunu ve amaçlarının ne olduğunu anlamalarını kolaylaştıracaktır.</p>
+<p>Liste 12-6, <code>parse_config</code>'de yapılan iyileştirmeleri göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust should_panic noplayground"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -295,60 +267,42 @@ fn parse_config(args: &amp;[String]) -&gt; Config {
     Config { query, filename }
 }
 </code></pre>
-<p><span class="caption">Listing 12-6: Refactoring <code>parse_config</code> to return an
-instance of a <code>Config</code> struct</span></p>
-<p>We’ve added a struct named <code>Config</code> defined to have fields named <code>query</code> and
-<code>filename</code>. The signature of <code>parse_config</code> now indicates that it returns a
-<code>Config</code> value. In the body of <code>parse_config</code>, where we used to return
-string slices that reference <code>String</code> values in <code>args</code>, we now define <code>Config</code>
-to contain owned <code>String</code> values. The <code>args</code> variable in <code>main</code> is the owner of
-the argument values and is only letting the <code>parse_config</code> function borrow
-them, which means we’d violate Rust’s borrowing rules if <code>Config</code> tried to take
-ownership of the values in <code>args</code>.</p>
-<p>There are a number of ways we could manage the <code>String</code> data; the easiest,
-though somewhat inefficient, route is to call the <code>clone</code> method on the values.
-This will make a full copy of the data for the <code>Config</code> instance to own, which
-takes more time and memory than storing a reference to the string data.
-However, cloning the data also makes our code very straightforward because we
-don’t have to manage the lifetimes of the references; in this circumstance,
-giving up a little performance to gain simplicity is a worthwhile trade-off.</p>
+<p><span class="caption">Liste 12-6: <code>Config</code> yapısının örneğini döndürmek için <code>parse_config</code> öğesini 
+yeniden düzenleme</span></p>
+<p><code>query</code> ve <code>filename</code> adında alanlara sahip olacak şekilde tanımlanmış <code>Config</code> adında bir yapı ekledik. <code>parse_config</code>'in imzası artık 
+<code>Config</code> değeri döndürdüğünü gösteriyor. Eskiden <code>args</code> içindeki <code>String</code> değerlerine referans veren dizgi dilimleri döndürdüğümüz 
+<code>parse_config</code> gövdesinde, artık <code>Config</code>'i <code>String</code> değerlerini içerecek şekilde tanımlıyoruz. <code>main</code> içindeki <code>args</code> değişkeni argüman 
+değerlerinin sahibidir ve yalnızca <code>parse_config</code> fonksiyonunun bunları ödünç almasına izin verir, bu da <code>Config</code>'in <code>args</code> içindeki 
+değerlerin sahipliğini almaya çalışması durumunda Rust'ın ödünç alma kurallarını ihlal edeceğimiz anlamına gelir.</p>
+<p><code>String</code> verilerini yönetebileceğimiz birkaç yol vardır; biraz verimsiz olsa da en kolay yol, değerler üzerinde <code>clone</code> metodunu çağırmaktır. 
+Bu,<code> Config</code> örneğinin sahip olması için verilerin tam bir kopyasını oluşturacaktır, bu da dizgi verilerine bir referans depolamaktan daha 
+fazla zaman ve bellek gerektirir. Bununla birlikte, verileri klonlamak kodumuzu çok basit hale getirir çünkü referansların yaşam sürelerini
+yönetmek zorunda değiliz; bu durumda, basitlik kazanmak için biraz performanstan vazgeçmek değerli bir değiş tokuştur.</p>
 <blockquote>
-<h3 id="the-trade-offs-of-using-clone"><a class="header" href="#the-trade-offs-of-using-clone">The Trade-Offs of Using <code>clone</code></a></h3>
-<p>There’s a tendency among many Rustaceans to avoid using <code>clone</code> to fix
-ownership problems because of its runtime cost. In
-<a href="ch13-00-functional-features.html">Chapter 13</a><!-- ignore -->, you’ll learn how to use more efficient
-methods in this type of situation. But for now, it’s okay to copy a few
-strings to continue making progress because you’ll make these copies only
-once and your filename and query string are very small. It’s better to have
-a working program that’s a bit inefficient than to try to hyperoptimize code
-on your first pass. As you become more experienced with Rust, it’ll be
-easier to start with the most efficient solution, but for now, it’s
-perfectly acceptable to call <code>clone</code>.</p>
+<h3 id="clone-kullanmanın-getirileri"><a class="header" href="#clone-kullanmanın-getirileri"><code>clone</code> Kullanmanın Getirileri</a></h3>
+<p>Birçok Rustsever arasında, çalışma zamanı maliyeti nedeniyle sahiplik sorunlarını çözmek için 
+<code>clone</code> kullanmaktan kaçınma eğilimi vardır. Bölüm 13'te, bu tür durumlarda nasıl daha verimli yöntemler 
+kullanacağınızı öğreneceksiniz. Ancak şimdilik, ilerlemeye devam etmek için birkaç dizgiyi kopyalamanızda bir sakınca yok 
+çünkü bu kopyaları yalnızca bir kez yapacaksınız ve <code>filename</code> ve <code>query</code> dizginiz çok küçük. İlk geçişinizde kodu aşırı optimize 
+etmeye çalışmaktansa biraz verimsiz çalışan bir programa sahip olmak daha iyidir. Rust ile daha deneyimli hale geldikçe, 
+en verimli çözümle başlamak daha kolay olacaktır, ancak şimdilik <code>clone</code> kullanmak tamamen kabul edilebilir.</p>
 </blockquote>
-<p>We’ve updated <code>main</code> so it places the instance of <code>Config</code> returned by
-<code>parse_config</code> into a variable named <code>config</code>, and we updated the code that
-previously used the separate <code>query</code> and <code>filename</code> variables so it now uses
-the fields on the <code>Config</code> struct instead.</p>
-<p>Now our code more clearly conveys that <code>query</code> and <code>filename</code> are related and
-that their purpose is to configure how the program will work. Any code that
-uses these values knows to find them in the <code>config</code> instance in the fields
-named for their purpose.</p>
-<h4 id="creating-a-constructor-for-config"><a class="header" href="#creating-a-constructor-for-config">Creating a Constructor for <code>Config</code></a></h4>
-<p>So far, we’ve extracted the logic responsible for parsing the command line
-arguments from <code>main</code> and placed it in the <code>parse_config</code> function. Doing so
-helped us to see that the <code>query</code> and <code>filename</code> values were related and that
-relationship should be conveyed in our code. We then added a <code>Config</code> struct to
-name the related purpose of <code>query</code> and <code>filename</code> and to be able to return the
-values’ names as struct field names from the <code>parse_config</code> function.</p>
-<p>So now that the purpose of the <code>parse_config</code> function is to create a <code>Config</code>
-instance, we can change <code>parse_config</code> from a plain function to a function
-named <code>new</code> that is associated with the <code>Config</code> struct. Making this change
-will make the code more idiomatic. We can create instances of types in the
-standard library, such as <code>String</code>, by calling <code>String::new</code>. Similarly, by
-changing <code>parse_config</code> into a <code>new</code> function associated with <code>Config</code>, we’ll
-be able to create instances of <code>Config</code> by calling <code>Config::new</code>. Listing 12-7
-shows the changes we need to make.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><code>main</code>'i, <code>parse_config</code> tarafından döndürülen <code>Config</code> örneğini <code>config</code> adlı bir değişkene atayacak şekilde güncelledik 
+ve daha önce ayrı <code>query</code> ve <code>filename</code> değişkenlerini kullanan kodu güncelledik, böylece artık bunun yerine <code>Config</code> yapısındaki alanları 
+kullanıyor.</p>
+<p>Artık kodumuz <code>query</code> ve <code>filename</code>'in ilişkili olduğunu ve amaçlarının programın nasıl çalışacağını yapılandırmak olduğunu daha açık bir 
+şekilde ifade ediyor. Bu değerleri kullanan herhangi bir kod, bunları <code>config</code> örneğinde amaçlarına göre adlandırılmış alanlarda bulmayı bilir.</p>
+<h4 id="config-için-bir-yapıcı-oluşturma"><a class="header" href="#config-için-bir-yapıcı-oluşturma"><code>Config</code> için Bir Yapıcı Oluşturma</a></h4>
+<p>Şimdiye kadar, komut satırı argümanlarını ayrıştırmaktan sorumlu mantığı <code>main</code>'den çıkardık ve <code>parse_config</code> fonksiyonuna yerleştirdik. 
+Bunu yapmak, <code>query</code> ve <code>filename</code> değerlerinin ilişkili olduğunu ve bu ilişkinin kodumuzda aktarılması gerektiğini görmemize yardımcı oldu. 
+Daha sonra <code>query</code> ve <code>filename</code>'in amaçlarını adlandırmak ve <code>parse_config</code> fonksiyonundan değerlerin adlarını <code>struct</code> alan adları olarak 
+döndürebilmek için bir <code>Config</code> <code>struct</code>'ı ekledik.</p>
+<p>Artık <code>parse_config</code> fonksiyonunun amacı bir <code>Config</code> örneği oluşturmak olduğuna göre, <code>parse_config</code>'i düz bir fonksiyondan <code>Config</code> yapısıyla 
+ilişkili <code>new</code> adlı bir fonksiyona dönüştürebiliriz. Bu değişikliği yapmak kodu daha deyimsel hale getirecektir. Standart kütüphanedeki <code>String</code> 
+gibi türlerin örneklerini <code>String::new</code> fonksiyonunu çağırarak oluşturabiliriz. Benzer şekilde, <code>parse_config</code>'i <code>Config</code> ile ilişkili yeni 
+bir fonksiyona dönüştürerek, <code>Config::new</code>'i çağırarak <code>Config</code>'in örneklerini oluşturabileceğiz. Liste 12-7 yapmamız 
+gereken değişiklikleri göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust should_panic noplayground"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -384,17 +338,14 @@ shows the changes we need to make.</p>
     }
 }
 </code></pre>
-<p><span class="caption">Listing 12-7: Changing <code>parse_config</code> into
-<code>Config::new</code></span></p>
-<p>We’ve updated <code>main</code> where we were calling <code>parse_config</code> to instead call
-<code>Config::new</code>. We’ve changed the name of <code>parse_config</code> to <code>new</code> and moved it
-within an <code>impl</code> block, which associates the <code>new</code> function with <code>Config</code>. Try
-compiling this code again to make sure it works.</p>
-<h3 id="fixing-the-error-handling"><a class="header" href="#fixing-the-error-handling">Fixing the Error Handling</a></h3>
-<p>Now we’ll work on fixing our error handling. Recall that attempting to access
-the values in the <code>args</code> vector at index 1 or index 2 will cause the program to
-panic if the vector contains fewer than three items. Try running the program
-without any arguments; it will look like this:</p>
+<p><span class="caption">Liste 12-7: <code>parse_config</code>'i <code>Config::new</code> ile değiştirme</span></p>
+<p><code>main</code>'de <code>parse_config</code> çağrısı yaptığımız yeri <code>Config::new</code> çağrısı yapacak şekilde güncelledik. 
+<code>parse_config</code>'in adını <code>new</code> olarak değiştirdik ve yeni fonksiyonu <code>Config</code> ile ilişkilendiren <code>impl</code> bloğunun içine taşıdık. 
+Çalıştığından emin olmak için bu kodu tekrar derlemeyi deneyin.</p>
+<h3 id="hata-İşlemeyi-düzeltme"><a class="header" href="#hata-İşlemeyi-düzeltme">Hata İşlemeyi Düzeltme</a></h3>
+<p>Şimdi hata işlememizi düzeltmeye çalışacağız. <code>args</code> vektöründeki değerlere indeks <code>1</code> veya indeks <code>2</code>'den erişmeye çalışmanın, 
+vektör üçten az öğe içeriyorsa programın paniklemesine neden olacağını hatırlayın. Programı herhangi bir argüman olmadan çalıştırmayı 
+deneyin; şöyle görünecektir:</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished dev [unoptimized + debuginfo] target(s) in 0.0s
@@ -402,14 +353,12 @@ without any arguments; it will look like this:</p>
 thread 'main' panicked at 'index out of bounds: the len is 1 but the index is 1', src/main.rs:27:21
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<p>The line <code>index out of bounds: the len is 1 but the index is 1</code> is an error
-message intended for programmers. It won’t help our end users understand what
-they should do instead. Let’s fix that now.</p>
-<h4 id="improving-the-error-message"><a class="header" href="#improving-the-error-message">Improving the Error Message</a></h4>
-<p>In Listing 12-8, we add a check in the <code>new</code> function that will verify that the
-slice is long enough before accessing index 1 and 2. If the slice isn’t long
-enough, the program panics and displays a better error message.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><code>index out of bounds: the len is 1 but the index is 1</code>, programcılara yönelik detaylı bir hata mesajıdır. 
+Son kullanıcılarımızın bunun yerine ne yapmaları gerektiğini anlamalarına yardımcı olmaz. Şimdi bunu düzeltelim.</p>
+<h3 id="hata-mesajını-İyileştirme"><a class="header" href="#hata-mesajını-İyileştirme">Hata Mesajını İyileştirme</a></h3>
+<p>Liste 12-8'de, yeni fonksiyona 1. ve 2. dizine erişmeden önce dilimin yeterince uzun olduğunu doğrulayacak bir kontrol ekliyoruz. 
+Dilim yeterince uzun değilse, program paniğe kapılır ve daha iyi bir hata mesajı görüntüler.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -447,17 +396,13 @@ enough, the program panics and displays a better error message.</p>
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-8: Adding a check for the number of
-arguments</span></p>
-<p>This code is similar to <a href="ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation">the <code>Guess::new</code> function we wrote in Listing
-9-13</a><!-- ignore -->, where we called <code>panic!</code> when the
-<code>value</code> argument was out of the range of valid values. Instead of checking for
-a range of values here, we’re checking that the length of <code>args</code> is at least 3
-and the rest of the function can operate under the assumption that this
-condition has been met. If <code>args</code> has fewer than three items, this condition
-will be true, and we call the <code>panic!</code> macro to end the program immediately.</p>
-<p>With these extra few lines of code in <code>new</code>, let’s run the program without any
-arguments again to see what the error looks like now:</p>
+<p><span class="caption">Liste 12-8: Bağımsız değişken sayısı için bir kontrol ekleme</span></p>
+<p>Bu kod, <a href="ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation">Liste 9-13'te yazdığımız <code>Guess::new</code> fonksiyonuna benzer</a><!-- ignore -->; burada <code>value</code> bağımsız değişkeni 
+geçerli değerler aralığının dışında kaldığında <code>panic!</code> yapar. Bir değer aralığını kontrol etmek yerine, <code>args</code> uzunluğunun en az 
+3 olduğunu kontrol ediyoruz ve fonksiyonun geri kalanı bu koşulun sağlandığı varsayımı altında çalışabilir. Eğer <code>args</code> üçten az öğeye sahipse, 
+bu koşul doğru olur ve programı hemen sonlandırmak için <code>panic!</code> makrosunu çağırırız.</p>
+<p>Bu ekstra birkaç satırlık yeni kodla, hatanın şimdi nasıl göründüğünü görmek için programı herhangi bir 
+argüman olmadan tekrar çalıştıralım:</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished dev [unoptimized + debuginfo] target(s) in 0.0s
@@ -465,25 +410,18 @@ arguments again to see what the error looks like now:</p>
 thread 'main' panicked at 'not enough arguments', src/main.rs:26:13
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<p>This output is better: we now have a reasonable error message. However, we also
-have extraneous information we don’t want to give to our users. Perhaps using
-the technique we used in Listing 9-13 isn’t the best to use here: a call to
-<code>panic!</code> is more appropriate for a programming problem than a usage problem,
-<a href="ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling">as discussed in Chapter 9</a><!-- ignore -->. Instead,
-we’ll use the other technique you learned about in Chapter 9—<a href="ch09-02-recoverable-errors-with-result.html">returning a
-<code>Result</code></a><!-- ignore --> that indicates either success or an error.</p>
-<h4 id="returning-a-result-from-new-instead-of-calling-panic"><a class="header" href="#returning-a-result-from-new-instead-of-calling-panic">Returning a <code>Result</code> from <code>new</code> Instead of Calling <code>panic!</code></a></h4>
-<p>We can instead return a <code>Result</code> value that will contain a <code>Config</code> instance in
-the successful case and will describe the problem in the error case. When
-<code>Config::new</code> is communicating to <code>main</code>, we can use the <code>Result</code> type to
-signal there was a problem. Then we can change <code>main</code> to convert an <code>Err</code>
-variant into a more practical error for our users without the surrounding text
-about <code>thread 'main'</code> and <code>RUST_BACKTRACE</code> that a call to <code>panic!</code> causes.</p>
-<p>Listing 12-9 shows the changes we need to make to the return value of
-<code>Config::new</code> and the body of the function needed to return a <code>Result</code>. Note
-that this won’t compile until we update <code>main</code> as well, which we’ll do in the
-next listing.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Bu çıktı daha iyi: artık makul bir hata mesajımız var. Ancak, kullanıcılarımıza vermek istemediğimiz gereksiz bilgilere de sahibiz. 
+Belki de Liste 9-13'te kullandığımız tekniği burada kullanmak en iyisi değildir: <a href="ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling">Bölüm 9'da tartışıldığı gibi</a><!-- ignore -->, 
+<code>panic!</code> çağrısı bir kullanım probleminden ziyade bir programlama problemi için daha uygundur. Bunun yerine, 
+Bölüm 9'da öğrendiğiniz diğer tekniği kullanacağız— başarı ya da hatayı gösteren <a href="ch09-02-recoverable-errors-with-result.html"><code>Result</code>'u döndürmek</a><!-- ignore -->.</p>
+<h4 id="panic-yerine-newden-result-döndürme"><a class="header" href="#panic-yerine-newden-result-döndürme"><code>panic!</code> Yerine <code>new</code>'den <code>Result</code> Döndürme</a></h4>
+<p>Bunun yerine, başarılı durumda bir <code>Config</code> örneği içeren ve hata durumunda sorunu açıklayan bir <code>Result</code> değeri döndürebiliriz. 
+<code>Config::new</code> <code>main</code> ile iletişim kurarken, bir sorun olduğunu belirtmek için <code>Result</code> türünü kullanabiliriz. </p>
+<p>Daha sonra <code>main</code>'i, <code>panic!</code>'in neden olduğu <code>main</code> iş parçacığı ve <code>RUST_BACKTRACE</code> ile ilgili çevreleyen metin olmadan 
+kullanıcılarımız için <code>Err</code> varyantını daha pratik bir hataya dönüştürmek için değiştirebiliriz.</p>
+<p>Liste 12-9, <code>Config::new</code>'in dönüş değerinde ve <code>Result</code> döndürmek için gereken fonksiyonun gövdesinde yapmamız gereken 
+değişiklikleri göstermektedir. Bunun <code>main</code>'i de güncellemeden derlenmeyeceğini unutmayın, ki bunu bir sonraki listede yapacağız.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -519,26 +457,20 @@ next listing.</p>
     }
 }
 </code></pre>
-<p><span class="caption">Listing 12-9: Returning a <code>Result</code> from
-<code>Config::new</code></span></p>
-<p>Our <code>new</code> function now returns a <code>Result</code> with a <code>Config</code> instance in the
-success case and a <code>&amp;'static str</code> in the error case. Our error values will
-always be string literals that have the <code>'static</code> lifetime.</p>
-<p>We’ve made two changes in the body of the <code>new</code> function: instead of calling
-<code>panic!</code> when the user doesn’t pass enough arguments, we now return an <code>Err</code>
-value, and we’ve wrapped the <code>Config</code> return value in an <code>Ok</code>. These changes
-make the function conform to its new type signature.</p>
-<p>Returning an <code>Err</code> value from <code>Config::new</code> allows the <code>main</code> function to
-handle the <code>Result</code> value returned from the <code>new</code> function and exit the process
-more cleanly in the error case.</p>
-<h4 id="calling-confignew-and-handling-errors"><a class="header" href="#calling-confignew-and-handling-errors">Calling <code>Config::new</code> and Handling Errors</a></h4>
-<p>To handle the error case and print a user-friendly message, we need to update
-<code>main</code> to handle the <code>Result</code> being returned by <code>Config::new</code>, as shown in
-Listing 12-10. We’ll also take the responsibility of exiting the command line
-tool with a nonzero error code away from <code>panic!</code> and instead implement it by
-hand. A nonzero exit status is a convention to signal to the process that
-called our program that the program exited with an error state.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 12-9: <code>Config::new</code>'den <code>Result</code> Döndürme</span></p>
+<p>Yeni fonksiyonumuz artık başarı durumunda bir <code>Config</code> örneği ve hata durumunda <code>&amp;'static str</code> içeren bir <code>Result</code> döndürmektedir. 
+Hata değerlerimiz her zaman <code>'static</code> ömüre sahip dizgi değişmezleri olacaktır.</p>
+<p>Yeni fonksiyonun gövdesinde iki değişiklik yaptık: kullanıcı yeterli argüman iletmediğinde <code>panic!</code> çağrısı yapmak yerine, 
+artık bir <code>Err</code> değeri döndürüyoruz ve <code>Config</code> dönüş değerini bir <code>Ok</code> içinde tuttuk. Bu değişiklikler fonksiyonun yeni tür imzasına 
+uygun olmasını sağlar.</p>
+<p><code>Config::new</code>'den <code>Err</code> değeri döndürmek, <code>main</code> fonksiyonun yeni fonksiyondan dönen <code>Result</code> değerini işlemesini ve hata 
+durumunda süreçten daha temiz bir şekilde çıkmasını sağlar.</p>
+<h4 id="confignew-Çağrısı-ve-hataların-İşlenmesi"><a class="header" href="#confignew-Çağrısı-ve-hataların-İşlenmesi"><code>Config::new</code> Çağrısı ve Hataların İşlenmesi</a></h4>
+<p>Hata durumunu ele almak ve kullanıcı dostu bir mesaj yazdırmak için, Liste 12-10'da gösterildiği gibi, 
+<code>Config::new</code> tarafından döndürülen <code>Result</code>'u ele almak üzere <code>main</code>'i güncellememiz gerekir. Ayrıca, komut satırı aracından 
+sıfır olmayan bir hata koduyla çıkma sorumluluğunu <code>panic!</code>'ten alacağız ve elle sürekleyeceğiz. Sıfır olmayan bir çıkış durumu, 
+programımızı çağıran sürece programın bir hata durumuyla çıktığını bildirmek için kullanılan bir kuraldır.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span>use std::process;
@@ -580,47 +512,35 @@ fn main() {
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-10: Exiting with an error code if creating a
-new <code>Config</code> fails</span></p>
-<p>In this listing, we’ve used a method we haven’t covered in detail yet:
-<code>unwrap_or_else</code>, which is defined on <code>Result&lt;T, E&gt;</code> by the standard library.
-Using <code>unwrap_or_else</code> allows us to define some custom, non-<code>panic!</code> error
-handling. If the <code>Result</code> is an <code>Ok</code> value, this method’s behavior is similar
-to <code>unwrap</code>: it returns the inner value <code>Ok</code> is wrapping. However, if the value
-is an <code>Err</code> value, this method calls the code in the <em>closure</em>, which is an
-anonymous function we define and pass as an argument to <code>unwrap_or_else</code>. We’ll
-cover closures in more detail in <a href="ch13-00-functional-features.html">Chapter 13</a><!-- ignore -->. For now,
-you just need to know that <code>unwrap_or_else</code> will pass the inner value of the
-<code>Err</code>, which in this case is the static string <code>&quot;not enough arguments&quot;</code> that we
-added in Listing 12-9, to our closure in the argument <code>err</code> that appears
-between the vertical pipes. The code in the closure can then use the <code>err</code>
-value when it runs.</p>
-<p>We’ve added a new <code>use</code> line to bring <code>process</code> from the standard library into
-scope. The code in the closure that will be run in the error case is only two
-lines: we print the <code>err</code> value and then call <code>process::exit</code>. The
-<code>process::exit</code> function will stop the program immediately and return the
-number that was passed as the exit status code. This is similar to the
-<code>panic!</code>-based handling we used in Listing 12-8, but we no longer get all the
-extra output. Let’s try it:</p>
+<p><span class="caption">Liste 12-10: Yeni bir <code>Config</code> oluşturma başarısız olursa bir hata koduyla çıkmak</span></p>
+<p>Bu listelemede, henüz ayrıntılı olarak ele almadığımız bir metod kullandık: standart kütüphane tarafından <code>Result&lt;T, E&gt;</code> üzerinde 
+tanımlanan <code>unwrap_or_else</code>. <code>unwrap_or_else</code>'i kullanmak, panik yaratmayan bazı özel hata işleme yöntemleri tanımlamamızı sağlar. 
+Eğer <code>Result</code> <code>Ok</code> değerinde ise, bu metodun davranışı <code>unwrap</code>'a benzer: <code>Ok</code>'un sarmaladığı iç değeri döndürür. 
+Ancak, değer <code>Err</code> değeriyse, bu metod, tanımladığımız ve <code>unwrap_or_else</code>'ye argüman olarak aktardığımız anonim bir fonksiyon olan 
+kapanış ifadesindeki kodu çağırır. Kapanış ifadelerini <a href="ch13-00-functional-features.html">Bölüm 13</a><!-- ignore -->'te daha ayrıntılı olarak ele alacağız. 
+Şimdilik, <code>unwrap_or_else</code>'nin  <code>Err</code>'nin iç değerini, yani bu durumda Liste 12-9'da eklediğimiz <code>&quot;not enough arguments&quot;</code> statik dizgisini, 
+dikey <em>aktarmalar</em> arasında görünen <code>err</code> argümanı içinde kapanış ifadesini aktaracağını bilmeniz yeterlidir. 
+Daha sonra kapanış ifadesi içindeki kod çalıştığında <code>err</code> değerini kullanabilir.</p>
+<p>Standart kütüphaneden <code>process</code>'i kapsam içine almak için yeni bir <code>use</code> satırı ekledik. Hata durumunda çalıştırılacak kapanış ifadesi
+içindeki kod yalnızca iki satırdır: <code>err</code> değerini yazdırırız ve ardından <code>process::exit</code>'i çağırırız. <code>process::exit</code> fonksiyonu programı 
+hemen durduracak ve çıkış durum kodu olarak aktarılan sayıyı döndürecektir. Bu, Liste 12-8'de kullandığımız <code>panic!</code>-tabanlı işleme benzer, 
+ancak artık tüm ekstra çıktıları almıyoruz. Hadi deneyelim:</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished dev [unoptimized + debuginfo] target(s) in 0.48s
      Running `target/debug/minigrep`
 Problem parsing arguments: not enough arguments
 </code></pre>
-<p>Great! This output is much friendlier for our users.</p>
-<h3 id="extracting-logic-from-main"><a class="header" href="#extracting-logic-from-main">Extracting Logic from <code>main</code></a></h3>
-<p>Now that we’ve finished refactoring the configuration parsing, let’s turn to
-the program’s logic. As we stated in <a href="#separation-of-concerns-for-binary-projects">“Separation of Concerns for Binary
-Projects”</a><!-- ignore -->, we’ll
-extract a function named <code>run</code> that will hold all the logic currently in the
-<code>main</code> function that isn’t involved with setting up configuration or handling
-errors. When we’re done, <code>main</code> will be concise and easy to verify by
-inspection, and we’ll be able to write tests for all the other logic.</p>
-<p>Listing 12-11 shows the extracted <code>run</code> function. For now, we’re just making
-the small, incremental improvement of extracting the function. We’re still
-defining the function in <em>src/main.rs</em>.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Harika! Bu çıktı, kullanıcılarımız için çok daha güzel.</p>
+<h3 id="mainden-mantığı-Çıkarma"><a class="header" href="#mainden-mantığı-Çıkarma"><code>main</code>'den Mantığı Çıkarma</a></h3>
+<p>Yapılandırma ayrıştırmasını yeniden düzenlemeyi bitirdiğimize göre, şimdi programın mantığına dönelim. </p>
+<p><a href="#separation-of-concerns-for-binary-projects">“İkili Projeler için İşlerin Ayrılması”</a><!-- ignore --> 
+bölümünde belirttiğimiz gibi, yapılandırmayı ayarlamak veya hataları ele almakla ilgili olmayan <code>main</code>'de şu anda bulunan tüm mantığı 
+tutacak <code>run</code> adlı bir fonksiyon çıkaracağız. İşimiz bittiğinde, <code>main</code> kısa ve öz olacak ve inceleme yoluyla doğrulanması 
+kolay olacak ve diğer tüm mantık için testler yazabileceğiz.</p>
+<p>Liste 12-11 ayıklanmış çalıştırma fonksiyonunu göstermektedir. Şimdilik sadece fonksiyonu ayıklayarak küçük ve aşamalı bir iyileştirme yapıyoruz.
+Fonksiyonu <em>src/main.rs</em> içinde tanımlıyoruz.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">use std::process;
@@ -668,20 +588,16 @@ fn run(config: Config) {
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-11: Extracting a <code>run</code> function containing the
-rest of the program logic</span></p>
-<p>The <code>run</code> function now contains all the remaining logic from <code>main</code>, starting
-from reading the file. The <code>run</code> function takes the <code>Config</code> instance as an
-argument.</p>
-<h4 id="returning-errors-from-the-run-function"><a class="header" href="#returning-errors-from-the-run-function">Returning Errors from the <code>run</code> Function</a></h4>
-<p>With the remaining program logic separated into the <code>run</code> function, we can
-improve the error handling, as we did with <code>Config::new</code> in Listing 12-9.
-Instead of allowing the program to panic by calling <code>expect</code>, the <code>run</code>
-function will return a <code>Result&lt;T, E&gt;</code> when something goes wrong. This will let
-us further consolidate the logic around handling errors into <code>main</code> in a
-user-friendly way. Listing 12-12 shows the changes we need to make to the
-signature and body of <code>run</code>.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 12-11: Program mantığının geri kalanını içeren <code>run</code>'ın 
+çıkarılması</span></p>
+<p><code>run</code> fonksiyonu artık dosyanın okunmasından başlayarak <code>main</code>'den kalan tüm mantığı içerir. 
+<code>run</code> fonksiyonu <code>Config</code> örneğini bir argüman olarak alır.</p>
+<h4 id="run-fonksiyonundan-hata-döndürme"><a class="header" href="#run-fonksiyonundan-hata-döndürme"><code>run</code> Fonksiyonundan Hata Döndürme</a></h4>
+<p>Kalan program mantığının <code>run</code> fonksiyonuna ayrılmasıyla, Liste 12-9'da <code>Config::new</code> ile yaptığımız gibi hata işlemeyi geliştirebiliriz. 
+Bir şeyler ters gittiğinde programın <code>expect</code>'i çağırarak paniklemesine izin vermek yerine, <code>run</code> fonksiyonu <code>Result&lt;T, E&gt;</code> döndürecektir. 
+Bu, hataları ele alma mantığını <code>main</code>'de kullanıcı dostu bir şekilde daha da birleştirmemizi sağlayacaktır. Liste 12-12, <code>run</code>'ın 
+imzasında ve gövdesinde yapmamız gereken değişiklikleri göstermektedir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::fs;
 </span><span class="boring">use std::process;
@@ -730,31 +646,21 @@ signature and body of <code>run</code>.</p>
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-12: Changing the <code>run</code> function to return
-<code>Result</code></span></p>
-<p>We’ve made three significant changes here. First, we changed the return type of
-the <code>run</code> function to <code>Result&lt;(), Box&lt;dyn Error&gt;&gt;</code>. This function previously
-returned the unit type, <code>()</code>, and we keep that as the value returned in the
-<code>Ok</code> case.</p>
-<p>For the error type, we used the <em>trait object</em> <code>Box&lt;dyn Error&gt;</code> (and we’ve
-brought <code>std::error::Error</code> into scope with a <code>use</code> statement at the top).
-We’ll cover trait objects in <a href="ch17-00-oop.html">Chapter 17</a><!-- ignore -->. For now, just
-know that <code>Box&lt;dyn Error&gt;</code> means the function will return a type that
-implements the <code>Error</code> trait, but we don’t have to specify what particular type
-the return value will be. This gives us flexibility to return error values that
-may be of different types in different error cases. The <code>dyn</code> keyword is short
-for “dynamic.”</p>
-<p>Second, we’ve removed the call to <code>expect</code> in favor of the <code>?</code> operator, as we
-talked about in <a href="ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator">Chapter 9</a><!-- ignore -->. Rather than
-<code>panic!</code> on an error, <code>?</code> will return the error value from the current function
-for the caller to handle.</p>
-<p>Third, the <code>run</code> function now returns an <code>Ok</code> value in the success case.
-We’ve declared the <code>run</code> function’s success type as <code>()</code> in the signature,
-which means we need to wrap the unit type value in the <code>Ok</code> value. This
-<code>Ok(())</code> syntax might look a bit strange at first, but using <code>()</code> like this is
-the idiomatic way to indicate that we’re calling <code>run</code> for its side effects
-only; it doesn’t return a value we need.</p>
-<p>When you run this code, it will compile but will display a warning:</p>
+<p><span class="caption">Liste 12-12: <code>Result</code> döndürmek için <code>run</code>'ı değiştirme</span></p>
+<p>Burada üç önemli değişiklik yaptık. İlk olarak, <code>run</code> fonksiyonunun dönüş tipini <code>Result&lt;(), Box&lt;dyn Error&gt;&gt;</code> olarak değiştirdik. 
+Bu fonksiyon daha önce birim tipi olan <code>()'</code>i döndürüyordu ve bunu <code>Ok</code> durumunda döndürülen değer olarak tutuyoruz.</p>
+<p>Hata türü için <code>Box&lt;dyn Error&gt;</code> tanım nesnesini kullandık (ve <code>std::error::Error</code>'ı en üstte bir <code>use</code> deyimiyle kapsama aldık). 
+Tanım nesnelerini <a href="ch17-00-oop.html">Bölüm 17</a><!-- ignore -->'de ele alacağız. Şimdilik, <code>Box&lt;dyn Error&gt;</code>'un fonksiyonun <code>Error</code> tanımını sürekleyen 
+tür döndüreceği anlamına geldiğini bilin, ancak dönüş değerinin hangi tür olacağını belirtmek zorunda değiliz. 
+Bu bize farklı hata durumlarında farklı türlerde olabilecek hata değerleri döndürme esnekliği sağlar. 
+<code>dyn</code> anahtar sözcüğü “dinamikin” kısaltmasıdır.</p>
+<p>İkinci olarak, <a href="ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator">Bölüm 9</a><!-- ignore -->'da bahsettiğimiz gibi <code>?</code> operatörü için <code>expect</code> çağrısını kaldırdık. 
+Bir hatada <code>panic!</code> yerine, <code>?</code> işleci çağıranın işlemesi için geçerli fonksiyondan hata değerini döndürecektir.</p>
+<p>Üçüncü olarak, <code>run</code> fonksiyonu artık başarı durumunda bir <code>Ok</code> değeri döndürmektedir. İmzada <code>run</code> fonksiyonunun başarı tipini 
+<code>()</code> olarak bildirdik, bu da birim tür değerini <code>Ok</code> değerine sarmamız gerektiği anlamına geliyor. Bu <code>Ok(())</code> söz dizimi ilk başta biraz 
+garip görünebilir, <code>ancak ()</code>'yi bu şekilde kullanmak, <code>run</code>'ı yalnızca yan etkileri için çağırdığımızı belirtmenin deyimsel yoludur; 
+ihtiyacımız olan bir değer döndürmez.</p>
+<p>Bu kodu çalıştırdığınızda, derlenecek ancak bir uyarı görüntülenecektir:</p>
 <pre><code class="language-console">$ cargo run the poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
 warning: unused `Result` that must be used
@@ -783,14 +689,13 @@ To tell your name the livelong day
 To an admiring bog!
 
 </code></pre>
-<p>Rust tells us that our code ignored the <code>Result</code> value and the <code>Result</code> value
-might indicate that an error occurred. But we’re not checking to see whether or
-not there was an error, and the compiler reminds us that we probably meant to
-have some error-handling code here! Let’s rectify that problem now.</p>
-<h4 id="handling-errors-returned-from-run-in-main"><a class="header" href="#handling-errors-returned-from-run-in-main">Handling Errors Returned from <code>run</code> in <code>main</code></a></h4>
-<p>We’ll check for errors and handle them using a technique similar to one we used
-with <code>Config::new</code> in Listing 12-10, but with a slight difference:</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Rust bize kodumuzun <code>Result</code> değerini göz ardı ettiğini ve <code>Result</code> değerinin bir hata oluştuğunu gösterebileceğini söyler. 
+Ancak bir hata olup olmadığını kontrol etmiyoruz ve derleyici bize muhtemelen burada bazı hata işleme kodlarına sahip olmamız gerektiğini 
+hatırlatıyor! Şimdi bu sorunu düzeltelim.</p>
+<h4 id="mainde-Çalıştırmadan-dönen-hataları-İşleme"><a class="header" href="#mainde-Çalıştırmadan-dönen-hataları-İşleme"><code>main</code>'de Çalıştırmadan Dönen Hataları İşleme</a></h4>
+<p>Hataları kontrol edeceğiz ve bunları Liste 12-10'da <code>Config::new</code> ile kullandığımıza benzer bir teknik kullanarak ele alacağız, 
+ancak küçük bir farkla:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
@@ -842,30 +747,24 @@ with <code>Config::new</code> in Listing 12-10, but with a slight difference:</p
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p>We use <code>if let</code> rather than <code>unwrap_or_else</code> to check whether <code>run</code> returns an
-<code>Err</code> value and call <code>process::exit(1)</code> if it does. The <code>run</code> function doesn’t
-return a value that we want to <code>unwrap</code> in the same way that <code>Config::new</code>
-returns the <code>Config</code> instance. Because <code>run</code> returns <code>()</code> in the success case,
-we only care about detecting an error, so we don’t need <code>unwrap_or_else</code> to
-return the unwrapped value, which would only be <code>()</code>.</p>
-<p>The bodies of the <code>if let</code> and the <code>unwrap_or_else</code> functions are the same in
-both cases: we print the error and exit.</p>
-<h3 id="splitting-code-into-a-library-crate"><a class="header" href="#splitting-code-into-a-library-crate">Splitting Code into a Library Crate</a></h3>
-<p>Our <code>minigrep</code> project is looking good so far! Now we’ll split the
-<em>src/main.rs</em> file and put some code into the <em>src/lib.rs</em> file. That way we
-can test the code and have a <em>src/main.rs</em> file with fewer responsibilities.</p>
-<p>Let’s move all the code that isn’t the <code>main</code> function from <em>src/main.rs</em> to
-<em>src/lib.rs</em>:</p>
+<p><code>run</code>'ın bir <code>Err</code> değeri döndürüp döndürmediğini kontrol etmek ve döndürürse <code>process::exit(1)</code>'i çağırmak için <code>unwrap_or_else</code> yerine 
+<code>if let</code> kullanırız. <code>run</code> fonksiyonu, <code>Config::new</code>'in <code>Config</code> örneğini döndürdüğü gibi <code>unwrap</code> etmek istediğimiz bir değer döndürmez. 
+<code>run</code> başarı durumunda <code>()</code> değerini döndürdüğü için, yalnızca bir hatayı tespit etmekle ilgileniyoruz, bu nedenle <code>unwrap_or_else</code>'in 
+yalnızca <code>()</code> değerini döndürmesine gerek yok.</p>
+<p><code>if let</code> ve <code>unwrap_or_else</code> fonksiyonlarının gövdeleri her iki durumda da aynıdır: hatayı yazdırır ve çıkarız.</p>
+<h3 id="kodu-kütüphane-kasasına-bölme"><a class="header" href="#kodu-kütüphane-kasasına-bölme">Kodu Kütüphane Kasasına Bölme</a></h3>
+<p><code>minigrep</code> projemiz şu ana kadar iyi görünüyor! Şimdi <em>src/main.rs</em> dosyasını böleceğiz ve <em>src/lib.rs</em> dosyasına bazı kodlar koyacağız. 
+Bu şekilde kodu test edebilir ve daha az sorumluluğu olan bir <em>src/main.rs</em> dosyasına sahip olabiliriz.</p>
+<p><code>main</code> fonksiyonu olmayan tüm kodları <em>src/main.rs</em> dosyasından <em>src/lib.rs</em> dosyasına taşıyalım:</p>
 <ul>
-<li>The <code>run</code> function definition</li>
-<li>The relevant <code>use</code> statements</li>
-<li>The definition of <code>Config</code></li>
-<li>The <code>Config::new</code> function definition</li>
+<li><code>run</code> fonksiyonu tanımı</li>
+<li>İlişkili <code>use</code> deyimleri</li>
+<li><code>Config</code>'in tanımı</li>
+<li><code>Config::new</code> fonksiyon tanımı</li>
 </ul>
-<p>The contents of <em>src/lib.rs</em> should have the signatures shown in Listing 12-13
-(we’ve omitted the bodies of the functions for brevity). Note that this won’t
-compile until we modify <em>src/main.rs</em> in Listing 12-14.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><em>src/lib.rs</em> dosyasının içeriği Liste 12-13'te gösterilen imzalara sahip olmalıdır (kısa olması için fonksiyonların gövdelerini atladık). 
+Liste 12-14'te <em>src/main.rs</em>'yi değiştirene kadar bunun derlenmeyeceğini unutmayın.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile">use std::error::Error;
 use std::fs;
 
@@ -897,14 +796,12 @@ pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
 </span><span class="boring">    Ok(())
 </span>}
 </code></pre>
-<p><span class="caption">Listing 12-13: Moving <code>Config</code> and <code>run</code> into
-<em>src/lib.rs</em></span></p>
-<p>We’ve made liberal use of the <code>pub</code> keyword: on <code>Config</code>, on its fields and its
-<code>new</code> method, and on the <code>run</code> function. We now have a library crate that has a
-public API we can test!</p>
-<p>Now we need to bring the code we moved to <em>src/lib.rs</em> into the scope of the
-binary crate in <em>src/main.rs</em>, as shown in Listing 12-14.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 12-13: <code>Config</code> ve <code>run</code>'ı <em>src/lib.rs</em>'e taşıma</span></p>
+<p><code>pub</code> anahtar sözcüğünü bolca kullandık: <code>Config</code> üzerinde, <code>Config</code>'in alanları üzerinde, <code>new</code> metodu üzerinde ve <code>run</code> fonksiyonu üzerinde. 
+Artık test edebileceğimiz herkese açık bir API'ye sahip bir kütüphane kasamız var!</p>
+<p>Şimdi <em>src/lib.rs</em> dosyasına taşıdığımız kodu, Liste 12-14'te gösterildiği gibi 
+<em>src/main.rs</em> dosyasındaki ikili kasanın kapsamına almamız gerekiyor.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><code class="language-rust ignore">use std::env;
 use std::process;
 
@@ -930,19 +827,15 @@ fn main() {
 </span>    }
 }
 </code></pre>
-<p><span class="caption">Listing 12-14: Using the <code>minigrep</code> library crate in
-<em>src/main.rs</em></span></p>
-<p>We add a <code>use minigrep::Config</code> line to bring the <code>Config</code> type from the
-library crate into the binary crate’s scope, and we prefix the <code>run</code> function
-with our crate name. Now all the functionality should be connected and should
-work. Run the program with <code>cargo run</code> and make sure everything works
-correctly.</p>
-<p>Whew! That was a lot of work, but we’ve set ourselves up for success in the
-future. Now it’s much easier to handle errors, and we’ve made the code more
-modular. Almost all of our work will be done in <em>src/lib.rs</em> from here on out.</p>
-<p>Let’s take advantage of this newfound modularity by doing something that would
-have been difficult with the old code but is easy with the new code: we’ll
-write some tests!</p>
+<p><span class="caption">Liste 12-14: <em>src/main.rs</em> içinde <code>minigrep</code> kütüphanesini kullanma</span></p>
+<p><code>Config</code> türünü kütüphane kasasından ikili kasanın kapsamına getirmek için <code>use minigrep::Config</code> satırı ekliyoruz ve 
+<code>run</code> fonksiyonunun önüne kasa adımızı ekliyoruz. Artık tüm fonksiyonlar birbirine bağlı olmalı ve çalışmalıdır. 
+Programı <code>cargo run</code> ile çalıştırın ve her şeyin doğru çalıştığından emin olun.</p>
+<p>Vay be! Sanki bu <strong>seni</strong> ve <em>beni</em> çok yormuş gibi duruyor, ancak gelecekte başarılı olmak için bunları yapmalıydık. 
+Artık hataları ele almak çok daha kolay ve kodu daha modüler hale getirdik. Bundan sonraki neredeyse tüm işlerimiz <em>src/lib.rs</em> içinde 
+yapılacak.</p>
+<p>Eski kodla zor olan ancak yeni kodla kolay olan bir şeyi yaparak bu yeni modülerlikten yararlanalım: 
+bazı testler yazacağız!</p>
 
                     </main>
 
