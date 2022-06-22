@@ -1,148 +1,117 @@
-## Running Code on Cleanup with the `Drop` Trait
+## `Drop` Tanımı ile Temizleme Üzerinde Kod Çalıştırma
 
-The second trait important to the smart pointer pattern is `Drop`, which lets
-you customize what happens when a value is about to go out of scope. You can
-provide an implementation for the `Drop` trait on any type, and that code can
-be used to release resources like files or network connections. We’re
-introducing `Drop` in the context of smart pointers because the functionality
-of the `Drop` trait is almost always used when implementing a smart pointer.
-For example, when a `Box<T>` is dropped it will deallocate the space on the
-heap that the box points to.
+Akıllı işaretçi modeli için önemli olan ikinci tanım, bir değer kapsam dışına çıkmak üzereyken ne olacağını 
+özelleştirmenize olanak tanıyan `Drop`'tur. Herhangi bir tür üzerinde `Drop` için bir sürekleme sağlayabilirsiniz 
+ve bu kod, dosyalar veya ağ bağlantıları gibi kaynakları serbest bırakmak için kullanılabilir.
+`Drop`'u akıllı işaretçiler bağlamında tanıtıyoruz çünkü `Drop`'un işlevselliği neredeyse her zaman bir akıllı 
+işaretçi uygulanırken kullanılır. Örneğin, bir `Box<T>` bırakıldığında, yığın üzerinde kutunun işaret ettiği alan 
+belleğe iade edilir.
 
-In some languages, for some types, the programmer must call code to free memory
-or resources every time they finish using an instance those types. Examples
-include file handles, sockets, or locks. If they forget, the system might
-become overloaded and crash. In Rust, you can specify that a particular bit of
-code be run whenever a value goes out of scope, and the compiler will insert
-this code automatically. As a result, you don’t need to be careful about
-placing cleanup code everywhere in a program that an instance of a particular
-type is finished with—you still won’t leak resources!
+Bazı dillerde, bazı türler için, programcı bu türlerin bir örneğini kullanmayı her bitirdiğinde belleği veya kaynakları 
+boşaltmak için kod çağırmalıdır. Örnekler arasında dosya tutamaçları, soketler veya kilitler yer alır. Eğer 
+unuturlarsa, sistem aşırı yüklenebilir ve çökebilir. Rust'ta, bir değer kapsam dışına çıktığında belirli bir 
+kod parçasının çalıştırılmasını belirtebilirsiniz ve derleyici bu kodu otomatik olarak ekleyecektir. 
+Sonuç olarak, belirli bir türün bir örneğinin bittiği bir programın her yerine temizleme kodu yerleştirme 
+konusunda dikkatli olmanız gerekmez—yine de kaynak sızdırmazsınız!
 
-You specify the code to run when a value goes out of scope by implementing the
-`Drop` trait. The `Drop` trait requires you to implement one method named
-`drop` that takes a mutable reference to `self`. To see when Rust calls `drop`,
-let’s implement `drop` with `println!` statements for now.
+`Drop` tanımını sürekleyerek bir değer kapsam dışına çıktığında çalıştırılacak kodu belirlersiniz.
+`Drop`, `self` öğesine değiştirilebilir bir referans alan `drop` adlı bir metodu tanımlamanızı gerektirir. 
+Rust'ın `drop`'u ne zaman çağırdığını görmek için şimdilik `drop`'u `println!` ifade yapılarıyla kullanalım.
 
-Listing 15-14 shows a `CustomSmartPointer` struct whose only custom
-functionality is that it will print `Dropping CustomSmartPointer!` when the
-instance goes out of scope, to show when Rust runs the `drop` function.
+Liste 15-14, Rust'ın `drop` fonksiyonunu ne zaman çalıştırdığını göstermek için, örnek kapsam dışına çıktığında
+`Dropping CustomSmartPointer!` yazdıracak olan tek gizli fonksiyonu olan bir `CustomSmartPointer` yapısını gösterir.
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-14/src/main.rs}}
 ```
 
-<span class="caption">Listing 15-14: A `CustomSmartPointer` struct that
-implements the `Drop` trait where we would put our cleanup code</span>
+<span class="caption">Liste 15-14: Temizleme kodumuzu koyacağımız `Drop`'u sürekleyen bir `CustomSmartPointer` yapısı</span>
 
-The `Drop` trait is included in the prelude, so we don’t need to bring it into
-scope. We implement the `Drop` trait on `CustomSmartPointer` and provide an
-implementation for the `drop` method that calls `println!`. The body of the
-`drop` function is where you would place any logic that you wanted to run when
-an instance of your type goes out of scope. We’re printing some text here to
-demonstrate visually when Rust will call `drop`.
+`Drop` tanımı genel Rust yapısına dahil edilmiştir, bu nedenle onu kapsam içine almamıza gerek yoktur.
+`CustomSmartPointer` üzerinde `Drop`'u sürekliyoruz ve `println!` çağrısı yapan `drop` metodu için bir tanımlama sağlıyoruz.
+`Drop` fonksiyonunun gövdesi, türünüzün bir örneği kapsam dışına çıktığında çalıştırmak istediğiniz herhangi bir mantığı yerleştireceğiniz yerdir. 
+Rust'ın `drop`'u ne zaman çağıracağını görsel olarak göstermek için burada bazı metinler yazdırıyoruz.
 
-In `main`, we create two instances of `CustomSmartPointer` and then print
-`CustomSmartPointers created`. At the end of `main`, our instances of
-`CustomSmartPointer` will go out of scope, and Rust will call the code we put
-in the `drop` method, printing our final message. Note that we didn’t need to
-call the `drop` method explicitly.
+`main`'de, iki `CustomSmartPointer` örneği oluşturuyoruz ve ardından oluşturulan `CustomSmartPointer`'ları yazdırıyoruz.
+`main`'in sonunda, `CustomSmartPointer` örneklerimiz kapsam dışına çıkacak ve Rust, `drop`'a koyduğumuz kodu çağırarak son 
+mesajımızı yazdıracak. `drop` metodunu açıkça çağırmamıza gerek olmadığına dikkat edin.
 
-When we run this program, we’ll see the following output:
+Bu programı çalıştırdığımızda aşağıdaki çıktıyı göreceğiz:
 
 ```console
 {{#include ../listings/ch15-smart-pointers/listing-15-14/output.txt}}
 ```
 
-Rust automatically called `drop` for us when our instances went out of scope,
-calling the code we specified. Variables are dropped in the reverse order of
-their creation, so `d` was dropped before `c`. This example's purpose is to
-give you a visual guide to how the `drop` method works; usually you would
-specify the cleanup code that your type needs to run rather than a print
-message.
+Örneklerimiz kapsam dışına çıktığında Rust bizim için otomatik olarak `drop`'u çağırdı ve belirttiğimiz kodu çalıştırdı. 
+Değişkenler oluşturulma sıralarının tersine bırakılır, bu nedenle `d`, `c`'den önce bırakılır. Bu örneğin amacı,
+`drop` metodunun nasıl çalıştığına dair görsel bir kılavuz sunmaktır; genellikle bir yazdırma mesajı yerine türünüzün çalışması gereken 
+temizleme kodunu belirtirsiniz.
 
-### Dropping a Value Early with `std::mem::drop`
+### `std::mem::drop` ile Bir Değeri Erken Bırakma
 
-Unfortunately, it’s not straightforward to disable the automatic `drop`
-functionality. Disabling `drop` isn’t usually necessary; the whole point of the
-`Drop` trait is that it’s taken care of automatically. Occasionally, however,
-you might want to clean up a value early. One example is when using smart
-pointers that manage locks: you might want to force the `drop` method that
-releases the lock so that other code in the same scope can acquire the lock.
-Rust doesn’t let you call the `Drop` trait’s `drop` method manually; instead
-you have to call the `std::mem::drop` function provided by the standard library
-if you want to force a value to be dropped before the end of its scope.
+Ne yazık ki, otomatik `drop` fonksiyonunu devre dışı bırakmak kolay değildir. `drop`'u devre dışı bırakmak genellikle gerekli değildir;
+`Drop` tanımının tüm amacı bunun otomatik olarak halledilmesidir. Ancak bazen, bir değeri erkenden temizlemek isteyebilirsiniz. 
+Buna bir örnek, kilitleri yöneten akıllı işaretçiler kullanırken verilebilir: kilidi serbest bırakan `drop` metodunu zorlamak isteyebilirsiniz, 
+böylece aynı kapsamdaki diğer kodlar kilidi alabilir. Rust, `Drop`'un `drop` metodunu manuel olarak çağırmanıza izin vermez; 
+bunun yerine, bir değeri kapsamının sonundan önce bırakılmaya zorlamak istiyorsanız standart kütüphane tarafından sağlanan
+`std::mem::drop` işlevini çağırmanız gerekir.
 
-If we try to call the `Drop` trait’s `drop` method manually by modifying the
-`main` function from Listing 15-14, as shown in Listing 15-15, we’ll get a
-compiler error:
+Liste 15-15'te gösterildiği gibi, Liste 15-14'teki `main` fonksiyonunu değiştirerek `Drop`'un `drop` metodunu manuel olarak çağırmaya çalışırsak, 
+bir derleyici hatası alırız:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust,ignore,does_not_compile
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-15/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-15: Attempting to call the `drop` method from
-the `Drop` trait manually to clean up early</span>
+<span class="caption">Liste 15-15: Erken temizlemek için `Drop` tanımından `drop` metodunu manuel olarak çağırma girişimi</span>
 
-When we try to compile this code, we’ll get this error:
+Bu kodu derlemeye çalıştığımızda alacağımız hata budur:
 
 ```console
 {{#include ../listings/ch15-smart-pointers/listing-15-15/output.txt}}
 ```
 
-This error message states that we’re not allowed to explicitly call `drop`. The
-error message uses the term *destructor*, which is the general programming term
-for a function that cleans up an instance. A *destructor* is analogous to a
-*constructor*, which creates an instance. The `drop` function in Rust is one
-particular destructor.
+Bu hata mesajı, `drop`'u açıkça çağırmamıza izin verilmediğini belirtir. Hata mesajı, bir örneği temizleyen bir 
+fonksiyon için genel programlama terimi olan *yıkıcı* terimini kullanır. Bir yıkıcı, bir örnek oluşturan bir yapıcıya benzer. 
+Rust'taki `drop` fonksiyonu belirli bir yıkıcıdır.
 
-Rust doesn’t let us call `drop` explicitly because Rust would still
-automatically call `drop` on the value at the end of `main`. This would cause a
-*double free* error because Rust would be trying to clean up the same value
-twice.
+Rust, `drop`'u açıkça çağırmamıza izin vermez, çünkü Rust yine de `main`'in sonundaki değer üzerinde otomatik olarak `drop`'u çağıracaktır. 
+Bu, Rust aynı değeri iki kez temizlemeye çalışacağı için *çift serbest bırakma hatasına* neden olur.
 
-We can’t disable the automatic insertion of `drop` when a value goes out of
-scope, and we can’t call the `drop` method explicitly. So, if we need to force
-a value to be cleaned up early, we use the `std::mem::drop` function.
+Bir değer kapsam dışına çıktığında `drop`'un otomatik olarak eklenmesini devre dışı bırakamayız ve `drop` metodunu açıkça çağıramayız. 
+Bu nedenle, bir değeri erken temizlenmeye zorlamamız gerekiyorsa, `std::mem::drop` fonksiyonunu kullanırız.
 
-The `std::mem::drop` function is different from the `drop` method in the `Drop`
-trait. We call it by passing as an argument the value we want to force drop.
-The function is in the prelude, so we can modify `main` in Listing 15-15 to
-call the `drop` function, as shown in Listing 15-16:
+`std::mem::drop` fonksiyonu `Drop` tanımındaki `drop` metodundan farklıdır. Düşürmeye zorlamak istediğimiz değeri argüman olarak ileterek çağırırız. 
+Fonksiyon genel Rust yapısındadır, bu nedenle Liste 15-15'teki `main`'i, Liste 15-16'da gösterildiği gibi `drop` fonksiyonunu çağıracak şekilde 
+değiştirebiliriz:
 
-<span class="filename">Filename: src/main.rs</span>
+<span class="filename">Dosya adı: src/main.rs</span>
 
 ```rust
 {{#rustdoc_include ../listings/ch15-smart-pointers/listing-15-16/src/main.rs:here}}
 ```
 
-<span class="caption">Listing 15-16: Calling `std::mem::drop` to explicitly
-drop a value before it goes out of scope</span>
+<span class="caption">Liste 15-16: Bir değeri kapsam dışına çıkmadan önce açıkça bırakmak için `std::mem::drop` çağrısı</span>
 
-Running this code will print the following:
+Bu kodu çalıştırmak aşağıdakileri yazdıracaktır:
 
 ```console
 {{#include ../listings/ch15-smart-pointers/listing-15-16/output.txt}}
 ```
 
-The text ```Dropping CustomSmartPointer with data `some data`!``` is printed
-between the `CustomSmartPointer created.` and `CustomSmartPointer dropped
-before the end of main.` text, showing that the `drop` method code is called to
-drop `c` at that point.
+`CustomSmartPointer` oluşturulduğu esnada ```Dropping CustomSmartPointer with data (some data)!``` metni yazdırılır ve 
+`CustomSmartPointer dropped before the end of main.` metni, `drop` metod kodunun bu noktada `c`'yi bırakmak için çağrıldığını gösterir.
 
-You can use code specified in a `Drop` trait implementation in many ways to
-make cleanup convenient and safe: for instance, you could use it to create your
-own memory allocator! With the `Drop` trait and Rust’s ownership system, you
-don’t have to remember to clean up because Rust does it automatically.
+`Drop` tanım süreklemesinde belirtilen kodu, temizlemeyi kolay ve güvenli hale getirmek için birçok şekilde kullanabilirsiniz: 
+örneğin, kendi bellek ayırıcınızı oluşturmak için kullanabilirsiniz! `Drop` tanımı ve Rust'ın sahiplik sistemi sayesinde, 
+temizlemeyi hatırlamak zorunda kalmazsınız çünkü Rust bunu otomatik olarak yapar.
 
-You also don’t have to worry about problems resulting from accidentally
-cleaning up values still in use: the ownership system that makes sure
-references are always valid also ensures that `drop` gets called only once when
-the value is no longer being used.
+Ayrıca, hala kullanımda olan değerlerin yanlışlıkla temizlenmesinden kaynaklanan sorunlar hakkında endişelenmenize de gerek yoktur: 
+referansların her zaman geçerli olmasını sağlayan sahiplik sistemi, `drop`'un değer artık kullanılmadığında yalnızca bir kez çağrılmasını da sağlar.
 
-Now that we’ve examined `Box<T>` and some of the characteristics of smart
-pointers, let’s look at a few other smart pointers defined in the standard
-library.
+`Box<T>`'yi ve akıllı işaretçilerin bazı özelliklerini incelediğimize göre, şimdi standart kütüphanede tanımlanan diğer birkaç akıllı 
+işaretçiye bakalım.
