@@ -147,26 +147,20 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="advanced-functions-and-closures"><a class="header" href="#advanced-functions-and-closures">Advanced Functions and Closures</a></h2>
-<p>This section explores some advanced features related to functions and closures,
-including function pointers and returning closures.</p>
-<h3 id="function-pointers"><a class="header" href="#function-pointers">Function Pointers</a></h3>
-<p>We’ve talked about how to pass closures to functions; you can also pass regular
-functions to functions! This technique is useful when you want to pass a
-function you’ve already defined rather than defining a new closure. Functions
-coerce to the type <code>fn</code> (with a lowercase f), not to be confused with the <code>Fn</code>
-closure trait. The <code>fn</code> type is called a <em>function pointer</em>. Passing functions
-with function pointers will allow you to use functions as arguments to other
-functions.</p>
-<p>The syntax for specifying that a parameter is a function pointer is similar to
-that of closures, as shown in Listing 19-27, where we’ve defined a function
-<code>add_one</code> that adds one to its parameter. The function <code>do_twice</code> takes two
-parameters: a function pointer to any function that takes an <code>i32</code> parameter
-and returns an <code>i32</code>, and one <code>i32 value</code>. The <code>do_twice</code> function calls the
-function <code>f</code> twice, passing it the <code>arg</code> value, then adds the two function call
-results together. The <code>main</code> function calls <code>do_twice</code> with the arguments
-<code>add_one</code> and <code>5</code>.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+                        <h2 id="gelişmiş-fonksiyonlar-ve-kapanış-İfadeleri"><a class="header" href="#gelişmiş-fonksiyonlar-ve-kapanış-İfadeleri">Gelişmiş Fonksiyonlar ve Kapanış İfadeleri</a></h2>
+<p>Bu bölümde, fonksiyon işaretçileri ve dönen kapanışlar da dahil olmak üzere fonksiyonlar ve kapanışlarla 
+ilgili bazı gelişmiş özellikler incelenmektedir.</p>
+<h3 id="fonksiyon-İşaretçileri"><a class="header" href="#fonksiyon-İşaretçileri">Fonksiyon İşaretçileri</a></h3>
+<p>Fonksiyonlara kapanışların nasıl aktarılacağından bahsetmiştik; normal fonksiyonları da fonksiyonlara aktarabilirsiniz! 
+Bu teknik, yeni bir kapanış tanımlamak yerine daha önce tanımladığınız bir fonksiyonu geçirmek istediğinizde kullanışlıdır. 
+Fonksiyonlar, <code>Fn</code> kapanış tanımı ile karıştırılmaması gereken <code>fn</code> (küçük <code>f</code> harfi ile) türüne zorlanır. <code>fn</code> türüne fonksiyon işaretçisi 
+denir. Fonksiyonları fonksiyon işaretçileriyle geçirmek, fonksiyonları diğer fonksiyonlara argüman olarak kullanmanızı sağlar.</p>
+<p>Bir parametrenin bir fonksiyon işaretçisi olduğunu belirtmek için kullanılan söz dizimi, parametresine bir ekleyen <code>add_one</code> 
+fonksiyonunu tanımladığımız Liste 19-27'de gösterildiği gibi, kapanışlarınkine benzer. <code>do_twice</code> fonksiyonu iki parametre alır: 
+bir <code>i32</code> parametresi alan ve bir <code>i32</code> döndüren herhangi bir fonksiyonun fonksiyon işaretçisi ve bir <code>i32</code> değeri. <code>do_twice</code> fonksiyonu
+<code>f</code> işlevini iki kez çağırır, <code>arg</code> değerini geçirir ve ardından iki fonksiyon çağrısı sonucunu birbirine ekler. <code>main</code> fonksiyonu <code>do_twice</code>
+fonksiyonunu <code>add_one</code> ve <code>5</code> argümanlarıyla çağırır.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust">fn add_one(x: i32) -&gt; i32 {
     x + 1
 }
@@ -181,51 +175,39 @@ fn main() {
     println!(&quot;The answer is: {}&quot;, answer);
 }
 </code></pre></pre>
-<p><span class="caption">Listing 19-27: Using the <code>fn</code> type to accept a function
-pointer as an argument</span></p>
-<p>This code prints <code>The answer is: 12</code>. We specify that the parameter <code>f</code> in
-<code>do_twice</code> is an <code>fn</code> that takes one parameter of type <code>i32</code> and returns an
-<code>i32</code>. We can then call <code>f</code> in the body of <code>do_twice</code>. In <code>main</code>, we can pass
-the function name <code>add_one</code> as the first argument to <code>do_twice</code>.</p>
-<p>Unlike closures, <code>fn</code> is a type rather than a trait, so we specify <code>fn</code> as the
-parameter type directly rather than declaring a generic type parameter with one
-of the <code>Fn</code> traits as a trait bound.</p>
-<p>Function pointers implement all three of the closure traits (<code>Fn</code>, <code>FnMut</code>, and
-<code>FnOnce</code>), meaning you can always pass a function pointer as an argument for a
-function that expects a closure. It’s best to write functions using a generic
-type and one of the closure traits so your functions can accept either
-functions or closures.</p>
-<p>That said, one example of where you would want to only accept <code>fn</code> and not
-closures is when interfacing with external code that doesn’t have closures: C
-functions can accept functions as arguments, but C doesn’t have closures.</p>
-<p>As an example of where you could use either a closure defined inline or a named
-function, let’s look at a use of the <code>map</code> method provided by the <code>Iterator</code>
-trait in the standard library. To use the <code>map</code> function to turn a vector of
-numbers into a vector of strings, we could use a closure, like this:</p>
+<p><span class="caption">Liste 19-27: Bir fonksiyon işaretçisini argüman olarak kabul etmek için <code>fn</code> türünü kullanma</span></p>
+<p>Bu kod çıktısı <code>The answer is: 12</code> olur. <code>do_twice</code> içindeki <code>f</code> parametresinin, <code>i32</code> türünde bir parametre alan ve bir 
+<code>i32</code> döndüren bir <code>fn</code> olduğunu belirtiriz. Daha sonra <code>f</code>'i <code>do_twice</code>'ın gövdesinden çağırabiliriz. <code>main</code> içinde, 
+<code>add_one</code> fonksiyon adını <code>do_twice</code>'a ilk argüman olarak aktarabiliriz.</p>
+<p>Kapanışların aksine, <code>fn</code> bir özellikten ziyade bir türdür, bu nedenle <code>Fn</code> tanımlarından birine sahip yaygın tür parametresini bir 
+tanım bağı olarak bildirmek yerine <code>fn</code>'yi doğrudan parametre türü olarak belirtiriz.</p>
+<p>Fonksiyon işaretçileri, kapanış tanımlarının (<code>Fn</code>, <code>FnMut</code> ve <code>FnOnce</code>) üçünü de uygular, yani bir kapanış bekleyen bir fonksiyona argüman 
+olarak her zaman bir fonksiyon işaretçisi aktarabilirsiniz. Fonksiyonlarınızı yaygın tür ve kapanış tanımlarından birini kullanarak yazmak en iyisidir,
+böylece fonksiyonlarınız hem fonksiyonları hem de kapanışları kabul edebilir.</p>
+<p>Bununla birlikte, kapanışları değil de yalnızca <code>fn</code>'leri kabul etmek isteyeceğiniz bir örnek, kapanışları olmayan harici kodlarla 
+arayüz oluştururken ortaya çıkar: C fonksiyonları argüman olarak fonksiyon kabul edebilir, ancak C'de kapanış yoktur.</p>
+<p>Satır içi tanımlanmış bir kapanış ya da adlandırılmış bir fonksiyon kullanabileceğiniz bir örnek olarak, standart kütüphanedeki <code>Iterator</code> tanımı
+tarafından sağlanan <code>map</code> metodunun kullanımına bakalım. Sayılardan oluşan bir vektörü dizelerden oluşan bir vektöre dönüştürmek üzere <code>map</code> 
+fonksiyonunu kullanmak için aşağıdaki gibi bir kapanış kullanabiliriz:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let list_of_numbers = vec![1, 2, 3];
     let list_of_strings: Vec&lt;String&gt; =
         list_of_numbers.iter().map(|i| i.to_string()).collect();
 <span class="boring">}
 </span></code></pre></pre>
-<p>Or we could name a function as the argument to <code>map</code> instead of the closure,
-like this:</p>
+<p>Veya kapanış yerine <code>map</code> argümanı olarak bir fonksiyonu şöyle adlandırabiliriz:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let list_of_numbers = vec![1, 2, 3];
     let list_of_strings: Vec&lt;String&gt; =
         list_of_numbers.iter().map(ToString::to_string).collect();
 <span class="boring">}
 </span></code></pre></pre>
-<p>Note that we must use the fully qualified syntax that we talked about earlier
-in the <a href="ch19-03-advanced-traits.html#advanced-traits">“Advanced Traits”</a><!-- ignore --> section because
-there are multiple functions available named <code>to_string</code>. Here, we’re using the
-<code>to_string</code> function defined in the <code>ToString</code> trait, which the standard
-library has implemented for any type that implements <code>Display</code>.</p>
-<p>Recall from the <a href="ch06-01-defining-an-enum.html#enum-values">“Enum values”</a><!-- ignore --> section of Chapter
-6 that the name of each enum variant that we define also becomes an initializer
-function. We can use these initializer functions as function pointers that
-implement the closure traits, which means we can specify the initializer
-functions as arguments for methods that take closures, like so:</p>
+<p>Daha önce <a href="ch19-03-advanced-traits.html#advanced-traits">“Gelişmiş Özellikler”</a><!-- ignore --> bölümünde bahsettiğimiz tam nitelikli söz dizimini kullanmamız 
+gerektiğini unutmayın çünkü <code>to_string</code> adında birden fazla fonksiyon mevcuttur. Burada, standart kütüphanenin <code>Display</code>'i sürekleyen 
+tüm türler için süreklediği <code>ToString</code> tanımında tanımlanan <code>to_string</code> fonksiyonunu kullanıyoruz.</p>
+<p>Bölüm 6'daki <a href="ch06-01-defining-an-enum.html#enum-values">“<code>enum</code> değerleri”</a><!-- ignore --> bölümünde tanımladığımız her <code>enum</code> varyantının adının aynı 
+zamanda bir başlatıcı fonksiyon olduğunu hatırlayın. Bu başlatıcı fonksiyonları, kapanış tanımlarını sürekleyen fonksiyon işaretçileri 
+olarak kullanabiliriz; yani başlatıcı fonksiyonları, kapanışları alan metodlar için argüman olarak belirtebiliriz:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    enum Status {
         Value(u32),
@@ -235,23 +217,24 @@ functions as arguments for methods that take closures, like so:</p>
     let list_of_statuses: Vec&lt;Status&gt; = (0u32..20).map(Status::Value).collect();
 <span class="boring">}
 </span></code></pre></pre>
+<p>Burada, <code>Status::Value</code>'nun başlatıcı fonksiyonunu kullanarak <code>map</code>'in çağrıldığı aralıktaki her <code>u32</code> değerini kullanarak 
+<code>Status::Value</code> örnekleri oluşturuyoruz. Bazı insanlar bu stili tercih ederken bazıları da kapanışları kullanmayı tercih eder. 
+Her ikisi de aynı koda derlenir, bu nedenle hangi stil sizin için daha iyiyse onu kullanın.</p>
+<h3 id="dönen-kapanışlar"><a class="header" href="#dönen-kapanışlar">Dönen Kapanışlar</a></h3>
+<p>Kapanışlar tanımlar tarafından temsil edilir, bu da kapanışları doğrudan iade edemeyeceğiniz anlamına gelir. 
+Bir tanım döndürmek isteyebileceğiniz çoğu durumda, bunun yerine fonksiyonun dönüş değeri olarak <code>trait</code>'i sürekleyen somut tipi kullanabilirsiniz.
+Ancak, kapanışlarda bunu yapamazsınız çünkü döndürülebilir somut bir tipleri yoktur; örneğin, <code>fn</code> fonksiyon işaretçisini bir dönüş 
+tipi olarak kullanmanıza izin verilmez.</p>
+<p>Aşağıdaki kod doğrudan bir kapanış döndürmeye çalışır, ancak derlenmez:</p>
 <p>Here we create <code>Status::Value</code> instances using each <code>u32</code> value in the range
 that <code>map</code> is called on by using the initializer function of <code>Status::Value</code>.
 Some people prefer this style, and some people prefer to use closures. They
 compile to the same code, so use whichever style is clearer to you.</p>
-<h3 id="returning-closures"><a class="header" href="#returning-closures">Returning Closures</a></h3>
-<p>Closures are represented by traits, which means you can’t return closures
-directly. In most cases where you might want to return a trait, you can instead
-use the concrete type that implements the trait as the return value of the
-function. However, you can’t do that with closures because they don’t have a
-concrete type that is returnable; you’re not allowed to use the function
-pointer <code>fn</code> as a return type, for example.</p>
-<p>The following code tries to return a closure directly, but it won’t compile:</p>
 <pre><code class="language-rust ignore does_not_compile">fn returns_closure() -&gt; dyn Fn(i32) -&gt; i32 {
     |x| x + 1
 }
 </code></pre>
-<p>The compiler error is as follows:</p>
+<p>Derleyici hatası aşağıdaki gibidir:</p>
 <pre><code class="language-console">$ cargo build
    Compiling functions-example v0.1.0 (file:///projects/functions-example)
 error[E0746]: return type cannot have an unboxed trait object
@@ -269,18 +252,17 @@ help: use `impl Fn(i32) -&gt; i32` as the return type, as all return paths are o
 For more information about this error, try `rustc --explain E0746`.
 error: could not compile `functions-example` due to previous error
 </code></pre>
-<p>The error references the <code>Sized</code> trait again! Rust doesn’t know how much space
-it will need to store the closure. We saw a solution to this problem earlier.
-We can use a trait object:</p>
+<p>Hata yine <code>Sized</code> tanımına atıfta bulunuyor! Rust, kapanışı depolamak için ne kadar alana ihtiyaç duyacağını bilmiyor. 
+Bu sorunun çözümünü daha önce görmüştük. Bir <code>trait</code> nesnesi kullanabiliriz:</p>
 <pre><code class="language-rust noplayground">fn returns_closure() -&gt; Box&lt;dyn Fn(i32) -&gt; i32&gt; {
     Box::new(|x| x + 1)
 }
 </code></pre>
-<p>This code will compile just fine. For more about trait objects, refer to the
-section <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Using Trait Objects That Allow for Values of Different
-Types”</a><!--
-ignore --> in Chapter 17.</p>
-<p>Next, let’s look at macros!</p>
+<p>Bu kod sorunsuz derlenecektir. <code>trait</code> nesneleri hakkında daha fazla bilgi edinmek için 
+Bölüm 17'deki  <a href="ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Farklı Türlerdeki Değerlere
+İzin Veren <code>trait</code> Nesnelerini Kullanma”</a><!--
+ignore --> başlığına bakabilirsiniz.</p>
+<p>Şimdi devam edelim ve makrolara bakalım!</p>
 
                     </main>
 

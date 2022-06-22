@@ -147,21 +147,18 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="working-with-environment-variables"><a class="header" href="#working-with-environment-variables">Working with Environment Variables</a></h2>
-<p>We’ll improve <code>minigrep</code> by adding an extra feature: an option for
-case-insensitive searching that the user can turn on via an environment
-variable. We could make this feature a command line option and require that
-users enter it each time they want it to apply, but by instead making it an
-environment variable, we allow our users to set the environment variable once
-and have all their searches be case insensitive in that terminal session.</p>
-<h3 id="writing-a-failing-test-for-the-case-insensitive-search-function"><a class="header" href="#writing-a-failing-test-for-the-case-insensitive-search-function">Writing a Failing Test for the Case-Insensitive <code>search</code> Function</a></h3>
-<p>We first add a new <code>search_case_insensitive</code> function that will be called when
-the environment variable has a value. We’ll continue to follow the TDD process,
-so the first step is again to write a failing test. We’ll add a new test for
-the new <code>search_case_insensitive</code> function and rename our old test from
-<code>one_result</code> to <code>case_sensitive</code> to clarify the differences between the two
-tests, as shown in Listing 12-20.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+                        <h2 id="ortam-değişkenleriyle-Çalışmak"><a class="header" href="#ortam-değişkenleriyle-Çalışmak">Ortam Değişkenleriyle Çalışmak</a></h2>
+<p>Ekstra bir özellik ekleyerek <code>minigrep</code>'i geliştireceğiz: kullanıcının bir ortam değişkeni aracılığıyla açabileceği
+büyük/küçük harfe duyarlı olmayan arama seçeneği. Bu özelliği bir komut satırı seçeneği haline getirebilir
+ve kullanıcıların her uygulamak istediklerinde girmelerini isteyebilirdik, ancak bunun yerine bir ortam değişkeni yaparak,
+kullanıcılarımızın ortam değişkenini bir kez ayarlamalarına ve o terminal oturumunda tüm aramalarının büyük/küçük harfe duyarsız
+olmasına izin veriyoruz.</p>
+<h3 id="büyükküçük-harfe-duyarsız-search-fonksiyonu-için-başarısız-testi-yazma"><a class="header" href="#büyükküçük-harfe-duyarsız-search-fonksiyonu-için-başarısız-testi-yazma">Büyük/Küçük Harfe Duyarsız <code>search</code> Fonksiyonu için Başarısız Testi Yazma</a></h3>
+<p>İlk olarak, ortam değişkeni bir değere sahip olduğunda çağrılacak yeni bir <code>search_case_insensitive</code> fonksiyonu ekliyoruz.
+TDD sürecini takip etmeye devam edeceğiz, bu nedenle ilk adım yine başarısız bir test yazmaktır. Yeni <code>search_case_insensitive</code> fonksiyonu
+için yeni bir test ekleyeceğiz ve Liste 12-20'de gösterildiği gibi iki test arasındaki farkları netleştirmek için eski testimizin adını
+<code>one_result</code>'tan <code>case_sensitive</code>'e değiştireceğiz.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -237,28 +234,30 @@ Trust me.&quot;;
     }
 }
 </code></pre>
-<p><span class="caption">Listing 12-20: Adding a new failing test for the
-case-insensitive function we’re about to add</span></p>
-<p>Note that we’ve edited the old test’s <code>contents</code> too. We’ve added a new line
-with the text <code>&quot;Duct tape.&quot;</code> using a capital D that shouldn’t match the query
-<code>&quot;duct&quot;</code> when we’re searching in a case-sensitive manner. Changing the old test
-in this way helps ensure that we don’t accidentally break the case-sensitive
-search functionality that we’ve already implemented. This test should pass now
-and should continue to pass as we work on the case-insensitive search.</p>
-<p>The new test for the case-<em>insensitive</em> search uses <code>&quot;rUsT&quot;</code> as its query. In
-the <code>search_case_insensitive</code> function we’re about to add, the query <code>&quot;rUsT&quot;</code>
-should match the line containing <code>&quot;Rust:&quot;</code> with a capital R and match the line
-<code>&quot;Trust me.&quot;</code> even though both have different casing from the query. This is
-our failing test, and it will fail to compile because we haven’t yet defined
-the <code>search_case_insensitive</code> function. Feel free to add a skeleton
-implementation that always returns an empty vector, similar to the way we did
-for the <code>search</code> function in Listing 12-16 to see the test compile and fail.</p>
-<h3 id="implementing-the-search_case_insensitive-function"><a class="header" href="#implementing-the-search_case_insensitive-function">Implementing the <code>search_case_insensitive</code> Function</a></h3>
-<p>The <code>search_case_insensitive</code> function, shown in Listing 12-21, will be almost
-the same as the <code>search</code> function. The only difference is that we’ll lowercase
-the <code>query</code> and each <code>line</code> so whatever the case of the input arguments,
-they’ll be the same case when we check whether the line contains the query.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 12-20: Eklemek üzere olduğumuz 
+<em>büyük/küçük harfe duyarlı olmayan</em> fonksiyon için yeni bir başarısız test ekleme</span></p>
+<p>Eski testin <code>contents</code>'ini de düzenlediğimizi unutmayın. 
+Büyük/küçük harfe duyarlı bir şekilde arama yaparken <code>&quot;duct&quot;</code> sorgusuyla 
+eşleşmemesi gereken büyük D harfini kullanarak <code>&quot;Duct tape.&quot;</code> metnini içeren yeni bir satır 
+ekledik. Eski testi bu şekilde değiştirmek, halihazırda uyguladığımız büyük/küçük harfe 
+duyarlı arama işlevini yanlışlıkla bozmamamızı sağlamaya yardımcı olur. Bu test şimdi geçmeli 
+ve biz büyük/küçük harfe duyarsız arama üzerinde çalışırken sorunsuzca geçmeye devam 
+etmelidir.</p>
+<p>Büyük/küçük harfe duyarlı olmayan <code>search</code> için yeni test, sorgu olarak
+<code>&quot;rUsT&quot;</code> kullanır. Eklemek üzere olduğumuz <code>search_case_insensitive</code> fonksiyonunda,
+<code>&quot;rUsT&quot;</code> sorgusu, büyük R ile <code>&quot;Rust:&quot;</code> içeren satırla eşleşmeli ve her ikisi de sorgudan 
+farklı harflere sahip olsa bile <code>&quot;Trust me.&quot;</code> satırıyla eşleşmelidir. Bu bizim başarısız 
+testimizdir ve henüz <code>search_case_insensitive</code> fonksiyonunu tanımlamadığımız için 
+derlenemeyecektir. Testin derlenip başarısız olduğunu görmek için Liste 12-16'daki
+<code>search</code> fonksiyonu için yaptığımıza benzer şekilde, her zaman boş bir vektör döndüren bir 
+sürekleme eklemekten çekinmeyin.</p>
+<h3 id="search_case_insensitive-fonksiyonunun-süreklenmesi"><a class="header" href="#search_case_insensitive-fonksiyonunun-süreklenmesi"><code>search_case_insensitive</code> Fonksiyonunun Süreklenmesi</a></h3>
+<p>Liste 12-21'de gösterilen <code>search_case_insensitive</code> fonksiyonu, <code>search</code> fonksiyonuyla 
+neredeyse aynı olacaktır. Tek fark, sorguyu ve her satırı küçük harfle yazacağız, 
+böylece girdi argümanlarının büyük/küçük harf durumu ne olursa olsun, 
+satırın sorguyu içerip içermediğini kontrol ettiğimizde aynı büyük/küçük harf 
+durumunda olacaklar.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground"><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -350,27 +349,23 @@ they’ll be the same case when we check whether the line contains the query.</p
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-21: Defining the <code>search_case_insensitive</code>
-function to lowercase the query and the line before comparing them</span></p>
-<p>First, we lowercase the <code>query</code> string and store it in a shadowed variable with
-the same name. Calling <code>to_lowercase</code> on the query is necessary so no
-matter whether the user’s query is <code>&quot;rust&quot;</code>, <code>&quot;RUST&quot;</code>, <code>&quot;Rust&quot;</code>, or <code>&quot;rUsT&quot;</code>,
-we’ll treat the query as if it were <code>&quot;rust&quot;</code> and be insensitive to the case.
-While <code>to_lowercase</code> will handle basic Unicode, it won’t be 100% accurate. If
-we were writing a real application, we’d want to do a bit more work here, but
-this section is about environment variables, not Unicode, so we’ll leave it at
-that here.</p>
-<p>Note that <code>query</code> is now a <code>String</code> rather than a string slice, because calling
-<code>to_lowercase</code> creates new data rather than referencing existing data. Say the
-query is <code>&quot;rUsT&quot;</code>, as an example: that string slice doesn’t contain a lowercase
-<code>u</code> or <code>t</code> for us to use, so we have to allocate a new <code>String</code> containing
-<code>&quot;rust&quot;</code>. When we pass <code>query</code> as an argument to the <code>contains</code> method now, we
-need to add an ampersand because the signature of <code>contains</code> is defined to take
-a string slice.</p>
-<p>Next, we add a call to <code>to_lowercase</code> on each <code>line</code> to lowercase all
-characters. Now that we’ve converted <code>line</code> and <code>query</code> to lowercase, we’ll
-find matches no matter what the case of the query is.</p>
-<p>Let’s see if this implementation passes the tests:</p>
+<p><span class="caption">Liste 12-21: Sorguyu ve satırı karşılaştırmadan önce küçük harfle yazmak için <code>search_case_insensitive</code> 
+fonksiyonunu tanımlama</span></p>
+<p>İlk olarak, sorgu dizesini küçük harfle yazarız ve aynı ada sahip gölgeli bir değişkende saklarız. 
+Sorgu üzerinde <code>to_lowercase</code> çağrısı yapmak gereklidir, böylece kullanıcının sorgusu <code>&quot;rust&quot;</code>, <code>&quot;RUST&quot;</code>, <code>&quot;Rust&quot;</code> 
+veya <code>&quot;rUsT&quot;</code> olsun, sorguyu <code>&quot;rust&quot;</code> olarak ele alacağız ve fonksiyona büyük/küçük harfe duyarsız şekilde
+yönlendireceğiz. <code>to_lowercase</code> temel Unicode'u işleyecek olsa da, tüm durumlarda %100 doğru çalışmayacaktır. 
+Gerçek bir uygulama yazıyor olsaydık, burada biraz daha fazla durumu işlemek isterdik, ancak bu bölüm Unicode değil, 
+ortam değişkenleri ile ilgilidir, bu yüzden burada bırakacağız.</p>
+<p>Sorgunun artık bir dizgi dilimi yerine bir <code>String</code> olduğuna dikkat edin, çünkü <code>to_lowercase</code> çağrısı mevcut verilere 
+başvurmak yerine yeni veriler oluşturur. Örnek olarak, sorgunun <code>&quot;rUsT&quot;</code> olduğunu varsayalım: bu dizgi diliminde 
+kullanabileceğimiz küçük harfli bir <em>u</em> veya <em>t</em> bulunmadığından, <code>&quot;rust&quot;</code> içeren yeni bir <code>String</code> tahsis etmemiz gerekir. 
+Şimdi sorguyu <code>contains</code> metoduna argüman olarak ilettiğimizde, <code>contains</code>'ın imzası bir dizgi dilimi alacak şekilde 
+tanımlandığı için bir ve işareti eklememiz gerekir.</p>
+<p>Ardından, tüm karakterleri küçük harfle yazmak için her satıra <code>to_lowercase</code> çağrısı ekliyoruz. 
+Artık satırı ve sorguyu küçük harfe dönüştürdüğümüze göre, sorgunun büyük/küçük harf durumu ne olursa olsun
+<code>match</code> yapısını kullanarak bulacağız.</p>
+<p>Bakalım bu sürekleme testleri geçebilecek mi?</p>
 <pre><code class="language-console">$ cargo test
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished test [unoptimized + debuginfo] target(s) in 1.33s
@@ -395,12 +390,11 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>Great! They passed. Now, let’s call the new <code>search_case_insensitive</code> function
-from the <code>run</code> function. First, we’ll add a configuration option to the
-<code>Config</code> struct to switch between case-sensitive and case-insensitive search.
-Adding this field will cause compiler errors because we aren’t initializing
-this field anywhere yet:</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Harika! Geçti. Şimdi, <code>run</code> fonksiyonundan yeni <code>search_case_insensitive</code> fonksiyonunu çağıralım. 
+İlk olarak, büyük/küçük harfe duyarlı ve duyarsız arama arasında geçiş yapmak için <code>Config</code> yapısına bir 
+yapılandırma seçeneği ekleyeceğiz. Bu alanı eklemek derleyici hatalarına neden olacaktır çünkü bu alanı henüz hiçbir 
+yerde tanımlamıyoruz:</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -499,11 +493,10 @@ this field anywhere yet:</p>
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p>We added the <code>ignore_case</code> field that holds a Boolean. Next, we need the <code>run</code>
-function to check the <code>ignore_case</code> field’s value and use that to decide
-whether to call the <code>search</code> function or the <code>search_case_insensitive</code>
-function, as shown in Listing 12-22. This still won’t compile yet.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Bir Boole tutan <code>ignore_case</code> alanını ekledik. Daha sonra, <code>ignore_case</code> alanının değerini kontrol etmek ve 
+bunu Liste 12-22'de gösterildiği gibi <code>search</code> fonksiyonunu mu yoksa <code>search_case_insensitive</code> fonksiyonunu mu çağıracağımıza 
+karar vermek için kullanacak <code>run</code> fonksiyonuna ihtiyacımız olacak. Bu hala derlenmeyecektir.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
 </span><span class="boring">use std::fs;
 </span><span class="boring">
@@ -602,15 +595,13 @@ function, as shown in Listing 12-22. This still won’t compile yet.</p>
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-22: Calling either <code>search</code> or
-<code>search_case_insensitive</code> based on the value in <code>config.ignore_case</code></span></p>
-<p>Finally, we need to check for the environment variable. The functions for
-working with environment variables are in the <code>env</code> module in the standard
-library, so we bring that module into scope at the top of <em>src/lib.rs</em>. Then
-we’ll use the <code>var</code> function from the <code>env</code> module to check to see if any value
-has been set for an environment variable named <code>IGNORE_CASE</code>, as shown in
-Listing 12-23.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 12-22: <code>config.ignore_case</code> içindeki değere bağlı olarak <code>search</code> ya da 
+<code>search_case_insensitive</code> çağrısı</span></p>
+<p>Son olarak, ortam değişkenini kontrol etmemiz gerekiyor. Ortam değişkenleriyle çalışma fonksiyonları standart kütüphanedeki <code>env</code> modülündedir, 
+bu yüzden bu modülü <em>src/lib.rs</em> dosyasının üst kısmına getiriyoruz. 
+Ardından, Liste 12-23'te gösterildiği gibi, <code>IGNORE_CASE</code> adlı bir ortam değişkeni için herhangi bir değer ayarlanıp 
+ayarlanmadığını kontrol etmek için <code>env</code> modülündeki <code>var</code> fonksiyonunu kullanacağız.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">use std::env;
 // --snip--
 
@@ -718,27 +709,22 @@ Listing 12-23.</p>
 </span><span class="boring">    }
 </span><span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 12-23: Checking for any value in an environment
-variable named <code>IGNORE_CASE</code></span></p>
-<p>Here, we create a new variable <code>ignore_case</code>. To set its value, we call the
-<code>env::var</code> function and pass it the name of the <code>IGNORE_CASE</code> environment
-variable. The <code>env::var</code> function returns a <code>Result</code> that will be the
-successful <code>Ok</code> variant that contains the value of the environment variable if
-the environment variable is set to any value. It will return the <code>Err</code> variant
-if the environment variable is not set.</p>
-<p>We’re using the <code>is_ok</code> method on the <code>Result</code> to check whether the environment
-variable is set, which means the program should do a case-insensitive search.
-If the <code>IGNORE_CASE</code> environment variable isn’t set to anything, <code>is_ok</code> will
-return false and the program will perform a case-sensitive search. We don’t
-care about the <em>value</em> of the environment variable, just whether it’s set or
-unset, so we’re checking <code>is_ok</code> rather than using <code>unwrap</code>, <code>expect</code>, or any
-of the other methods we’ve seen on <code>Result</code>.</p>
-<p>We pass the value in the <code>ignore_case</code> variable to the <code>Config</code> instance so the
-<code>run</code> function can read that value and decide whether to call
-<code>search_case_insensitive</code> or <code>search</code>, as we implemented in Listing 12-22.</p>
-<p>Let’s give it a try! First, we’ll run our program without the environment
-variable set and with the query <code>to</code>, which should match any line that contains
-the word “to” in all lowercase:</p>
+<p><span class="caption">Liste 12-23: IGNORE_CASE` adlı bir ortam değişkeninde herhangi bir değer olup olmadığını kontrol 
+etmek</span></p>
+<p>Burada, yeni bir <code>ignore_case</code> değişkeni oluşturuyoruz. 
+Değeri ayarlamak için <code>env::var</code> fonksiyonunu çağırıyoruz ve ona <code>IGNORE_CASE</code> ortam değişkeninin adını aktarıyoruz.
+<code>env::var</code> fonksiyonu, ortam değişkeni herhangi bir değere ayarlanmışsa, ortam değişkeninin değerini içeren başarılı <code>Ok</code> 
+değişkeni olacak bir <code>Result</code> döndürür. Ortam değişkeni ayarlanmamışsa <code>Err</code> değişkenini döndürür.</p>
+<p>Ortam değişkeninin ayarlanıp ayarlanmadığını kontrol etmek için <code>Result</code> üzerinde <code>is_ok</code> metodunu kullanıyoruz, 
+bu da programın büyük/küçük harfe duyarlı olmayan bir arama yapması gerektiği anlamına geliyor.
+<code>IGNORE_CASE</code> ortam değişkeni herhangi bir şeye ayarlanmamışsa, <code>is_ok</code> yöntemi <code>false</code> değerini döndürür ve 
+program büyük/küçük harfe duyarlı bir arama gerçekleştirir. Ortam değişkeninin değeriyle henüz ilgilenmiyoruz, 
+sadece ayarlı ya da ayarsız olmasıyla ilgileniyoruz, bu yüzden <code>unwrap</code>, <code>expect</code> ya da <code>Result</code>'ta 
+gördüğümüz diğer metodlardan birini kullanmak yerine <code>is_ok</code>'u kontrol ediyoruz.</p>
+<p><code>ignore_case</code> değişkenindeki değeri <code>Config</code> örneğine aktarırız, böylece <code>run</code> fonksiyonu bu değeri okuyabilir ve 
+Liste 12-22'de yaptığımız gibi <code>search_case_insensitive</code> veya <code>search</code> çağrısı oluşturup oluşturmayacağına karar verebilir.</p>
+<p>Hadi deneyelim! İlk olarak, programımızı ortam değişkeni ayarlanmadan; <code>to</code> sorgusuyla çalıştıracağız; bu sorgu,
+<code>to</code> sözcüğünü tümüyle küçük harfli şekilde içeren herhangi bir satırla eşleşmelidir:</p>
 <pre><code class="language-console">$ cargo run to poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished dev [unoptimized + debuginfo] target(s) in 0.0s
@@ -746,19 +732,19 @@ the word “to” in all lowercase:</p>
 Are you nobody, too?
 How dreary to be somebody!
 </code></pre>
-<p>Looks like that still works! Now, let’s run the program with <code>IGNORE_CASE</code>
-set to <code>1</code> but with the same query <code>to</code>.</p>
+<p>Görünüşe göre hala çalışıyor! Şimdi, programı <code>IGNORE_CASE</code> <code>1</code> olarak ayarlanmış şekilde,
+aynı sorgu ile çalıştıralım.</p>
 <pre><code class="language-console">$ IGNORE_CASE=1 cargo run to poem.txt
 </code></pre>
-<p>If you’re using PowerShell, you will need to set the environment variable and
-run the program as separate commands:</p>
+<p>PowerShell kullanıyorsanız, ortam değişkenini ayarlamanız ve programı ayrı komutlar olarak 
+çalıştırmanız gerekecektir:</p>
 <pre><code class="language-console">PS&gt; $Env:IGNORE_CASE=1; cargo run to poem.txt
 </code></pre>
-<p>This will make <code>IGNORE_CASE</code> persist for the remainder of your shell
-session. It can be unset with the <code>Remove-Item</code> cmdlet:</p>
+<p>Bu, kabuk oturumunuzun geri kalanında
+<code>IGNORE_CASE</code>'in kalıcı olmasını sağlayacaktır. <code>Remove-Item</code> <code>cmdlet</code>'i ile bu ayar kaldırılabilir:</p>
 <pre><code class="language-console">PS&gt; Remove-Item Env:IGNORE_CASE
 </code></pre>
-<p>We should get lines that contain “to” that might have uppercase letters:</p>
+<p>“to” içeren, büyük harfli olabilecek satırlar görmeliyiz:</p>
 <!-- manual-regeneration
 cd listings/ch12-an-io-project/listing-12-23
 IGNORE_CASE=1 cargo run to poem.txt
@@ -769,19 +755,17 @@ How dreary to be somebody!
 To tell your name the livelong day
 To an admiring bog!
 </code></pre>
-<p>Excellent, we also got lines containing “To”! Our <code>minigrep</code> program can now do
-case-insensitive searching controlled by an environment variable. Now you know
-how to manage options set using either command line arguments or environment
-variables.</p>
-<p>Some programs allow arguments <em>and</em> environment variables for the same
-configuration. In those cases, the programs decide that one or the other takes
-precedence. For another exercise on your own, try controlling case sensitivity
-through either a command line argument or an environment variable. Decide
-whether the command line argument or the environment variable should take
-precedence if the program is run with one set to case sensitive and one set to
-ignore case.</p>
-<p>The <code>std::env</code> module contains many more useful features for dealing with
-environment variables: check out its documentation to see what is available.</p>
+<p>Muhteşem, “To” içeren satırlarımızı da görüyoruz! <code>minigrep</code> programımız artık bir ortam değişkeni 
+tarafından kontrol edilen büyük/küçük harfe duyarlı olmayan arama yapabiliyor. Artık komut satırı argümanları 
+ya da ortam değişkenleri kullanılarak ayarlanan seçenekleri nasıl yöneteceğinizi biliyorsunuz.</p>
+<p>Bazı programlar aynı yapılandırma için argümanlara <em>ve</em> ortam değişkenlerine izin verir. 
+Bu durumlarda, programlar birinin ya da diğerinin öncelikli olduğuna karar verir. 
+Kendi başınıza başka bir alıştırma yapmak için, bir komut satırı argümanı veya bir ortam değişkeni aracılığıyla 
+büyük/küçük harf duyarlılığını kontrol etmeyi deneyin. Program biri büyük/küçük harfe duyarlı diğeri 
+büyük/küçük harfi yok sayacak şekilde ayarlanmış olarak çalıştırılırsa komut satırı argümanının mı yoksa ortam 
+değişkeninin mi öncelikli olacağına karar verin.</p>
+<p><code>std::env</code> modülü, ortam değişkenleriyle başa çıkmak için daha birçok yararlı özellik içerir:
+nelerin mevcut olduğunu görmek için ilgili dokümantasyonuna göz atın.</p>
 
                     </main>
 

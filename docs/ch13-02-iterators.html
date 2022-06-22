@@ -147,32 +147,29 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="processing-a-series-of-items-with-iterators"><a class="header" href="#processing-a-series-of-items-with-iterators">Processing a Series of Items with Iterators</a></h2>
-<p>The iterator pattern allows you to perform some task on a sequence of items in
-turn. An iterator is responsible for the logic of iterating over each item and
-determining when the sequence has finished. When you use iterators, you don’t
-have to reimplement that logic yourself.</p>
-<p>In Rust, iterators are <em>lazy</em>, meaning they have no effect until you call
-methods that consume the iterator to use it up. For example, the code in
-Listing 13-10 creates an iterator over the items in the vector <code>v1</code> by calling
-the <code>iter</code> method defined on <code>Vec&lt;T&gt;</code>. This code by itself doesn’t do anything
-useful.</p>
+                        <h2 id="yineleyicilerle-bir-Öğe-serisini-İşleme"><a class="header" href="#yineleyicilerle-bir-Öğe-serisini-İşleme">Yineleyicilerle Bir Öğe Serisini İşleme</a></h2>
+<p>Yineleyici deseni, sırayla bir dizi öğe üzerinde bazı görevleri gerçekleştirmenize olanak tanır. 
+Bir yineleyici, her bir öğe üzerinde yineleme mantığından ve dizinin ne zaman bittiğini belirlemekten sorumludur. 
+Yineleyicileri kullandığınızda, bu mantığı kendiniz yeniden uygulamak zorunda kalmazsınız.</p>
+<p>Rust'ta yineleyiciler <em>tembeldir</em>, yani siz onu kullanmak için yineleyiciyi tüketen metodları 
+çağırana kadar hiçbir etkileri yoktur. Örneğin, Liste 13-10'daki kod, <code>Vec&lt;T&gt;</code> üzerinde tanımlanan
+<code>iter</code> metodunu çağırarak <code>v1</code> vektöründeki öğeler üzerinde bir yineleyici oluşturur. 
+Bu kod kendi başına yararlı bir şey yapmaz.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v1 = vec![1, 2, 3];
 
     let v1_iter = v1.iter();
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 13-10: Creating an iterator</span></p>
-<p>Once we’ve created an iterator, we can use it in a variety of ways. In Listing
-3-5 in Chapter 3, we iterated over an array using a <code>for</code> loop to execute some
-code on each of its items. Under the hood this implicitly created and then
-consumed an iterator, but we glossed over how exactly that works until now.</p>
-<p>The example in Listing 13-11 separates the creation of the iterator from the
-use of the iterator in the <code>for</code> loop. The iterator is stored in the <code>v1_iter</code>
-variable, and no iteration takes place at that time. When the <code>for</code> loop is
-called using the iterator in <code>v1_iter</code>, each element in the iterator is used in
-one iteration of the loop, which prints out each value.</p>
+<p><span class="caption">Liste 13-10: Yineleyici oluşturmak</span></p>
+<p>Bir yineleyici oluşturduktan sonra, onu çeşitli şekillerde kullanabiliriz. 
+Bölüm 3'teki Liste 3-5'te, öğelerinin her birinde bazı kodlar çalıştırmak için <code>for</code> döngüsü kullanarak bir dizi 
+üzerinde yineleme yaptık. Bu dolaylı olarak bir yineleyici oluşturdu ve sonra üzerinden geçti, 
+ancak şimdiye kadar bunun tam olarak nasıl çalıştığını geçtik.</p>
+<p>Liste 13-11'deki örnek, yineleyicinin oluşturulmasını <code>for</code> döngüsündeki yineleyici kullanımından ayırır. 
+Yineleyici <code>v1_iter</code> değişkeninde saklanır ve o sırada herhangi bir yineleme gerçekleşmez.
+<code>v1_iter</code> içindeki yineleyici kullanılarak <code>for</code> döngüsü çağrıldığında, yineleyicideki her öğe döngünün bir 
+yinelemesinde kullanılır ve her değer yazdırılır.</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v1 = vec![1, 2, 3];
 
@@ -183,19 +180,17 @@ one iteration of the loop, which prints out each value.</p>
     }
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 13-11: Using an iterator in a <code>for</code> loop</span></p>
-<p>In languages that don’t have iterators provided by their standard libraries,
-you would likely write this same functionality by starting a variable at index
-0, using that variable to index into the vector to get a value, and
-incrementing the variable value in a loop until it reached the total number of
-items in the vector.</p>
-<p>Iterators handle all that logic for you, cutting down on repetitive code you
-could potentially mess up. Iterators give you more flexibility to use the same
-logic with many different kinds of sequences, not just data structures you can
-index into, like vectors. Let’s examine how iterators do that.</p>
-<h3 id="the-iterator-trait-and-the-next-method"><a class="header" href="#the-iterator-trait-and-the-next-method">The <code>Iterator</code> Trait and the <code>next</code> Method</a></h3>
-<p>All iterators implement a trait named <code>Iterator</code> that is defined in the
-standard library. The definition of the trait looks like this:</p>
+<p><span class="caption">Liste 13-11: Bir <code>for</code> döngüsünde yineleyici kullanma</span></p>
+<p>Standart kütüphaneleri tarafından sağlanan yineleyicilere sahip olmayan dillerde,
+muhtemelen aynı fonksiyonu <code>0</code> indeksinde bir değişken başlatarak, bir değer elde etmek için vektörü indekslemek
+üzere bu değişkeni kullanarak ve vektördeki toplam öğe sayısına ulaşana kadar değişken değerini bir döngü içinde 
+artırarak yazarsınız.</p>
+<p>Yineleyiciler tüm bu mantığı sizin için halleder ve potansiyel olarak karıştırabileceğiniz tekrarlayan kodu azaltır. 
+Yineleyiciler, aynı mantığı yalnızca vektörler gibi indeksleyebileceğiniz veri yapılarıyla değil, birçok farklı türde 
+diziyle kullanmanız için size daha fazla esneklik sağlar. Yineleyicilerin bunu nasıl yaptığını inceleyelim.</p>
+<h3 id="iterator-tanımı-ve-next-metodu"><a class="header" href="#iterator-tanımı-ve-next-metodu"><code>Iterator</code> Tanımı ve <code>next</code> Metodu</a></h3>
+<p>Tüm yineleyiciler, standart kütüphanede tanımlanan <code>Iterator</code> adlı tanımı sürekler. 
+Tanımın <em>tanımı</em> şu şekildedir:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -208,20 +203,18 @@ standard library. The definition of the trait looks like this:</p>
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>Notice this definition uses some new syntax: <code>type Item</code> and <code>Self::Item</code>,
-which are defining an <em>associated type</em> with this trait. We’ll talk about
-associated types in depth in Chapter 19. For now, all you need to know is that
-this code says implementing the <code>Iterator</code> trait requires that you also define
-an <code>Item</code> type, and this <code>Item</code> type is used in the return type of the <code>next</code>
-method. In other words, the <code>Item</code> type will be the type returned from the
-iterator.</p>
-<p>The <code>Iterator</code> trait only requires implementors to define one method: the
-<code>next</code> method, which returns one item of the iterator at a time wrapped in
-<code>Some</code> and, when iteration is over, returns <code>None</code>.</p>
-<p>We can call the <code>next</code> method on iterators directly; Listing 13-12 demonstrates
-what values are returned from repeated calls to <code>next</code> on the iterator created
-from the vector.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p>Bu tanımın bazı yeni söz dizimleri kullandığına dikkat edin:
+<code>Item</code> ve <code>Self::Item</code> türleri bu özellik ile <em>ilişkili bir tür</em> tanımlamaktadır. 
+İlişkili türler hakkında Bölüm 19'da derinlemesine konuşacağız. Şimdilik bilmeniz gereken tek şey, 
+bu kodun <code>Iterator</code> tanımını süreklemenin <code>Item</code> türünü de tanımlamanızı gerektirdiğini ve bu
+<code>Item</code> türünün bir sonraki metodun dönüş türünde kullanıldığını söylediğidir. Başka bir deyişle,
+<code>Item</code> türü yineleyiciden döndürülen tür olacaktır.</p>
+<p><code>Iterator</code> tanımı, sürekleyicilerin yalnızca bir metod tanımlamasını gerektirir:
+<code>Some</code> içine sarılmış olarak her seferinde yineleyicinin bir öğesini döndüren ve yineleme sona erdiğinde
+<code>None</code> döndüren <code>next</code> metodu.</p>
+<p>Yineleyicilerde <code>next</code> metodunu doğrudan çağırabiliriz; Liste 13-12, vektörden oluşturulan yineleyicide
+<code>next</code> metodunun tekrarlanan çağrılarından hangi değerlerin döndürüldüğünü gösterir.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
 </span><span class="boring">mod tests {
 </span>    #[test]
@@ -237,34 +230,27 @@ from the vector.</p>
     }
 <span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 13-12: Calling the <code>next</code> method on an
-iterator</span></p>
-<p>Note that we needed to make <code>v1_iter</code> mutable: calling the <code>next</code> method on an
-iterator changes internal state that the iterator uses to keep track of where
-it is in the sequence. In other words, this code <em>consumes</em>, or uses up, the
-iterator. Each call to <code>next</code> eats up an item from the iterator. We didn’t need
-to make <code>v1_iter</code> mutable when we used a <code>for</code> loop because the loop took
-ownership of <code>v1_iter</code> and made it mutable behind the scenes.</p>
-<p>Also note that the values we get from the calls to <code>next</code> are immutable
-references to the values in the vector. The <code>iter</code> method produces an iterator
-over immutable references. If we want to create an iterator that takes
-ownership of <code>v1</code> and returns owned values, we can call <code>into_iter</code> instead of
-<code>iter</code>. Similarly, if we want to iterate over mutable references, we can call
-<code>iter_mut</code> instead of <code>iter</code>.</p>
-<h3 id="methods-that-consume-the-iterator"><a class="header" href="#methods-that-consume-the-iterator">Methods that Consume the Iterator</a></h3>
-<p>The <code>Iterator</code> trait has a number of different methods with default
-implementations provided by the standard library; you can find out about these
-methods by looking in the standard library API documentation for the <code>Iterator</code>
-trait. Some of these methods call the <code>next</code> method in their definition, which
-is why you’re required to implement the <code>next</code> method when implementing the
-<code>Iterator</code> trait.</p>
-<p>Methods that call <code>next</code> are called <em>consuming adaptors</em>, because calling them
-uses up the iterator. One example is the <code>sum</code> method, which takes ownership of
-the iterator and iterates through the items by repeatedly calling <code>next</code>, thus
-consuming the iterator. As it iterates through, it adds each item to a running
-total and returns the total when iteration is complete. Listing 13-13 has a
-test illustrating a use of the <code>sum</code> method:</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 13-12: Yineleyici üzerinde <code>next</code> metodunun çağrılması</span></p>
+<p><code>v1_iter</code>'ı değiştirilebilir yapmamız gerektiğine dikkat edin: bir yineleyici üzerinde <code>next</code> 
+metodunu çağırmak, yineleyicinin sıralamada nerede olduğunu takip etmek için kullandığı dahili durumu değiştirir. 
+Başka bir deyişle, bu kod yineleyiciyi tüketir ya da kullanır. Her <code>next</code> çağrısı yineleyiciden bir öğe tüketir. 
+Bir <code>for</code> döngüsü kullandığımızda <code>v1_iter</code>'ı değiştirilebilir yapmamıza gerek yoktu çünkü döngü <code>v1_iter</code>'ın sahipliğini 
+aldı ve onu <em>perde arkasında</em> değiştirilebilir yaptı.</p>
+<p>Ayrıca <code>next</code> çağrısından elde ettiğimiz değerlerin vektördeki değerlere değişmez referanslar olduğuna dikkat edin.
+<code>iter</code> metodu, değişmez referanslar üzerinde bir yineleyici üretir. Eğer <code>v1</code>'in sahipliğini alan ve 
+sahip olunan değerleri döndüren bir yineleyici oluşturmak istiyorsak, <code>iter</code> yerine <code>into_iter</code>'ı çağırabiliriz. 
+Benzer şekilde, değiştirilebilir referanslar üzerinde yineleme yapmak istiyorsak, <code>iter</code> yerine <code>iter_mut</code> metodunu 
+çağırabiliriz.</p>
+<h3 id="yineleyici-kullanan-metodlar"><a class="header" href="#yineleyici-kullanan-metodlar">Yineleyici Kullanan Metodlar</a></h3>
+<p><code>Iterator</code> tanımı, standart kütüphane tarafından sağlanan varsayılan süreklemelere sahip bir dizi farklı 
+metoda sahiptir; <code>Iterator</code> tanımı için standart kütüphane API dokümantasyonuna bakarak bu metodlar hakkında bilgi 
+edinebilirsiniz. Bu metodlardan bazıları tanımlarında <code>next</code> metodunu çağırır, bu nedenle <code>Iterator</code> tanımını 
+süreklerken <code>next</code> metodunu da süreklememiz gerekir.</p>
+<p><code>next</code> metodunu çağıran metodlara <em>tüketim uyarlayıcıları</em> denir, çünkü bunları çağırmak yineleyiciyi kullanır. 
+Bunun bir örneği, yineleyicinin sahipliğini alan ve <code>next</code> metodunu tekrar tekrar çağırarak öğeler arasında yineleme 
+yapan ve böylece yineleyiciyi tüketen <code>sum</code> metodudur. Yineleme sırasında, her öğeyi çalışan bir toplama ekler 
+ve yineleme tamamlandığında toplamı döndürür. Liste 13-13, <code>sum</code> metodunun kullanımını gösteren bir test içerir:</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
 </span><span class="boring">mod tests {
 </span>    #[test]
@@ -279,30 +265,26 @@ test illustrating a use of the <code>sum</code> method:</p>
     }
 <span class="boring">}
 </span></code></pre>
-<p><span class="caption">Listing 13-13: Calling the <code>sum</code> method to get the total
-of all items in the iterator</span></p>
-<p>We aren’t allowed to use <code>v1_iter</code> after the call to <code>sum</code> because <code>sum</code> takes
-ownership of the iterator we call it on.</p>
-<h3 id="methods-that-produce-other-iterators"><a class="header" href="#methods-that-produce-other-iterators">Methods that Produce Other Iterators</a></h3>
-<p>Other methods defined on the <code>Iterator</code> trait, known as <em>iterator adaptors</em>,
-allow you to change iterators into different kinds of iterators. You can chain
-multiple calls to iterator adaptors to perform complex actions in a readable
-way. But because all iterators are lazy, you have to call one of the consuming
-adaptor methods to get results from calls to iterator adaptors.</p>
-<p>Listing 13-14 shows an example of calling the iterator adaptor method <code>map</code>,
-which takes a closure to call on each item to produce a new iterator. The
-closure here creates a new iterator in which each item from the vector has been
-incremented by 1. However, this code produces a warning:</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p><span class="caption">Liste 13-13: Yineleyicideki tüm öğelerin toplamını almak için <code>sum</code> metodunu çağırma</span></p>
+<p><code>sum</code> çağrısından sonra <code>v1_iter</code> kullanmamıza izin verilmez çünkü <code>sum</code>, çağırdığımız yineleyicinin sahipliğini alır.</p>
+<h3 id="diğer-yineleyicileri-Üreten-metodlar"><a class="header" href="#diğer-yineleyicileri-Üreten-metodlar">Diğer Yineleyicileri Üreten Metodlar</a></h3>
+<p><code>Iterator</code> tanımı üzerinde tanımlanan ve <em>yineleyici adaptorü</em> olarak bilinen diğer metodlar, 
+yineleyiciyi farklı yineleyici türlerine dönüştürmenize olanak tanır. Karmaşık eylemleri okunabilir bir 
+şekilde gerçekleştirmek için yineleyici uyarlayıcılarına birden fazla çağrıyı zincirleyebilirsiniz. 
+Ancak tüm yineleyiciler tembel olduğundan, yineleyici uyarlayıcılarına yapılan çağrılardan sonuç almak için 
+tüketen uyarlayıcı metodlardan birini çağırmanız gerekir.</p>
+<p>Liste 13-14, yeni bir yineleyici üretmek için her öğede çağrılacak bir kapanış alan yineleyici uyarlayıcı 
+yöntemi olan <code>map</code>'i çağırmanın bir örneğini göstermektedir. Buradaki kapanış, 
+vektördeki her öğenin <code>1</code> artırıldığı yeni bir yineleyici oluşturur. Ancak, bu kod bir uyarı üretir:</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust not_desired_behavior"><span class="boring">fn main() {
 </span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
 
     v1.iter().map(|x| x + 1);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 13-14: Calling the iterator adaptor <code>map</code> to
-create a new iterator</span></p>
-<p>The warning we get is this:</p>
+<p><span class="caption">Liste 13-14: Yeni bir yineleyici oluşturmak için <code>map</code> yineleyici uyarlayıcısını çağırma</span></p>
+<p>Aldığımız uyarı şudur:</p>
 <pre><code class="language-console">$ cargo run
    Compiling iterators v0.1.0 (file:///projects/iterators)
 warning: unused `Map` that must be used
@@ -318,16 +300,13 @@ warning: `iterators` (bin &quot;iterators&quot;) generated 1 warning
     Finished dev [unoptimized + debuginfo] target(s) in 0.47s
      Running `target/debug/iterators`
 </code></pre>
-<p>The code in Listing 13-14 doesn’t do anything; the closure we’ve specified
-never gets called. The warning reminds us why: iterator adaptors are lazy, and
-we need to consume the iterator here.</p>
-<p>To fix this and consume the iterator, we’ll use the <code>collect</code> method, which we
-used in Chapter 12 with <code>env::args</code> in Listing 12-1. This method consumes the
-iterator and collects the resulting values into a collection data type.</p>
-<p>In Listing 13-15, we collect the results of iterating over the iterator that’s
-returned from the call to <code>map</code> into a vector. This vector will end up
-containing each item from the original vector incremented by 1.</p>
-<p><span class="filename">Filename: src/main.rs</span></p>
+<p>Liste 13-14'teki kod hiçbir şey yapmaz; belirttiğimiz kapanış hiçbir zaman çağrılmaz. 
+Uyarı bize nedenini gösteriyor: yineleyici uyarlayıcıları <em>tembeldir</em> ve burada yineleyiciyi tüketmemiz gerekir.</p>
+<p>Bunu düzeltmek ve yineleyiciyi tüketmek için, Bölüm 12'de Liste 12-1'de <code>env::args</code> ile kullandığımız <code>collect</code> 
+metodunu kullanacağız. Bu metod yineleyiciyi tüketir ve elde edilen değerleri bir koleksiyon veri türünde toplar.</p>
+<p>Liste 13-15'te, <code>map</code> çağrısından döndürülen yineleyici üzerinde yineleme sonuçlarını bir vektörde topluyoruz. 
+Bu vektör, orijinal vektördeki her bir öğenin <code>1</code> ile artırılmış halini içerecektir.</p>
+<p><span class="filename">Dosya adı: src/main.rs</span></p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
 </span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
 
@@ -336,24 +315,21 @@ containing each item from the original vector incremented by 1.</p>
     assert_eq!(v2, vec![2, 3, 4]);
 <span class="boring">}
 </span></code></pre></pre>
-<p><span class="caption">Listing 13-15: Calling the <code>map</code> method to create a new
-iterator and then calling the <code>collect</code> method to consume the new iterator and
-create a vector</span></p>
-<p>Because <code>map</code> takes a closure, we can specify any operation we want to perform
-on each item. This is a great example of how closures let you customize some
-behavior while reusing the iteration behavior that the <code>Iterator</code> trait
-provides.</p>
-<h3 id="using-closures-that-capture-their-environment"><a class="header" href="#using-closures-that-capture-their-environment">Using Closures that Capture Their Environment</a></h3>
-<p>Now that we’ve introduced iterators, we can demonstrate a common use of
-closures that capture their environment by using the <code>filter</code> iterator adaptor.
-The <code>filter</code> method on an iterator takes a closure that takes each item from
-the iterator and returns a Boolean. If the closure returns <code>true</code>, the value
-will be included in the iterator produced by <code>filter</code>. If the closure returns
-<code>false</code>, the value won’t be included in the resulting iterator.</p>
-<p>In Listing 13-16, we use <code>filter</code> with a closure that captures the <code>shoe_size</code>
-variable from its environment to iterate over a collection of <code>Shoe</code> struct
-instances. It will return only shoes that are the specified size.</p>
-<p><span class="filename">Filename: src/lib.rs</span></p>
+<p><span class="caption">Liste 13-15: Yeni bir yineleyici oluşturmak için <code>map</code> metodunu çağırmak ve ardından yeni 
+yineleyiciyi tüketmek ve bir vektör oluşturmak için <code>collect</code> metodunu çağırmak</span></p>
+<p><code>map</code> bir kapanış aldığı için, her bir öğe üzerinde gerçekleştirmek istediğimiz herhangi bir işlemi belirtebiliriz. 
+Bu, kapanışların <code>Iterator</code> tanımını sağladığı yineleme davranışını yeniden kullanırken bazı davranışları özelleştirmenize 
+nasıl izin verdiğinin harika bir örneğidir.</p>
+<h3 id="ortamlarını-yakalayan-kapanışları-kullanma"><a class="header" href="#ortamlarını-yakalayan-kapanışları-kullanma">Ortamlarını Yakalayan Kapanışları Kullanma</a></h3>
+<p>Yineleyicileri tanıttığımıza göre, <code>filter</code> <em>yineleyici adaptörünü</em> kullanarak çevrelerini yakalayan kapanışların 
+yaygın bir kullanımını gösterebiliriz. Bir yineleyici üzerindeki <code>filter</code> metodu, yineleyicideki her bir 
+öğeyi alan ve bir Boole döndüren bir kapanış alır. Eğer kapanış <code>true</code> döndürürse, değer
+<code>filter</code> tarafından üretilen yineleyiciye dahil edilecektir. Kapanış <code>false</code> döndürürse, değer 
+elde edilen yineleyiciye dahil edilmez.</p>
+<p>Liste 13-16'da, <code>Shoe</code> <code>struct</code> örneklerinden oluşan bir koleksiyon üzerinde yineleme yapmak için ortamından
+<code>shoe_size</code> değişkenini yakalayan bir kapanış ile <code>filter</code>'ı kullanırız. Yalnızca belirtilen boyutta olan 
+ayakkabıları döndürür.</p>
+<p><span class="filename">Dosya adı: src/lib.rs</span></p>
 <pre><code class="language-rust noplayground">#[derive(PartialEq, Debug)]
 struct Shoe {
     size: u32,
@@ -403,21 +379,18 @@ mod tests {
     }
 }
 </code></pre>
-<p><span class="caption">Listing 13-16: Using the <code>filter</code> method with a closure
-that captures <code>shoe_size</code></span></p>
-<p>The <code>shoes_in_size</code> function takes ownership of a vector of shoes and a shoe
-size as parameters. It returns a vector containing only shoes of the specified
-size.</p>
-<p>In the body of <code>shoes_in_size</code>, we call <code>into_iter</code> to create an iterator
-that takes ownership of the vector. Then we call <code>filter</code> to adapt that
-iterator into a new iterator that only contains elements for which the closure
-returns <code>true</code>.</p>
-<p>The closure captures the <code>shoe_size</code> parameter from the environment and
-compares the value with each shoe’s size, keeping only shoes of the size
-specified. Finally, calling <code>collect</code> gathers the values returned by the
-adapted iterator into a vector that’s returned by the function.</p>
-<p>The test shows that when we call <code>shoes_in_size</code>, we get back only shoes
-that have the same size as the value we specified.</p>
+<p><span class="caption">Liste 13-16: <code>shoe_size</code> öğesini yakalayan bir kapanış ile <code>filter</code> metodunu kullanma</span></p>
+<p><code>shoes_in_size</code> fonksiyonu, parametre olarak bir ayakkabı vektörüne ve bir <code>shoe_size</code>'a yani
+ayakkabı boyutuna sahip olur. 
+Yalnızca belirtilen boyuttaki ayakkabıları içeren bir vektör döndürür.</p>
+<p><code>shoes_in_size</code>'ın gövdesinde, vektörün sahipliğini alan bir yineleyici oluşturmak için <code>into_iter</code>'ı çağırıyoruz. 
+Daha sonra bu yineleyiciyi yalnızca kapanışın <code>true</code> döndürdüğü öğeleri içeren yeni bir yineleyiciye uyarlamak için
+<code>filter</code>'ı çağırıyoruz.</p>
+<p>Kapanış, <code>shoe_size</code> parametresini ortamdan alır ve değeri her <code>shoe_size</code>'ı karşılaştırarak 
+yalnızca belirtilendekileri tutar. Son olarak, <code>collect</code> çağrısı, uyarlanmış yineleyici tarafından döndürülen değerleri,
+fonksiyon tarafından döndürülen bir vektörde toplar.</p>
+<p>Test, <code>shoes_in_size</code> öğesini çağırdığımızda, yalnızca belirttiğimiz değerle aynı boyuta sahip 
+ayakkabıları geri aldığımızı gösterir.</p>
 
                     </main>
 
