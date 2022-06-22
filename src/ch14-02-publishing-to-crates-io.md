@@ -1,4 +1,4 @@
-## Crates.io'da Sandık Yayınlama
+## Crates.io'da Kasa Yayınlama
 
 Biz [crates.io](https://crates.io/)<!-- ignore -->'daki paketleri projemizin bağımlılıkları olarak kullandık, 
 ancak siz de kendi paketlerinizi yayınlayarak kodunuzu diğer insanlarla paylaşabilirsiniz. [crates.io](https://crates.io/)<!-- ignore -->'daki kasa kaydı, 
